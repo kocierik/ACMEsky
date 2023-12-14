@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+    geodistance:
+        container_name: geoDistance
+        build: ./
+        ports:
+            - "8080:8080"
+        restart: always
