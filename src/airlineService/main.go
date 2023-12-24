@@ -17,5 +17,8 @@ func main() {
 	router.GET("/getFlights", h.GetFlights)
 
 	log.Println("API is running!")
+	log.Println("EXAMPLE REQUEST: ")
+	log.Println("http://localhost:8080/getFlights?departure=AAA&arrival=BBB&departureDate=2023-12-25")
+	log.Println("http://localhost:8080/getTickets?id=1")
 	router.Run(":8080")
 }

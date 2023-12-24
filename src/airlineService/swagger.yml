@@ -1,0 +1,84 @@
+openapi: 3.0.0
+info:
+  title: API Gestione Voli ACMEsky
+  description: API per la gestione dei voli e dei biglietti
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /getTickets:
+    get:
+      summary: Ottiene un biglietto per un determinato ID
+      parameters:
+        - name: id
+          in: query
+          description: ID del biglietto da ottenere
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Biglietto trovato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  details:
+                    type: string
+  /getFlights:
+    get:
+      summary: Ottiene i voli disponibili
+      parameters:
+        - name: departure
+          in: query
+          description: Codice di partenza
+          required: true
+          schema:
+            type: string
+        - name: arrival
+          in: query
+          description: Codice di arrivo
+          required: true
+          schema:
+            type: string
+        - name: departureDate
+          in: query
+          description: Data di partenza Formatoyyyy-mm-dd
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Voli disponibili
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    departureCode:
+                      type: string
+                    departureTime:
+                      type: string
+                      format: date-time
+                    arrivalTime:
+                      type: string
+                      format: date-time
+                    arrivalCode:
+                      type: string
+                    expDate:
+                      type: string
+                      format: date-time
+                    airlineName:
+                      type: string
+                    price:
+                      type: number
+                      format: float
+
