@@ -31,13 +31,13 @@ func (h handler) GetTicketByID(c *gin.Context) {
 		id = convertToInt(ticketID)
 	}
 
-	var ticket models.Ticket
-	if err := h.DB.First(&ticket, id).Error; err != nil {
+	var flights []models.Flight
+	if err := h.DB.First(&flights, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Ticket not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, ticket)
+	c.JSON(http.StatusOK, flights)
 }
 
 func (h handler) GetFlights(c *gin.Context) {
