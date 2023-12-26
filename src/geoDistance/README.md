@@ -23,7 +23,7 @@ Il server espone un singolo endpoint per calcolare la distanza tra due punti geo
 
 Metodo | Endpoint | Descrizione
 ---|---|---
-GET | /distance/:lat1/:lon1/:lat2/:lon2 | Calcola la distanza tra due punti geografici.
+GET | /distance | Calcola la distanza tra due punti geografici.
 
 I parametri della richiesta GET sono:
 - `lat1`: Latitudine del primo punto
@@ -38,7 +38,7 @@ Il risultato viene restituito in formato JSON con il valore della distanza in ch
 Ecco un esempio di una richiesta GET:
 
 ```http
-GET http://localhost:8080/distance/40.7128/-74.0060/34.0522/-118.2437
+GET http://localhost:8080/distance?lat1=40.7128&lon1=-74.0060&lat2=34.0522&lon2=-118.2437
 ```
 
 La risposta sarà simile a:
