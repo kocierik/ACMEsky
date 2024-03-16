@@ -7,7 +7,7 @@ services:
         environment:
             - SERVICE_NAME=RentService1
         ports:
-            - "8030:8080"
+            - "9091:9090"
         restart: always
         networks: 
             - acmesky
@@ -18,7 +18,7 @@ services:
         environment:
             - SERVICE_NAME=RentService2
         ports:
-            - "8032:8080"
+            - "9092:9090"
         restart: always
         networks: 
             - acmesky

@@ -2,36 +2,26 @@ version: '3.8'
 
 services:
   postgres:
+    image: postgres
+    restart: always
     container_name: postgres_container
-    build: ./
     env_file:
         - .env
-    volumes:
-        - postgres:/data/postgres
     ports:
-        - "5432:5432"
-    networks:
-        - acmesky
-    restart: unless-stopped
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-#  pgadmin:
-#    container_name: pgadmin_container
-#    image: dpage/pgadmin4:5.4
-#    env_file:
-#        - .env
-#    volumes:
-#        - pgadmin:/root/.pgadmin
-#    ports:
-#        - "5050:80"
-#    networks:
-#        - acmesky
-#    restart: unless-stopped
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    env_file:
+        - .env
+    ports:
+      - "5050:80"
 
 networks:
     acmesky:
         driver: bridge
-        name: acmesky-net
+        external: true
 
-volumes:
-    postgres:
-    pgadmin:
