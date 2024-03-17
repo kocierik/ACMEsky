@@ -4,7 +4,7 @@ info:
   description: API per la gestione dei voli e dei biglietti
   version: 1.0.0
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:8085
 paths:
   /getTickets:
     get:

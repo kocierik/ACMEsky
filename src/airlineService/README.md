@@ -49,7 +49,7 @@ I parametri della richiesta GET `getTickets` sono:
 Ecco un esempio delle richieste GET:
 
 ```http
-GET http://localhost:8080/getTickets?id=2
+GET http://localhost:8085/getTickets?id=2
 ```
 
 La risposta sarà simile a:
@@ -62,7 +62,7 @@ La risposta sarà simile a:
 ```
 
 ```http
-GET http://localhost:8080/getFlights?departure=AAA&arrival=BBB&departureDate=2023-12-25
+GET http://localhost:8085/getFlights?departure=AAA&arrival=BBB&departureDate=2023-12-25
 ```
 
 La risposta sarà simile a:
@@ -83,3 +83,19 @@ La risposta sarà simile a:
 ```
 
 
+inserisci un volo:
+
+```bash
+ curl -X POST \        
+  http://localhost:8085/flights \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "departureCode": "JFK",
+  "departureTime": "2024-03-17T08:00:00Z",
+  "arrivalTime": "2024-03-17T12:00:00Z",
+  "arrivalCode": "LAX",
+  "expDate": "2024-03-16T23:59:59Z",
+  "airlineName": "ACME Airlines",
+  "price": 250.00
+}'
+```
