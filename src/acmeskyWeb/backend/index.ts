@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { registerUser, loginUser } from './routes/auth';
 import cors from 'cors';
 import { createUserInterest, getUser, getUserInterests } from './routes/user';
-// import { protectRoute } from './middlewares';
+import { checkOfferAvailability } from './routes/offer';
 
 dotenv.config();
 
@@ -15,6 +15,7 @@ app.use(cors())
 app.post('/register', registerUser);
 app.post('/login', loginUser);
 app.get('/getUser', getUser);
+app.get('/checkoffert/:codiceOfferta', checkOfferAvailability);
 app.get('/getUser/:userId/interests', getUserInterests);
 app.post('/createUserInterest', createUserInterest);
 
