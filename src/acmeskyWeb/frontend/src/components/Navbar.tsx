@@ -1,15 +1,25 @@
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
-import { useState } from 'react';
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const navigate = useNavigate(); 
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user_id")
     setIsLoggedIn(false);
+    window.location.reload()
   };
 
+  useEffect(() => {
+    if(!localStorage.getItem("token")){
+      navigate("/")
+    }
+  },[])
+
+  
   return (
     <header
       className=" inset-x-0 z-30 mx-auto w-full  border border-gray-100 bg-white/80 py-5 shadow backdrop-blur-lg  ">

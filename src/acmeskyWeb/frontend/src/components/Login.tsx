@@ -1,10 +1,18 @@
-import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loginSuccess, setLoginSuccess] = useState(false);
+  // const [loginSuccess, setLoginSuccess] = useState(false);
+  const navigate = useNavigate(); 
+  
+  useEffect(() => {
+    if(localStorage.getItem("token") != null){
+      navigate("/profile")
+    }
+  },[])
 
   const handleEmailChange = (e: any) => {
     setEmail(e.target.value);
@@ -27,21 +35,31 @@ function Login() {
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
+      if(data.status !== 200){
+        throw new Error(data.error || 'Network response was not ok');
+      }
       console.log(data)
       if (data.token) {
         localStorage.setItem("token", data.token)
         localStorage.setItem("user_id", data.id)
       }
-      setLoginSuccess(true);
+      Swal.fire({
+        title: "Ottimo!",
+        text: "Login effettuato con successo!",
+        icon: "success",
+      }).then(_ => {
+        window.location.reload()
+      });
     } catch (error) {
+      Swal.fire({
+        title: "Ops!",
+        text: "Credenziali non valide!",
+        icon: "error",
+      });
       console.error('Errore durante la richiesta di login:', error);
     }
   };
 
-  if (loginSuccess) {
-    window.location.reload();
-    return <Navigate to="/" />;
-  }
 
   return (
     <div className="flex flex-1 h-full items-center flex-col justify-center">

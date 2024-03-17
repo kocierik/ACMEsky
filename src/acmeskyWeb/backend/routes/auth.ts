@@ -21,7 +21,7 @@ async function registerUser(req: Request, res: Response) {
     // Controlla se l'utente esiste già
     const userExists = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (userExists.rows.length > 0) {
-      return res.status(400).json({ error: 'Utente già registrato' });
+      return res.status(400).json({ error: 'Utente già registrato', status: 401});
     }
 
     // Se l'utente non esiste già, procedi con la registrazione
@@ -35,10 +35,10 @@ async function registerUser(req: Request, res: Response) {
     // Genera il token JWT
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
-    res.status(201).json({ message: 'Registrazione avvenuta con successo', id: user.id, token });
+    res.status(201).json({ message: 'Registrazione avvenuta con successo', id: user.id, token, status: 200});
   } catch (error) {
     console.error('Errore durante la registrazione:', error);
-    res.status(500).json({ error: 'Errore durante la registrazione' });
+    res.status(500).json({ error: 'Errore durante la registrazione', status: 500 });
   }
 }
 
@@ -53,16 +53,16 @@ async function loginUser(req: Request, res: Response) {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (passwordMatch) {
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Accesso riuscito', token, id: user.id });
+        res.status(200).json({ message: 'Accesso riuscito', token, id: user.id, status: 200 });
       } else {
-        res.status(401).json({ error: 'Credenziali non valide' });
+        res.status(401).json({ error: 'Credenziali non valide', status: 401 });
       }
     } else {
-      res.status(401).json({ error: 'Credenziali non valide' });
+      res.status(401).json({ error: 'Credenziali non valide', status: 401 });
     }
   } catch (error) {
     console.error('Errore durante il login:', error);
-    res.status(500).json({ error: 'Errore durante il login' });
+    res.status(500).json({ error: 'Errore durante il login', status: 500 });
   }
 }
 

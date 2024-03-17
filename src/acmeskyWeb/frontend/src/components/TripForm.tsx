@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
+import Swal from 'sweetalert2';
 
 interface FormData {
   departureLocation: string;
@@ -15,6 +17,7 @@ const TripForm: React.FC = () => {
   const [departureDate, setDepartureDate] = useState('');
   const [arrivalDate, setArrivalDate] = useState('');
   const [maxPrice, setMaxPrice] = useState(0);
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,9 +45,21 @@ const TripForm: React.FC = () => {
         throw new Error('Network response was not ok');
       }
 
-      // Handle success
+      Swal.fire({
+        title: "Ottimo!",
+        text: "Dati salvati correttamente!",
+        icon: "success"
+      });
+
+      navigate('/profile');
+
       console.log('Data submitted successfully');
     } catch (error) {
+      Swal.fire({
+        title: "Ops!",
+        text: "Errore durante il salvataggio dei dati!",
+        icon: "error",
+      });
       console.error('There was an error submitting the form:', error);
     }
   };

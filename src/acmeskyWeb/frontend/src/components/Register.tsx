@@ -1,9 +1,17 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); 
+
+  useEffect(() => {
+    if(localStorage.getItem("token") != null){
+      navigate("/profile")
+    }
+  },[])
 
   const handleEmailChange = (e: any) => {
     setEmail(e.target.value);
@@ -25,11 +33,26 @@ function Register() {
       });
       const data = await response.json();
       console.log(data);
+      if(data.status !== 200){
+        throw new Error(data.error || 'Network response was not ok');
+      }
       if (data.token) {
         localStorage.setItem("token", data.token)
         localStorage.setItem("user_id", data.id)
       }
+      Swal.fire({
+        title: "Ottimo!",
+        text: "Registrazione effettuata con successo!",
+        icon: "success",
+      }).then(_ => {
+        window.location.reload()
+      });
     } catch (error) {
+      Swal.fire({
+        title: "Ops!",
+        text: "Errore durante la registrazione!",
+        icon: "error",
+      });
       console.error('Errore durante la registrazione:', error);
     }
   };
