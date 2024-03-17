@@ -33,6 +33,7 @@ Metodo | Endpoint | Descrizione
 ---|---|---
 GET | getFlights?departure=AAA&arrival=BBB&departureDate=2023-12-25 | Ottiene le informazioni sui biglietti per la specifica data
 GET | getTickets?id=2 | Ottiene le informazioni sul singolo biglietto
+POST | flights | aggiungi un nuovo volo
 
 
 I parametri della richiesta GET `getFlights` sono:
@@ -42,6 +43,15 @@ I parametri della richiesta GET `getFlights` sono:
 
 I parametri della richiesta GET `getTickets` sono:
 - `id`: id biglietto
+
+I parametri della richiesta POST `flights` rappresentano i dati del biglietto:
+- `departureCode`: codice di partenza
+- `departureTime`: ora di partenza
+- `arrivalTime`: ora di arrivo
+- `arrivalCode`: codice di arrivo
+- `expDate`: data scadenza
+- `airlineName`: aereoport
+- `price`: prezzo
 
 
 ## Esempio
