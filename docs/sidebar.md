@@ -9,7 +9,7 @@
     <!-- * [Bank Service](src/BankService/) -->
     <!-- * [Prontogram](src/Prontogram/) -->
     * [Rental Service](src/rentService/)
-    * [GeographicalDistance Service](src/geoDistance/)
+    * [GeographicalDistance Service](src/geodistanceService/)
 
 <!-- * Servizi -->
 <!--     * [geoDistance](src/geoDistance/) -->
