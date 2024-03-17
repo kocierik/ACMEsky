@@ -2,6 +2,12 @@
 
 Progetto di Ingegneria del Software Orientata ai Servizi A.A. 2023/2024
 
+Per lanciare tutti i servizi usare docker
+
+```bash
+docker compose up -d
+```
+
 ## Servizi implementati
 - [x] **AcmeSky web**: Interfaccia grafica. manca la gestione delle offerte. che dipende dal servizio prontogram
 - [x] **Airline Service**: Compagnia aerea. 
