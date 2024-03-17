@@ -35,7 +35,7 @@ async function registerUser(req: Request, res: Response) {
     // Genera il token JWT
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
-    res.status(201).json({ message: 'Registrazione avvenuta con successo', user, token });
+    res.status(201).json({ message: 'Registrazione avvenuta con successo', id: user.id, token });
   } catch (error) {
     console.error('Errore durante la registrazione:', error);
     res.status(500).json({ error: 'Errore durante la registrazione' });
@@ -53,7 +53,7 @@ async function loginUser(req: Request, res: Response) {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (passwordMatch) {
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Accesso riuscito', token });
+        res.status(200).json({ message: 'Accesso riuscito', token, id: user.id });
       } else {
         res.status(401).json({ error: 'Credenziali non valide' });
       }

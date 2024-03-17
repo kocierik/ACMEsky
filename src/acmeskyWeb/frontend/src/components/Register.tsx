@@ -27,6 +27,7 @@ function Register() {
       console.log(data);
       if (data.token) {
         localStorage.setItem("token", data.token)
+        localStorage.setItem("user_id", data.id)
       }
     } catch (error) {
       console.error('Errore durante la registrazione:', error);

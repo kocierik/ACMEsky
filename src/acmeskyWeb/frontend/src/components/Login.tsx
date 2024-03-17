@@ -30,6 +30,7 @@ function Login() {
       console.log(data)
       if (data.token) {
         localStorage.setItem("token", data.token)
+        localStorage.setItem("user_id", data.id)
       }
       setLoginSuccess(true);
     } catch (error) {

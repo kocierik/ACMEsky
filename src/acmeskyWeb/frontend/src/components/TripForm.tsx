@@ -6,7 +6,7 @@ interface FormData {
   departureDate: string;
   arrivalDate: string;
   maxPrice: number;
-  user_id: number;
+  user_id: string;
 }
 
 const TripForm: React.FC = () => {
@@ -20,7 +20,7 @@ const TripForm: React.FC = () => {
     e.preventDefault();
     const formData: FormData = {
       departureLocation,
-      user_id: 5, // TODO: FIX
+      user_id: localStorage.getItem("user_id")!,
       arrivalLocation,
       departureDate,
       arrivalDate,
@@ -33,7 +33,7 @@ const TripForm: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Replace with your token
+          'Authorization': `Bearer ${localStorage.getItem('token')}` 
         },
         body: JSON.stringify(formData)
       });
