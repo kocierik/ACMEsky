@@ -4,7 +4,7 @@
     * ACMEsky
         <!-- * [Service](src/ACMEskyService/) -->
         * [Database](src/ACMEskyDB/)
-        * [Web](src/ACMEskyWeb/frontend)
+        * [Web](src/ACMEskyWeb/)
     * [Airline Service](src/airlineService/)
     <!-- * [Bank Service](src/BankService/) -->
     <!-- * [Prontogram](src/Prontogram/) -->
