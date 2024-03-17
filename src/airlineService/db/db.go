@@ -20,7 +20,8 @@ func Init() *gorm.DB {
 	USER := os.Getenv("POSTGRES_USER")
 	PSW := os.Getenv("POSTGRES_PASSWORD")
 	DB := os.Getenv("POSTGRES_DB")
-	dbURL := fmt.Sprintf("postgres://%s:%s@localhost:5433/%s", USER, PSW, DB)
+	fmt.Print(USER, PSW, DB)
+	dbURL := fmt.Sprintf("postgres://%s:%s@db:5432/%s", USER, PSW, DB)
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 

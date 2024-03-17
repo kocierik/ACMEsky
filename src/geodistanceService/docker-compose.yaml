@@ -5,5 +5,5 @@ services:
         container_name: geoDistance
         build: ./
         ports:
-            - "8080:8080"
+            - "8040:8040"
         restart: always

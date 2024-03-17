@@ -1,71 +1,55 @@
 version: '3.9'
 
 services:
-
-#   ACMEsky sevices
-    # acmesky:
-    #     container_name: acmesky_container
-    #     build: ./src/ACMEskyService
-    #     env_file:
-    #         - ./src/ACMEskyService/.env
-    #     ports:
-    #         - "8080:8080"
-    #     networks:
-    #         - acmesky
-    #     restart: unless-stopped
-    #     depends_on:
-    #         - postgres
-    # postgres:
-    #     container_name: postgres_container
-    #     build: ./src/ACMEskyDB
-    #     env_file:
-    #         - ./src/ACMEskyDB/.env
-    #     volumes:
-    #         - postgres:/data/postgres
-    #     ports:
-    #         - "5432:5432"
-    #     networks:
-    #         - acmesky
-    #     restart: unless-stopped
-    web:
-        container_name: acmesky_web
-        build: ./src/acmeskyWeb
-        environment: 
-            - ACMESKY_URL=http://localhost:8080
+    postgres_back:
+        image: postgres:latest
+        container_name: postgres_back
+        restart: always
+        environment:
+            POSTGRES_USER: pg
+            POSTGRES_PASSWORD: pass 
+            POSTGRES_HOST: postgres_back 
+            POSTGRES_DB: acmesky 
         ports:
-            - "80:80"
-        networks:
-            - acmesky
-        restart: unless-stopped
+            - "5432:5432"
+        volumes:
+            - ./src/acmeskyWeb/backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    acme-frontend:
+        build: ./src/acmeskyWeb/frontend
+        ports:
+            - "8080:80"
+
+    acme-backend:
+        build: ./src/acmeskyWeb/backend
+        ports:
+            - "3000:3000"
+        environment:
+            NODE_ENV: production
         depends_on:
-            - acmesky
+            - postgres_back
 
-#   Arline sevices
-    # national-airline:
-    #     container_name: national-service
-    #     build: ./src/airlineService
-    #     env_file: ./src/airlineService/.env
-    #     volumes: 
-    #         - ./src/airlineService/db:/db
-    #         - ./src/airlineService/fileSampleOffers/NationalFlights.json:/list/list.json
-    #     ports:
-    #         - 8060:8082
-    #     networks:
-    #         - acmesky
-    #     restart: always
-    # international-airline:
-    #     container_name: international-service
-    #     build: ./src/airlineService
-    #     env_file: ./src/AirlineService/.env
-    #     volumes:
-    #         - ./src/AirlineService/db:/db
-    #         - ./src/AirlineService/fileSampleOffers/InternationalFlights.json:/list/list.json
-    #     ports:
-    #         - 8061:8082
-    #     networks: 
-    #         - acmesky
-    #     restart: always
 
+    national-airline:
+        container_name: national-service
+        build: ./src/airlineService
+        env_file: ./src/airlineService/.env
+        ports:
+            - 8085:8085
+        command: sh -c "sleep 5 && ./main"
+        restart: always
+        depends_on:
+          - db
+
+    db:
+        image: postgres:latest
+        container_name: postgres-airline
+        restart: always
+        env_file: ./src/airlineService/.env
+        ports:
+          - "5433:5432"
+        volumes:
+          - ./src/airlineService/data.sql:/docker-entrypoint-initdb.d/data.sql
 #   Bank
     # bank:
     #     container_name: bank_container
@@ -95,22 +79,7 @@ services:
     #     restart: always
     #     networks: 
     #         - acmesky
-    #     depends_on:
-    #         - mongo
-    # mongo:
-    #     container_name: mongo_container
-    #     image: mongo
-    #     restart: always
-    #     environment:
-    #         - MONGO_INITDB_ROOT_USERNAME=soseng
-    #         - MONGO_INITDB_ROOT_PASSWORD=adminadmin
-    #         - MONGO_INITDB_DATABASE=Prontogram
-    #     networks: 
-    #         - acmesky
-    #     volumes:
-    #         - mongodb-data:/data/db
-    #     ports: 
-    #         - 27017:27017
+
 
 #   Rent Service
     rent-service-1:
@@ -120,9 +89,13 @@ services:
             - SERVICE_NAME=RentService1
         ports:
             - "8030:8080"
+        ulimits:
+            nofile:
+                soft: 65536
+                hard: 65536
         restart: always
-        networks: 
-            - acmesky
+        # networks: 
+        #     - acmesky
     rent-service-2:
         container_name: rent_service_2
         build: ./src/rentService
@@ -130,9 +103,13 @@ services:
             - SERVICE_NAME=RentService2
         ports:
             - "8032:8080"
+        ulimits:
+            nofile:
+                soft: 65536
+                hard: 65536
         restart: always
-        networks: 
-            - acmesky
+        # networks: 
+        #     - acmesky
 
 #   Geo distance service
     geodistance:
@@ -143,23 +120,5 @@ services:
         ports:
             - "8040:80"
         restart: always
-        networks: 
-            - acmesky
-
-#   Swagger UI
-    # swagger-ui:
-    #     container_name: swagger_ui
-    #     build: ./src/SwaggerUI
-    #     ports:
-    #         - "8000:80"
-    #     restart: always
-    #     networks: 
-    #         - acmesky
-
-networks:
-    acmesky:
-        name: acmesky-net
-
-volumes:
-    postgres:
-    mongodb-data:
+        # networks: 
+        #     - acmesky
