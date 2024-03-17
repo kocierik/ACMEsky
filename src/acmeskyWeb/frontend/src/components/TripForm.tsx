@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import Swal from 'sweetalert2';
+import { BASE_URL } from '../utils/const';
 
 interface FormData {
   departureLocation: string;
@@ -11,7 +12,7 @@ interface FormData {
   user_id: string;
 }
 
-const TripForm: React.FC = () => {
+const TripForm = () => {
   const [departureLocation, setDepartureLocation] = useState('');
   const [arrivalLocation, setArrivalLocation] = useState('');
   const [departureDate, setDepartureDate] = useState('');
@@ -32,7 +33,7 @@ const TripForm: React.FC = () => {
 
     try {
       console.log(formData)
-      const response = await fetch('http://localhost:3000/createUserInterest', {
+      const response = await fetch(`${BASE_URL}/createUserInterest`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

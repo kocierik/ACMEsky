@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { BASE_URL } from '../utils/const';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const [loginSuccess, setLoginSuccess] = useState(false);
+  
   const navigate = useNavigate(); 
   
   useEffect(() => {
@@ -25,7 +26,7 @@ function Login() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/login', {
+      const response = await fetch(`${BASE_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

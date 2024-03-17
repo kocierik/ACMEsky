@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { BASE_URL } from '../utils/const';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -24,7 +25,7 @@ function Register() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/register', {
+      const response = await fetch(`${BASE_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
