@@ -1,19 +1,11 @@
 import { Request, Response } from 'express';
-import { Pool } from 'pg';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+import pool from "../utils/db"
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
-
-const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DB,
-  host: process.env.POSTGRES_HOST,
-  port: 5432,
-});
 
 interface User {
   id: number;

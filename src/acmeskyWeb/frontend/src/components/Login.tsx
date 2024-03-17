@@ -27,7 +27,10 @@ function Login() {
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
-      localStorage.setItem("token", data.token)
+      console.log(data)
+      if (data.token) {
+        localStorage.setItem("token", data.token)
+      }
       setLoginSuccess(true);
     } catch (error) {
       console.error('Errore durante la richiesta di login:', error);

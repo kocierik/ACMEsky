@@ -25,7 +25,9 @@ function Register() {
       });
       const data = await response.json();
       console.log(data);
-      localStorage.setItem("token", data.token)
+      if (data.token) {
+        localStorage.setItem("token", data.token)
+      }
     } catch (error) {
       console.error('Errore durante la registrazione:', error);
     }
