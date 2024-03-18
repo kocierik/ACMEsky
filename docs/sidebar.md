@@ -6,7 +6,7 @@
         * [Database](src/ACMEskyDB/)
         * [Web](src/acmeskyWeb/)
     * [Airline Service](src/airlineService/)
-    <!-- * [Bank Service](src/BankService/) -->
+    * [Bank Service](src/BankService/)
     <!-- * [Prontogram](src/Prontogram/) -->
     * [Rental Service](src/rentService/)
     * [GeographicalDistance Service](src/geodistanceService/)
