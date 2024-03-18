@@ -50,18 +50,19 @@ services:
           - "5433:5432"
         volumes:
           - ./src/airlineService/data.sql:/docker-entrypoint-initdb.d/data.sql
-#   Bank
-    # bank:
-    #     container_name: bank_container
-    #     build: ./src/BankService
-    #     env_file:
-    #         - ./src/BankService/.env
-    #     ports:
-    #         - "8070:8080"
-    #     networks:
-    #         - acmesky
-    #     restart: always
 
+    frontend_bank:
+        build: ./src/bankService/frontend/
+        ports:
+            - "8087:8087"
+
+    backend_bank:
+        build: ./src/bankService/backend/
+        ports:
+            - "3001:3001"
+        environment:
+            NODE_ENV: production
+            
 #   Prontogram
     # prontogram_frontend:
     #     container_name: prontogram_frontend_container

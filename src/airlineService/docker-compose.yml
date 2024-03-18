@@ -7,8 +7,8 @@ services:
     depends_on:
       - db
     command: sh -c "sleep 5 && ./main"
-    networks: 
-      - acmesky
+    # networks: 
+    #   - acmesky
   db:
     image: postgres:latest
     container_name: postgres
@@ -24,13 +24,13 @@ services:
     volumes:
       - ./data.sql:/docker-entrypoint-initdb.d/data.sql
       - db:/var/lib/postgresql/data
-    networks: 
-      - acmesky
+    # networks: 
+    #   - acmesky
 
 volumes:
   db:
 
-networks:
-    acmesky:
-        external: true
-        name: acmesky-net
+# networks:
+#     acmesky:
+#         external: true
+#         name: acmesky-net

@@ -12,14 +12,15 @@ app.use(cors());
 let receivedData = null; // Variabile per memorizzare i dati ricevuti
 
 // Endpoint per gestire la richiesta POST di acquisto
-app.post('/checkout', (req, res) => {
+app.post('/checkout/:offerCode', (req, res) => {
+  const offerCode = req.params.offerCode;
   const data = req.body;
 
   // Salva i dati ricevuti nella variabile
   receivedData = data;
 
   // Rispondi al frontend per confermare che il checkout è stato completato con successo
-  res.status(200).json({ success: true, message: 'Dati ricevuti con successo', offer: data });
+  res.status(200).json({ success: true, message: 'Dati ricevuti con successo', offer: data, code: offerCode });
 });
 
 // Endpoint per ottenere i dati ricevuti

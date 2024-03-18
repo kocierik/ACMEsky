@@ -54,7 +54,7 @@ const OfferForm = () => {
       return;
     }
     try {
-      const response = await fetch(`${BASE_URL_BANK}/checkout`, {
+      const response = await fetch(`${BASE_URL_BANK}/checkout/${offer.codice_offerta}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ const OfferForm = () => {
         text: 'Richiesta inviata correttamente, verrai reindirizzato al pagamento.',
         icon: 'success'
       }).then(() => {
-        window.location.href = 'http://localhost:5174/';
+        window.location.href = `http://localhost:8087`;
       });
     } catch (error) {
       console.error('Errore durante il checkout:', error);

@@ -9,8 +9,8 @@ services:
         ports:
             - "9091:9090"
         restart: always
-        networks: 
-            - acmesky
+        # networks: 
+        #     - acmesky
 
     rent-service-2:
         container_name: rent_service_2
@@ -20,11 +20,11 @@ services:
         ports:
             - "9092:9090"
         restart: always
-        networks: 
-            - acmesky
+        # networks: 
+        #     - acmesky
 
 
-networks:
-    acmesky:
-        external: true
-        name: acmesky-net
+# networks:
+#     acmesky:
+#         external: true
+#         name: acmesky-net

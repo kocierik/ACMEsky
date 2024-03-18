@@ -20,8 +20,8 @@ services:
     ports:
       - "5050:80"
 
-networks:
-    acmesky:
-        driver: bridge
-        external: true
-
+# networks:
+#     acmesky:
+#         driver: bridge
+#         external: true
+#

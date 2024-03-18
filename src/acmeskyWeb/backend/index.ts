@@ -15,7 +15,7 @@ app.use(cors())
 app.post('/register', registerUser);
 app.post('/login', loginUser);
 app.get('/getUser', getUser);
-app.get('/checkoffert/:codiceOfferta', checkOfferAvailability);
+app.get('/checkoffert/:offerCode', checkOfferAvailability);
 app.get('/getUser/:userId/interests', getUserInterests);
 app.post('/createUserInterest', createUserInterest);
 

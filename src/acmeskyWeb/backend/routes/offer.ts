@@ -14,7 +14,7 @@ interface Offer {
 
 // Funzione per verificare se un'offerta è disponibile
 const checkOfferAvailability = async (req: Request, res: Response) => {
-  const codiceOfferta = req.params.codiceOfferta;
+  const codiceOfferta = req.params.offerCode;
 
   try {
     // Query per controllare se l'offerta esiste e se è disponibile

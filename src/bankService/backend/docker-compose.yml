@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend_bank:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+    # depends_on:
+    #   - postgres_back
+      
+  # postgres_back:
+  #   image: postgres:latest
+  #   container_name: postgres_back
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USER: pg
+  #     POSTGRES_PASSWORD: pass 
+  #     POSTGRES_HOST: postgres_back 
+  #     POSTGRES_DB: acmesky 
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
