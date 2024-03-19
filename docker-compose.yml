@@ -89,7 +89,7 @@ services:
         environment:
             - SERVICE_NAME=RentService1
         ports:
-            - "8030:8080"
+            - "8030:8030"
         ulimits:
             nofile:
                 soft: 65536
@@ -103,7 +103,7 @@ services:
         environment:
             - SERVICE_NAME=RentService2
         ports:
-            - "8032:8080"
+            - "8032:8032"
         ulimits:
             nofile:
                 soft: 65536
@@ -116,10 +116,10 @@ services:
     geodistance:
         container_name: geodistance_container
         build: ./src/geodistanceService
-        # env_file:
-            # - ./src/geodistanceService/.env
+        env_file:
+            - ./src/geodistanceService/.env
         ports:
-            - "8040:80"
+            - "8040:8040"
         restart: always
         # networks: 
         #     - acmesky

@@ -116,10 +116,11 @@ const OfferForm = () => {
       const data = await response.json();
       console.log(data);
       const distanceInKilometers = convertToKilometers(data.distance);
-      if (distanceInKilometers !== null) {
+      console.log(distanceInKilometers)
+      if (distanceInKilometers != 0) {
         setDistance(distanceInKilometers);
-      } else {
-        throw new Error("Formato della distanza non valido");
+      }  else {
+        setDistance(0)
       }
     } catch (error) {
       console.error("Errore durante il calcolo della distanza:", error);
@@ -183,12 +184,13 @@ const OfferForm = () => {
                 </button>
               </div>
             </div>
-            {distance && (
+            {distance != 0 && (
               <div className="flex flex-1 mt-1 flex-col mb-1">
                 <p>Distanza: {distance} {' '} km</p>
-                {distance > 30 ? "Non hai diritto alla navetta fino all'aereoporto" : "Hai diritto alla navetta fino all'aereoporto"}
+                {(distance! < 30 && distance != 0) && "Hai diritto alla navetta fino all'aereoporto"}
               </div>
             )}
+            {(distance! > 30 || distance == 0) && "Non hai diritto alla navetta fino all'aereoporto"}
           </div>
           <div className="flex flex-col overflow-x-auto flex-wrap">
             <div className="sm:-mx-6 lg:-mx-8 flex flex-1">
