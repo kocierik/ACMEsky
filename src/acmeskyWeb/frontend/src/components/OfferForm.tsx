@@ -17,7 +17,7 @@ const OfferForm = () => {
   const [codiceOfferta, setCodiceOfferta] = useState("");
   const [domicilio, setDomicilio] = useState("");
   const [offer, setOffer] = useState<IOffer>();
-  const [distance, setDistance] = useState<number | null>(null);
+  const [distance, setDistance] = useState<number | null>(0);
 
   const handleSearch = async () => {
     try {
