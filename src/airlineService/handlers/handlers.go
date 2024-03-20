@@ -45,15 +45,22 @@ func (h handler) GetFlights(c *gin.Context) {
 	departure := c.Query("departure")
 	arrival := c.Query("arrival")
 	departureDateStr := c.Query("departureDate")
+	arrivalDateStr := c.Query("arrivalDate")
 
 	departureDate, err := time.Parse("2006-01-02", departureDateStr)
+	arrivalDate, err2 := time.Parse("2006-01-02", arrivalDateStr)
+
+	if err2 != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format"})
+		return
+	}
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format"})
 		return
 	}
 
 	var flights []models.Flight
-	h.DB.Where("departure_code = ? AND arrival_code = ? AND DATE(departure_time) = ?", departure, arrival, departureDate.Format("2006-01-02")).Find(&flights)
+	h.DB.Where("departure_location = ? AND arrival_location = ? AND DATE(departure_time) = ? AND DATE(arrival_time)", departure, arrival, departureDate.Format("2006-01-02"), arrivalDate.Format("2006-01-02")).Find(&flights)
 
 	c.JSON(http.StatusOK, flights)
 }
