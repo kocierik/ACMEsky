@@ -64,14 +64,12 @@ services:
             NODE_ENV: production
             
 #   Prontogram
-    # prontogram_frontend:
-    #     container_name: prontogram_frontend_container
-    #     build: ./src/Prontogram/front-end
-    #     ports:
-    #         - "8051:80"
-    #     restart: always
-    #     networks: 
-    #         - acmesky
+    prontogram_frontend:
+        container_name: prontogram_frontend_
+        build: ./src/prontogram/frontend
+        ports:
+            - "8089:8089"
+        restart: always
     # prontogram:
     #     container_name: prontogram_service_container
     #     build: ./src/Prontogram/back-end
