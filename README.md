@@ -11,46 +11,46 @@ docker compose up -d
 ## Definizione architettura (bozza)
 
 1. ACMESky, diviso in:
-    a. *Camunda Workers*:
+    1. *Camunda Workers*:
         - Interroga quotidianamente compagnie aeree e verifica presenza di nuove offerte
         - Interroga il servizio di GeoDistance
         - Interroga il servizio di Rent
         - Richiede al Bank Service di generare un URL su cui l'utente può eseguire il pagamento
         - Invia il codice relativo all'offerta proposta al cliente su Prontogram
-    b. *Camunda Engine*: prende in input i diagrammi BPMN e gestisce i workers
-    c. *Backend*
+    2. *Camunda Engine*: prende in input i diagrammi BPMN e gestisce i workers
+    3. *Backend*
         - Gestisce le richieste dal frontend
         - Riceve offert last-minute dal Airline Service
         - Riceve le conferme dei pagamenti dal Bank Service
         - Rispedisce eventuali richieste ai Camunda Workers
-    d. *Frontend*
+    4. *Frontend*
         - Fornisce all'utente un interfaccia per interagire con ACMESky
         - Autenticazione
         - Registrare interessi
         - Acquistare biglietti di un offerta ricevuta su Prontogram
-    e. *Database*
+    5. *Database*
         - Memorizza le richieste dell'utente
         - Memorizza offerte trovate e relativo codice Prontogram, da verificare il match in seguito
         - Memorizza transazioni dei pagamenti (completate e non)
-    f. *Redis* (?)
+    6. *Redis* (?)
 2. *Airline Service*
     - Gestiscono i database di tutti i voli
     - Endpoint per ricevere le richieste giornaliere dal worker di ACMESky
     - Endpoint per aggiungere una offerta, che viene immediatamente notificata a ACMESky BE
 3. *Bank Service*, si divide in:
-    a. *Backend*
+    1. *Backend*
         - Rimane in ascolto per la creazione di un nuovo endpoint di pagamento
         - Notifica ACMESky BE per la conferma di un pagamento
-    b. *Frontend*
+    2. *Frontend*
         - Tramite URL personalizzati l'utente può accedere a una pagina di pagamentoi
 4. *GeoDistance Service* (API Rest)
     - Interrogato da un Worker, ritorna la distanza geografica di due luoghi
 5. *Rent Service* (Jolie SOAP)
     - Interrogato da un worker, DA CAPIRE => come comunicare all'utente? DB?
 6. *Prontogram*, si divide in:
-    a. *Backend* (Jolie Rest):
+    1. *Backend* (Jolie Rest):
         - Rimane in ascolto da un worker dopo il match di offerte. Si salva il codice per relativo all'offerta da acquistare
-    b. *Frontend*:
+    2. *Frontend*:
         - Permette all'utente di visualizzare tutti i codici relativi ai match di offerte
 
 ## Servizi implementati
