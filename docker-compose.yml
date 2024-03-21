@@ -13,15 +13,15 @@ services:
         ports:
             - "5432:5432"
         volumes:
-            - ./src/acmeskyWeb/backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+            - ./src/ACMESky/ACMESkyWeb/backend/init.sql:/docker-entrypoint-initdb.d/init.sql
 
     acme-frontend:
-        build: ./src/acmeskyWeb/frontend
+        build: ./src/ACMESky/ACMESkyWeb/frontend
         ports:
             - "8080:80"
 
     acme-backend:
-        build: ./src/acmeskyWeb/backend
+        build: ./src/ACMESky/ACMESkyWeb/backend
         ports:
             - "3000:3000"
         environment:

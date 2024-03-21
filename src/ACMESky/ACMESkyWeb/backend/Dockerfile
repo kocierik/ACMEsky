@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Installa le dipendenze del progetto
-RUN npm install --production
+RUN npm install
 
 # Copia i file di configurazione
 COPY tsconfig.json ./
