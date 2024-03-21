@@ -3,6 +3,9 @@
 * [bpmn](docs/bpmn)
 * [Coreografie BPMN](docs/coregrafiebpmn)
 * [uml](docs/uml)
+* [Test](docs/test)
+* [Test2](test2)
+* [Test3](src/test2)
 
 
 * Servizi
