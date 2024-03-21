@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+    prontogram:
+        container_name: prontogram
+        build: ./
+        environment:
+            - SERVICE_NAME=Prontogram
+        ports:
+            - "8000:8000"
+        restart: always
