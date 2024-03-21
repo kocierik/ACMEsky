@@ -33,6 +33,12 @@ INSERT INTO offers (codice_offerta, departure_location, arrival_location, depart
 ('12345', 'Milano', 'Londra', '2024-04-10', '2024-04-15', 600.00, false),
 ('67890', 'New York', 'Tokyo', '2024-05-01', '2024-05-10', 1000.00, true);
 ('67891', 'New York', 'Tokyo', '2024-05-01', '2024-05-10', 1000.00, true);
+('67892', 'New York', 'Tokyo', '2024-05-01', '2024-05-10', 1000.00, true);
+('67893', 'New York', 'Tokyo', '2024-05-01', '2024-05-10', 1000.00, true);
+('67894', 'New York', 'Tokyo', '2024-05-01', '2024-05-10', 1000.00, true);
+('67895', 'New York', 'Tokyo', '2024-05-01', '2024-05-10', 1000.00, true);
+('67896', 'New York', 'Tokyo', '2024-05-01', '2024-05-10', 1000.00, true);
+('67897', 'New York', 'Tokyo', '2024-05-01', '2024-05-10', 1000.00, true);
 
 
 

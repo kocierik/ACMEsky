@@ -1,6 +1,7 @@
 import "./App.css";
 
 interface IUserInterest {
+  offerCode: number;
   departure_location: string;
   arrival_location: string;
   departure_date: string;
@@ -10,6 +11,7 @@ interface IUserInterest {
 
 const userInterests : IUserInterest[] = [
   {
+    offerCode: 10356,
     departure_location: "New York",
     arrival_location: "Los Angeles",
     departure_date: new Date("2024-04-15").toUTCString().slice(0,-3),
@@ -17,6 +19,7 @@ const userInterests : IUserInterest[] = [
     max_price: 500
   },
   {
+    offerCode: 10357,
     departure_location: "Roma",
     arrival_location: "Rimini",
     departure_date: new Date("2024-02-15").toUTCString().slice(0,-3),
@@ -37,20 +40,23 @@ function App() {
             <table className="min-w-full text-start text-sm ">
               <thead className="border-b border-neutral-200 ">
                 <tr>
-                  <th scope="col" className="px-6 py-4">
-                    Departure Location
+                <th scope="col" className="px-6 py-4">
+                    Codice Offerta
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Arrival Location
+                    Luogo di Partenza
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Departure Date
+                    Luogo di Arrivo
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Arrival Date
+                    Data di Partenza
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    Max Price
+                    Data di Arrivo
+                  </th>
+                  <th scope="col" className="px-6 py-4">
+                    Prezzo Massimo
                   </th>
                 </tr>
               </thead>
@@ -60,6 +66,9 @@ function App() {
                     key={i}
                     className="border-b border-neutral-200 dark:border-white/10"
                   >
+                    <td className="whitespace-nowrap text-center py-4">
+                      {interest.offerCode}
+                    </td>
                     <td className="whitespace-nowrap text-center py-4">
                       {interest.departure_location}
                     </td>
