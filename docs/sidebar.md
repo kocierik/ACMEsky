@@ -1,8 +1,8 @@
 * [Home](/)
-* [Coreografie](coreografie)
-* [bpmn](bpmn)
-* [Coreografie BPMN](coregrafiebpmn)
-* [uml](uml)
+* [Coreografie](docs/coreografie)
+* [bpmn](docs/bpmn)
+* [Coreografie BPMN](docs/coregrafiebpmn)
+* [uml](docs/uml)
 
 
 * Servizi
