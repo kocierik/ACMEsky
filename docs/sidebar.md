@@ -4,12 +4,11 @@
 * [Coreografie BPMN](docs/coreografiebpmn)
 * [Uml](docs/uml)
 
-
 * Servizi
     * ACMEsky
         <!-- * [Service](src/ACMEskyService/) -->
-        * [Database](src/ACMEsky/ACMEskyDB/)
-        * [Web](src/ACMEsky/ACMESkyWeb/)
+        * [Database](src/ACMESky/ACMESkyDB/)
+        * [Web](src/ACMESky/ACMESkyWeb/frontend/)
     * [Airline Service](src/airlineService/)
     * [Bank Service](src/bankService/)
     * [Prontogram](src/prontogram/frontend/)
