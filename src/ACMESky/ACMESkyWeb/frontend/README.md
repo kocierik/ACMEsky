@@ -9,16 +9,16 @@ ACMEsky Web è una single webpage application che viene utilizzata dall'utente p
 
 ## Interfaccia grafica
 ### Home
-![Home](https://kocierik.github.io/ACMEsky/src/acmeskyWeb/image/home.png)
+![Home](https://kocierik.github.io/ACMEsky/src/ACMESky/ACMESkyWeb/image/home.png)
 
 ### Profilo
-![Profilo](https://kocierik.github.io/ACMEsky/src/acmeskyWeb/image/profilo.png)
+![Profilo](https://kocierik.github.io/ACMEsky/src/ACMESky/ACMESkyWeb/image/profilo.png)
 
 ### Aggiunta interesse
-![CercaVoli](https://kocierik.github.io/ACMEsky/src/acmeskyWeb/image/cercaVoli.png)
+![CercaVoli](https://kocierik.github.io/ACMEsky/src/ACMESky/ACMESkyWeb/image/cercaVoli.png)
 
 ### Offerta
-![Offerte](https://kocierik.github.io/ACMEsky/src/acmeskyWeb/image/offerte.png)
+![Offerte](https://kocierik.github.io/ACMEsky/src/ACMESky/ACMESkyWeb/image/offerte.png)
 
 ## Esecuzione
 
