@@ -1,30 +1,37 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# ACMEsky Web
+ACMEsky Web è una single webpage application che viene utilizzata dall'utente per interfacciarsi ai servizi di ACMEsky. Svolge il ruolo di wrapper grafico alle API di ACMEsky.
 
-Currently, two official plugins are available:
+## Tecnologie utilizzate
+- React
+- Typescript
+- Tailwind
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Interfaccia grafica
+### Home
+![Home](https://kocierik.github.io/ACMEsky/src/acmeskyWeb/image/home.png)
 
-## Expanding the ESLint configuration
+### Profilo
+![Profilo](https://kocierik.github.io/ACMEsky/src/acmeskyWeb/image/profilo.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Aggiunta interesse
+![CercaVoli](https://kocierik.github.io/ACMEsky/src/acmeskyWeb/image/cercaVoli.png)
 
-- Configure the top-level `parserOptions` property like this:
+### Offerta
+![Offerte](https://kocierik.github.io/ACMEsky/src/acmeskyWeb/image/offerte.png)
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+## Esecuzione
+
+Installa le dipendenze
+
+```bash
+pnpm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Esegui
+```bash
+pnpm dev
+```
+
+&nbsp;
+<div class="page-break"></div>

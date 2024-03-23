@@ -13,7 +13,7 @@ services:
         ports:
             - "5432:5432"
         volumes:
-            - ./src/ACMESky/ACMESkyWeb/backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+          - ./ACMEsky/src/ACMESky/ACMESkyDB/init.sql:/docker-entrypoint-initdb.d/init.sql
 
     acme-frontend:
         build: ./src/ACMESky/ACMESkyWeb/frontend
