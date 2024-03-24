@@ -10,23 +10,6 @@ inputPort ProntogramServicePort
         format = "json"
         // contentType = "application/json"
         osc << {
-            auth_signup << {
-                template = "/api/auth/signup"
-                method = "post"
-                statusCodes.UserAlreadyExists = 403
-            }
-            auth_login << {
-                template = "/api/auth/login"
-                method = "post"
-                statusCodes.UserNotAuthorized = 401
-                statusCodes.UserNotFound = 404
-            }
-            auth_logout << {
-                template = "/api/auth/logout"
-                method = "post"
-                statusCodes.UserNotAuthorized = 401
-                statusCodes.UserNotFound = 404
-            }
             getOffers << {
                 template = "/api/offers"
                 method = "get"
@@ -56,52 +39,6 @@ cset {
 
 main {
 
-    [
-        auth_signup(UserSignUpRequest)() {
-            if ( is_defined( global.users.(UserSignUpRequest.credentials.user_id) ) ) {
-                throw (UserAlreadyExists, UserSignUpRequest.credentials.user_id)
-            }
-            
-            with(global.users.(UserSignUpRequest.credentials.user_id)) {
-                .id = UserSignUpRequest.credentials.user_id;
-                .display_name = UserSignUpRequest.display_name;
-                .password = UserSignUpRequest.credentials.password
-            }
-
-            println@Console("New user signed up: '" + global.users.(UserSignUpRequest.credentials.user_id).id + "'")()
-        }
-    ]
-    [
-        auth_login(UserAuthCredentials)(AuthenticatedUser) {
-            if ( !is_defined( global.users.(UserAuthCredentials.user_id) ) ) {
-                throw (UserNotFound, UserAuthCredentials.user_id)
-            }
-            else if( global.users.(UserAuthCredentials.user_id).password != UserAuthCredentials.password ) {
-                throw (UserNotAuthorized, UserAuthCredentials.user_id)
-            }
-            else {
-                csets.sid = new
-                with(AuthenticatedUser) {
-                    .user_id = UserAuthCredentials.user_id;
-                    .sid = csets.sid
-                }
-                isLogged = true
-                println@Console("user '" + AuthenticatedUser.user_id + "' logged in")()
-                println@Console("user '" + AuthenticatedUser.user_id + " started session " + AuthenticatedUser.sid )()
-            }
-        }
-    ]
-    [
-        auth_logout(AuthenticatedUser)() {
-            if ( !is_defined( global.users.(AuthenticatedUser.user_id) ) ) {
-                throw (UserNotFound, UserAuthCredentials.user_id)
-            }
-            else {
-                isLogged = false
-            }
-            println@Console("user '" + AuthenticatedUser.user_id + "' logged out")()
-        }
-    ]
     [
         addOffer(SendOfferRequest)(Offer){
             with(Offer) {
