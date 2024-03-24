@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
+import { useParams } from 'react-router-dom';
 
 function App() {
   const [offer, setOffer] = useState(null);
@@ -7,16 +8,24 @@ function App() {
   const [cardNumber, setCardNumber] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
   const [securityCode, setSecurityCode] = useState("");
+  const { offerCode } = useParams();
 
   async function fetchReceivedData() {
     try {
-      const response = await fetch("http://localhost:3001/received-data", {
+      const response = await fetch(`http://localhost:3001/received-data/${offerCode}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
         },
       });
+      if (!response.ok) {
+        Swal.fire({
+          title: "Ops!",
+          text: "Offerta non esistente!",
+          icon: "error",
+        });
+      }
       const data = await response.json();
       setOffer(data);
       console.log(data);
@@ -158,23 +167,23 @@ function App() {
                 <div className="font-bold text-xl mb-2">Offerta</div>
                 <div className="mb-2">
                   <span className="text-gray-700">Codice Offerta:</span>{" "}
-                  {offer.codiceOfferta}
+                  {offer.codice_offerta}
                 </div>
                 <div className="mb-2">
                   <span className="text-gray-700">Partenza:</span>{" "}
-                  {offer.departureLocation}
+                  {offer.departure_location}
                 </div>
                 <div className="mb-2">
                   <span className="text-gray-700">Arrivo:</span>{" "}
-                  {offer.arrivalLocation}
+                  {offer.arrival_location}
                 </div>
                 <div className="mb-2">
                   <span className="text-gray-700">Data di Partenza:</span>{" "}
-                  {offer.departureDate}
+                  {offer.departure_date}
                 </div>
                 <div className="mb-2">
                   <span className="text-gray-700">Data di Arrivo:</span>{" "}
-                  {offer.arrivalDate}
+                  {offer.arrival_date}
                 </div>
                 <div className="mb-2">
                   <span className="text-gray-700">Prezzo:</span> {offer.price}

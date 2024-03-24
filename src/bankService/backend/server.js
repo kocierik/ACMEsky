@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const { Pool } = require('pg');
 
 const app = express();
-const PORT = 3001; // Puoi scegliere qualsiasi porta disponibile
+const PORT = 3001;
 
 dotenv.config();
 
@@ -17,11 +17,10 @@ const pool = new Pool({
   port: 5432,
 });
 
-// Middleware per il parsing del corpo della richiesta in formato JSON
 app.use(bodyParser.json());
 app.use(cors());
 
-let receivedData = null; // Variabile per memorizzare i dati ricevuti
+let receivedData = null;
 
 // Endpoint per gestire la richiesta POST di acquisto
 app.post('/checkout/:offerCode', (req, res) => {
@@ -30,15 +29,30 @@ app.post('/checkout/:offerCode', (req, res) => {
 
   // Salva i dati ricevuti nella variabile
   receivedData = data;
-  console.log(receivedData)
   // Rispondi al frontend per confermare che il checkout è stato completato con successo
   res.status(200).json({ success: true, message: 'Dati ricevuti con successo', offer: data, code: offerCode });
 });
 
-// Endpoint per ottenere i dati ricevuti
-app.get('/received-data', (req, res) => {
-  // Restituisci i dati ricevuti al frontend
-  res.status(200).json(receivedData);
+// Endpoint per ottenere i dati ricevuti per un'offerta specifica
+app.get(`/received-data/:offerCode`, async (req, res) => {
+  const offerCode = req.params.offerCode;
+
+  try {
+    const result = await pool.query(
+      'SELECT * FROM offers WHERE codice_offerta = $1',
+      [offerCode]
+    );
+
+    if (result.rowCount === 1) {
+      const receivedOffer = result.rows[0];
+      res.status(200).json(receivedOffer);
+    } else {
+      res.status(404).json({ success: false, message: 'Offerta non trovata' });
+    }
+  } catch (error) {
+    console.error("Errore durante il recupero dei dati dell'offerta:", error);
+    res.status(500).json({ success: false, message: 'Errore durante il recupero dei dati dell\'offerta' });
+  }
 });
 
 // Endpoint per aggiornare lo stato disponibile dopo l'acquisto

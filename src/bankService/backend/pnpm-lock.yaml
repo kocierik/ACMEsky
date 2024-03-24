@@ -20,9 +20,6 @@ dependencies:
   pg:
     specifier: ^8.11.3
     version: 8.11.3
-  sweetalert2:
-    specifier: ^11.10.6
-    version: 11.10.6
 
 packages:
 
@@ -573,10 +570,6 @@ packages:
   /statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
-    dev: false
-
-  /sweetalert2@11.10.6:
-    resolution: {integrity: sha512-CINZPLZXZRSZqSOE7H7j1F7X8e8O1kLOiXPmtJn1DYxvXsKBr3d16d90+IcwTTs7dJww20h8r8QIxIwsLGX+6A==}
     dev: false
 
   /toidentifier@1.0.1:

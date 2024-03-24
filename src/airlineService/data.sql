@@ -4,7 +4,6 @@ CREATE TABLE flights (
     departure_location VARCHAR(100) NOT NULL,
     arrival_location VARCHAR(100) NOT NULL,
     departure_code VARCHAR(50) NOT NULL,
-    departure_code VARCHAR(50) NOT NULL,
     departure_time TIMESTAMP NOT NULL,
     arrival_time TIMESTAMP NOT NULL,
     arrival_code VARCHAR(50) NOT NULL,

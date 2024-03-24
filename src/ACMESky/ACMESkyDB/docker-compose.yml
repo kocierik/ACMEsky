@@ -1,10 +1,10 @@
 version: '3.8'
 
 services:
-  postgres:
+  postgres_back:
     image: postgres
     restart: always
-    container_name: postgres_container
+    container_name: postgres_back
     env_file:
         - .env
     ports:

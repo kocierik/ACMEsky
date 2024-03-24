@@ -84,7 +84,7 @@ const OfferForm = () => {
         text: "Richiesta inviata correttamente, verrai reindirizzato al pagamento.",
         icon: "success",
       }).then(() => {
-        window.location.href = `http://localhost:8087`;
+        window.location.href = `http://localhost:8087/received-data/${offer.codice_offerta}`;
       });
     } catch (error) {
       console.error("Errore durante il checkout:", error);
@@ -112,14 +112,14 @@ const OfferForm = () => {
       if (!response.ok) {
         throw new Error("Errore durante il calcolo della distanza");
       }
-  
+
       const data = await response.json();
       console.log(data);
       const distanceInKilometers = convertToKilometers(data.distance);
       console.log(distanceInKilometers)
       if (distanceInKilometers != 0) {
         setDistance(distanceInKilometers);
-      }  else {
+      } else {
         setDistance(0)
       }
     } catch (error) {
@@ -131,7 +131,7 @@ const OfferForm = () => {
       });
     }
   };
-  
+
 
   return (
     <div className="p-3 bg-gray-100 flex flex-col items-center justify-center">
