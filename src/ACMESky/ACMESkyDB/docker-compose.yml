@@ -1,10 +1,10 @@
 version: '3.8'
 
 services:
-  acmesky_db:
+  postgres_back:
     image: postgres
     restart: always
-    container_name: acmesky_db
+    container_name: postgres_back
     env_file:
         - .env
     ports:

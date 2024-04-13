@@ -20,13 +20,13 @@ func Init() *gorm.DB {
 	USER := "pg"
 	PSW := "pass"
 	DB := "acmesky"
-	// HOST := "acmesky_db"
+	// HOST := "postgres_back"
 	// USER := os.Getenv("POSTGRES_USER")
 	// PSW := os.Getenv("POSTGRES_PASSWORD")
 	// DB := os.Getenv("POSTGRES_DB")
 	// HOST := os.Getenv("POSTGRES_HOST")
 	fmt.Print(USER, PSW, DB)
-	dbURL := fmt.Sprintf("postgres://%s:%s@acmesky_db:5432/%s", USER, PSW, DB)
+	dbURL := fmt.Sprintf("postgres://%s:%s@postgres_back:5432/%s", USER, PSW, DB)
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
