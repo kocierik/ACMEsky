@@ -10,16 +10,16 @@ services:
     environment:
       NODE_ENV: production
     depends_on:
-      - postgres_back
+      - acmesky_db
       
-  postgres_back:
+  acmesky_db:
     image: postgres:latest
-    container_name: postgres_back
+    container_name: acmesky_db
     restart: always
     environment:
       POSTGRES_USER: pg
       POSTGRES_PASSWORD: pass 
-      POSTGRES_HOST: postgres_back 
+      POSTGRES_HOST: acmesky_db 
       POSTGRES_DB: acmesky 
     ports:
       - "5432:5432"

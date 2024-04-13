@@ -5,10 +5,10 @@ services:
     ports:
       - "8085:8085"
     depends_on:
-      - postgres_back
+      - acmesky_db
     command: sh -c "sleep 5 && ./main"
 
-  postgres_back:
+  acmesky_db:
     image: postgres:latest
     container_name: postgres
     restart: always

@@ -1,33 +1,49 @@
 version: '3.9'
 
 services:
-    postgres_back:
+    acmesky_db:
         image: postgres:latest
-        container_name: postgres_back
+        container_name: acmesky_db
         restart: always
         environment:
             POSTGRES_USER: pg
             POSTGRES_PASSWORD: pass 
-            POSTGRES_HOST: postgres_back 
+            POSTGRES_HOST: acmesky_db 
             POSTGRES_DB: acmesky 
         ports:
             - "5432:5432"
         volumes:
           - ./src/ACMESky/ACMESkyDB/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-    acme-frontend:
+    acmesky_frontend:
         build: ./src/ACMESky/ACMESkyWeb/frontend
         ports:
             - "8080:80"
 
-    acme-backend:
+    acmesky_backend:
         build: ./src/ACMESky/ACMESkyWeb/backend
         ports:
             - "3000:3000"
         environment:
             NODE_ENV: production
         depends_on:
-            - postgres_back
+            - acmesky_db
+
+    camunda_acmesky:
+        image: camunda/camunda-bpm-platform:wildfly-7.15.0
+        container_name: camunda_acmesky
+        ports: 
+            - 10000:8080
+            - 9990:9990
+        
+    camunda_workers:
+        build: ./src/ACMESky/camunda
+        container_name: camunda_workers
+        env_file: ./src/ACMESky/camunda/.env
+        environment:
+            - PYTHONHASHSEED=1
+        depends_on:
+            - acmesky_db
 
 
     national-airline:
