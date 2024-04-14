@@ -13,7 +13,7 @@ curl -X POST -F "upload=@/camunda_diagram/RegistrazioneInteresseUtente.bpmn" -F 
 curl -X POST -F "upload=@/camunda_diagram/VerificaGiornaliera.bpmn" -F "deployment-name=VerificaGiornaliera" -F "enable-duplicate-filtering=true" http://camunda_acmesky:8080/engine-rest/deployment/create
 
 echo "Waiting for acmesky_backend"
-while ! nc -z acmesky_backend 8080; do
+while ! nc -z acmesky_backend 3000; do
   sleep 0.1
 done
 echo "acmesky_backend is reachable"

@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 	"log"
-	// "os"
+	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/kocierik/ACMEsky/airlineService/models"
@@ -17,16 +17,13 @@ func Init() *gorm.DB {
 		log.Fatal("Error loading .env file")
 	}
 
-	USER := "pg"
-	PSW := "pass"
-	DB := "acmesky"
-	// HOST := "postgres_back"
-	// USER := os.Getenv("POSTGRES_USER")
-	// PSW := os.Getenv("POSTGRES_PASSWORD")
-	// DB := os.Getenv("POSTGRES_DB")
-	// HOST := os.Getenv("POSTGRES_HOST")
-	fmt.Print(USER, PSW, DB)
-	dbURL := fmt.Sprintf("postgres://%s:%s@postgres_back:5432/%s", USER, PSW, DB)
+	USER := os.Getenv("POSTGRES_USER")
+	PSW := os.Getenv("POSTGRES_PASSWORD")
+	DB := os.Getenv("POSTGRES_DB")
+	HOST := os.Getenv("POSTGRES_HOST")
+	PORT := os.Getenv("POSTGRES_PORT")
+
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", USER, PSW, HOST, PORT, DB)
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 

@@ -1,9 +1,15 @@
 version: '3.9'
 
+
+volumes:
+  acmesky_db_data:
+    driver: local
+  airline_db_data:
+    driver: local
+
 services:
     acmesky_db:
         image: postgres:latest
-        container_name: acmesky_db
         restart: always
         environment:
             POSTGRES_USER: pg
@@ -14,6 +20,7 @@ services:
             - "5432:5432"
         volumes:
           - ./src/ACMESky/ACMESkyDB/init.sql:/docker-entrypoint-initdb.d/init.sql
+          - acmesky_db_data:/var/lib/postgresql
 
     acmesky_frontend:
         build: ./src/ACMESky/ACMESkyWeb/frontend
@@ -30,7 +37,7 @@ services:
             - acmesky_db
 
     camunda_acmesky:
-        image: camunda/camunda-bpm-platform:wildfly-7.15.0
+        image: camunda/camunda-bpm-platform:latest
         container_name: camunda_acmesky
         ports: 
             - 10000:8080
@@ -45,9 +52,7 @@ services:
         depends_on:
             - acmesky_db
 
-
-    national-airline:
-        container_name: national-service
+    airline_service:
         build: ./src/airlineService
         env_file: ./src/airlineService/.env
         ports:
@@ -55,38 +60,36 @@ services:
         command: sh -c "sleep 5 && ./main"
         restart: always
         depends_on:
-          - db_airline
+          - airline_db
 
-    db_airline:
+    airline_db:
         image: postgres:latest
-        container_name: postgres-airline
         restart: always
         env_file: ./src/airlineService/.env
         ports:
           - "5433:5432"
         volumes:
           - ./src/airlineService/data.sql:/docker-entrypoint-initdb.d/data.sql
+          - airline_db_data:/var/lib/postgresql
 
-    frontend_bank:
+    bank_frontend:
         build: ./src/bankService/frontend/
         ports:
             - "8087:8087"
 
-    backend_bank:
+    bank_backend:
         build: ./src/bankService/backend/
         ports:
             - "3001:3001"
         environment:
             NODE_ENV: production
             
-#   Prontogram
     prontogram_frontend:
-        container_name: prontogram_frontend_
         build: ./src/prontogram/frontend
         ports:
             - "8089:8089"
         restart: always
-    # prontogram:
+    # prontogram_backend:
     #     container_name: prontogram_service_container
     #     build: ./src/Prontogram/back-end
     #     ports:
@@ -95,10 +98,7 @@ services:
     #     networks: 
     #         - acmesky
 
-
-#   Rent Service
-    rent-service-1:
-        container_name: rent_service_1
+    rent_service_1:
         build: ./src/rentService
         environment:
             - SERVICE_NAME=RentService1
@@ -111,8 +111,7 @@ services:
         restart: always
         # networks: 
         #     - acmesky
-    rent-service-2:
-        container_name: rent_service_2
+    rent_service_2:
         build: ./src/rentService
         environment:
             - SERVICE_NAME=RentService2
@@ -126,7 +125,6 @@ services:
         # networks: 
         #     - acmesky
 
-#   Geo distance service
     geodistance:
         container_name: geodistance_container
         build: ./src/geodistanceService
