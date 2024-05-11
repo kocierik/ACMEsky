@@ -14,13 +14,9 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/getTicket", h.GetTicketByID)
-	router.GET("/getFlights", h.GetFlights)
-	router.POST("/flights", h.CreateFlight)
+	router.GET("/flights", h.GetFlights)
+	router.GET("/airports", h.GetAirports)
 
-	log.Println("API is running!")
-	log.Println("EXAMPLE REQUEST: ")
-	log.Println("http://localhost:8085/getFlights?departure=AAA&arrival=BBB&departureDate=2023-12-25")
-	log.Println("http://localhost:8085/getTicket?id=1")
+	log.Println("AIRLINE SERVICE API is running!")
 	router.Run(":8085")
 }

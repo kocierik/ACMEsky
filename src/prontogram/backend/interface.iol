@@ -1,22 +1,26 @@
-type PostOfferRequest: void {
-    .sender: AuthenticatedUser
+type AddOfferRequest: void {
     .receiver_user_id: string
+    .code: string
     .content: string
 }
 
 type Offer: void {
+    .code: string
     .content: string
-    .data: string
 }
 
 type OfferList: void {
     .offers[0,*]: Offer
 }
 
+type UserId: void {
+    .id: string
+}
+
 interface IProntogramService
 {
 
     RequestResponse:
-        addOffer(PostOfferRequest)(Offer) throws UserNotFound(string) UserNotAuthorized(string),
-        getOffers()(OfferList) throws UserNotAuthorized(string)
+        addOffer(AddOfferRequest)(Offer)
+        getOffers(UserId)(OfferList)
 }

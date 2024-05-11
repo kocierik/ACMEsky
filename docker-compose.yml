@@ -1,6 +1,5 @@
 version: '3.9'
 
-
 volumes:
   acmesky_db_data:
     driver: local
@@ -15,7 +14,7 @@ services:
             POSTGRES_USER: pg
             POSTGRES_PASSWORD: pass 
             POSTGRES_HOST: acmesky_db 
-            POSTGRES_DB: acmesky 
+            POSTGRES_DB: acmesky
         ports:
             - "5432:5432"
         volumes:
@@ -33,6 +32,10 @@ services:
             - "3000:3000"
         environment:
             NODE_ENV: production
+            POSTGRES_USER: pg
+            POSTGRES_PASSWORD: pass 
+            POSTGRES_HOST: acmesky_db 
+            POSTGRES_DB: acmesky
         depends_on:
             - acmesky_db
 
@@ -69,7 +72,7 @@ services:
         ports:
           - "5433:5432"
         volumes:
-          - ./src/airlineService/data.sql:/docker-entrypoint-initdb.d/data.sql
+          - ./src/airlineService/data/init.sql:/docker-entrypoint-initdb.d/init.sql
           - airline_db_data:/var/lib/postgresql
 
     bank_frontend:
@@ -89,14 +92,14 @@ services:
         ports:
             - "8089:8089"
         restart: always
-    # prontogram_backend:
-    #     container_name: prontogram_service_container
-    #     build: ./src/Prontogram/back-end
-    #     ports:
-    #         - "8050:8000"
-    #     restart: always
-    #     networks: 
-    #         - acmesky
+
+    prontogram_backend:
+        build: ./src/prontogram/backend
+        environment:
+            - SERVICE_NAME=Prontogram
+        ports:
+            - "8050:8000"
+        restart: always
 
     rent_service_1:
         build: ./src/rentService
@@ -109,21 +112,6 @@ services:
                 soft: 65536
                 hard: 65536
         restart: always
-        # networks: 
-        #     - acmesky
-    rent_service_2:
-        build: ./src/rentService
-        environment:
-            - SERVICE_NAME=RentService2
-        ports:
-            - "8032:8032"
-        ulimits:
-            nofile:
-                soft: 65536
-                hard: 65536
-        restart: always
-        # networks: 
-        #     - acmesky
 
     geodistance:
         container_name: geodistance_container
@@ -133,5 +121,3 @@ services:
         ports:
             - "8040:8040"
         restart: always
-        # networks: 
-        #     - acmesky

@@ -66,11 +66,6 @@ async function getUserInterests(req: Request, res: Response) {
 const createUserInterest = async (req: Request, res: Response) => {
   const { user_id, departureLocation, arrivalLocation, departureDate, arrivalDate, maxPrice } = req.body;
 
-
-
-
-
-
   try {
     const result = await pool.query(
       'INSERT INTO user_interests (user_id, departure_location, arrival_location, departure_date, arrival_date, max_price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',

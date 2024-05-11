@@ -31,7 +31,7 @@ func Init() *gorm.DB {
 		log.Fatalln(err)
 	}
 
-	db.AutoMigrate(&models.Flight{}, &models.Ticket{})
+	db.AutoMigrate(&models.Flight{}, &models.Airport{})
 
 	return db
 }

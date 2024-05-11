@@ -13,14 +13,11 @@ inputPort ProntogramServicePort
             getOffers << {
                 template = "/api/offers"
                 method = "get"
-                statusCodes.UserNotAuthorized = 401
             }
             addOffer << {
                 template = "/api/offer"
                 method = "post"
-                statusCodes.UserNotAuthorized = 401
-                statusCodes.UserNotFound = 404
-            }
+            }   
         }
     }
     
@@ -33,22 +30,15 @@ init {
     global.inbox = {}
 }
 
-cset {
-    sid: AuthenticatedUser.sid
-}
-
 main {
 
     [
-        addOffer(SendOfferRequest)(Offer){
+        addOffer(AddOfferRequest)(Offer){
             with(Offer) {
                 .id = new;
-                .content = SendOfferRequest.content;
-                .sender_user_id = SendOfferRequest.sender.user_id;
-                .receiver_user_id = SendOfferRequest.receiver_user_id
-            }
-            if ( !is_defined( global.users.(Offer.receiver_user_id) ) ) {
-                throw (UserNotFound, Offer.receiver_user_id)
+                .content = AddOfferRequest.content;
+                .code = AddOfferRequest.code;
+                .receiver_user_id = AddOfferRequest.receiver_user_id
             }
             inbox -> global.inbox.(Offer.receiver_user_id)
             synchronized(inboxLock) {
@@ -61,16 +51,14 @@ main {
         }
     ]
     [
-        getOffers(AuthenticatedUser)(OfferList){
-            inbox -> global.inbox.(AuthenticatedUser.user_id)
+        getOffers(UserId)(OfferList){
+            inbox -> global.inbox.(UserId.id)
             synchronized(inboxLock) {
                 for( i = 0, i < #inbox, i++ ) {
                     if( is_defined(inbox[i])) {
                         OfferList.offers[#OfferList.offers] << inbox[i]
                     }
                 }
-                
-                // undef(global.inbox.(AuthenticatedUser.user_id))
             }
 
             valueToPrettyString@StringUtils(OfferList)( s )
