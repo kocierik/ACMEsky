@@ -1,5 +1,3 @@
-version: '3'
-
 services:
     prontogram:
         container_name: prontogram

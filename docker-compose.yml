@@ -1,5 +1,3 @@
-version: '3.9'
-
 volumes:
   acmesky_db_data:
     driver: local
