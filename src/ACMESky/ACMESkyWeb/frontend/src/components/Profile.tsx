@@ -9,46 +9,19 @@ interface IUserInterest {
   id: number;
   departure_location: string;
   arrival_location: string;
-  departure_date: Date;
-  arrival_date: Date;
+  from_date: Date;
+  to_date: Date;
   max_price: number;
 }
 
 function Profile() {
-  const [userData, setUserData] = useState<IUser | null>(null);
   const [userInterests, setUserInterests] = useState<IUserInterest[]>([]);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/getUser', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUserData(data);
-        } else {
-          console.error('Error fetching user data:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+  const userData: IUser = JSON.parse(localStorage.getItem('user') || '{}');
 
   useEffect(() => {
     const fetchUserInterests = async () => {
       try {
         const token = localStorage.getItem('token');
-        // const response = await fetch(`http://localhost:3000/getUser/1/interests`, {
         const response = await fetch(`http://localhost:3000/getUser/${userData?.id}/interests`, {
           method: 'GET',
           headers: {
@@ -71,7 +44,7 @@ function Profile() {
     if (userData?.id) {
       fetchUserInterests();
     }
-  }, [userData]);
+  }, [userData.id]);
 
   return (
     <div className="flex flex-col overflow-x-auto">
@@ -84,8 +57,8 @@ function Profile() {
                 <tr>
                   <th scope="col" className="px-6 py-4">Departure Location</th>
                   <th scope="col" className="px-6 py-4">Arrival Location</th>
-                  <th scope="col" className="px-6 py-4">Departure Date</th>
-                  <th scope="col" className="px-6 py-4">Arrival Date</th>
+                  <th scope="col" className="px-6 py-4">From Date</th>
+                  <th scope="col" className="px-6 py-4">To Date</th>
                   <th scope="col" className="px-6 py-4">Max Price</th>
                 </tr>
               </thead>
@@ -94,8 +67,8 @@ function Profile() {
                   <tr key={i} className="border-b border-neutral-200 dark:border-white/10">
                     <td className="whitespace-nowrap text-center py-4">{interest.departure_location}</td>
                     <td className="whitespace-nowrap text-center px-6 py-4">{interest.arrival_location}</td>
-                    <td className="whitespace-nowrap text-center px-6 py-4">{String(interest.departure_date)}</td>
-                    <td className="whitespace-nowrap text-center px-6 py-4">{String(interest.arrival_date)}</td>
+                    <td className="whitespace-nowrap text-center px-6 py-4">{String(interest.from_date)}</td>
+                    <td className="whitespace-nowrap text-center px-6 py-4">{String(interest.to_date)}</td>
                     <td className="whitespace-nowrap text-center px-6 py-4">{interest.max_price}</td>
                   </tr>
                 ))}

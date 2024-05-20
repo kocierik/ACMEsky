@@ -4,30 +4,31 @@ import Swal from 'sweetalert2';
 import { BASE_URL } from '../utils/const';
 
 interface FormData {
-  departureLocation: string;
-  arrivalLocation: string;
-  departureDate: string;
-  arrivalDate: string;
+  departure_location: string;
+  arrival_location: string;
+  from_date: string;
+  to_date: string;
   maxPrice: number;
   user_id: string;
 }
 
 const TripForm = () => {
-  const [departureLocation, setDepartureLocation] = useState('');
-  const [arrivalLocation, setArrivalLocation] = useState('');
-  const [departureDate, setDepartureDate] = useState('');
-  const [arrivalDate, setArrivalDate] = useState('');
+  const [departure_location, setDepartureLocation] = useState('');
+  const [arrival_location, setArrivalLocation] = useState('');
+  const [from_date, setFromDate] = useState('');
+  const [to_date, setToDate] = useState('');
   const [maxPrice, setMaxPrice] = useState(0);
   const navigate = useNavigate(); 
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData: FormData = {
-      departureLocation,
-      user_id: localStorage.getItem("user_id")!,
-      arrivalLocation,
-      departureDate,
-      arrivalDate,
+      user_id: user.id,
+      departure_location: departure_location,
+      arrival_location: arrival_location,
+      from_date: from_date,
+      to_date: to_date,
       maxPrice
     };
 
@@ -79,20 +80,21 @@ const TripForm = () => {
                 <div className="lg:col-span-2">
                   <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
                     <div className="md:col-span-5">
-                      <label htmlFor="departureLocation">Volo di partenza</label>
-                      <input type="text" name="departureLocation" id="departureLocation" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={departureLocation} onChange={(e) => setDepartureLocation(e.target.value)} placeholder="Milano" />
+                      <label htmlFor="departure_location">Volo di partenza</label>
+                      <input type="text" name="departure_location" id="departure_location" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={departure_location} onChange={(e) => setDepartureLocation(e.target.value)} placeholder="Milano" />
                     </div>
                     <div className="md:col-span-5">
-                      <label htmlFor="arrivalLocation">Volo di arrivo</label>
-                      <input type="text" name="arrivalLocation" id="arrivalLocation" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={arrivalLocation} onChange={(e) => setArrivalLocation(e.target.value)} placeholder="Bologna" />
+                      <label htmlFor="arrival_location">Volo di arrivo</label>
+                      <input type="text" name="arrival_location" id="arrival_location" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={arrival_location} onChange={(e) => setArrivalLocation(e.target.value)} placeholder="Bologna" />
                     </div>
                     <div className="md:col-span-3">
-                      <label htmlFor="departureDate">Data di partenza</label>
-                      <input type="date" name="departureDate" id="departureDate" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} placeholder="" />
+                      {/* range */}
+                      <label htmlFor="from_date">Partenza dal</label>
+                      <input type="date" name="from_date" id="from_date" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={from_date} onChange={(e) => setFromDate(e.target.value)} placeholder="" />
                     </div>
                     <div className="md:col-span-2">
-                      <label htmlFor="arrivalDate">Data di arrivo</label>
-                      <input type="date" name="arrivalDate" id="arrivalDate" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={arrivalDate} onChange={(e) => setArrivalDate(e.target.value)} placeholder="" />
+                      <label htmlFor="to_date">Arrivo fino a</label>
+                      <input type="date" name="to_date" id="to_date" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={to_date} onChange={(e) => setToDate(e.target.value)} placeholder="" />
                     </div>
                     <div className="md:col-span-1">
                       <label htmlFor="maxPrice">Limite prezzo</label>

@@ -42,7 +42,7 @@ function Login() {
       console.log(data)
       if (data.token) {
         localStorage.setItem("token", data.token)
-        localStorage.setItem("user_id", data.id)
+        localStorage.setItem("user", JSON.stringify({email: email, id: data.id}))
       }
       Swal.fire({
         title: "Ottimo!",
