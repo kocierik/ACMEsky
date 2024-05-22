@@ -20,6 +20,12 @@ async function getUserInterests(req: Request, res: Response<UserInterest[] | { e
 }
 
 const createUserInterest = async (req: Request, res: Response<UserInterest | { error: string }>) => {
+  
+  
+
+  
+
+  return
   const userInterest: UserInterest = req.body;
 
   try {

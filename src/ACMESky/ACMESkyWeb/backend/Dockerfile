@@ -12,7 +12,7 @@ RUN npm install
 
 # Copia i file di configurazione
 COPY tsconfig.json ./
-COPY . ./src/
+COPY ./src/ ./src/
 
 # Compila i file TypeScript
 RUN npm run build
