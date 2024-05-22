@@ -9,10 +9,11 @@ CREATE TABLE airports (
 
 CREATE TABLE flights (
     id SERIAL PRIMARY KEY,
+    flight_code VARCHAR(10) NOT NULL,
     departure_location VARCHAR(3) NOT NULL,
     arrival_location VARCHAR(3) NOT NULL,
-    departure_datetime TIMESTAMP NOT NULL,
-    arrival_datetime TIMESTAMP NOT NULL,
+    departure_date TIMESTAMP NOT NULL,
+    arrival_date TIMESTAMP NOT NULL,
     airline_name VARCHAR(100) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (departure_location) REFERENCES airports(code),
@@ -43,16 +44,16 @@ VALUES
     ('PRG', 'Prague Airport', 'Prague', '50.1008, 14.26');
 
 
-INSERT INTO flights (departure_location, arrival_location, departure_datetime, arrival_datetime, airline_name, price)
+INSERT INTO flights (flight_code, departure_location, arrival_location, departure_date, arrival_date, airline_name, price)
 VALUES
-    ('AMS', 'FRA', '2024-05-11 08:00:00', '2024-05-11 10:00:00', 'Sample Airlines', 250.00),
-    ('BRU', 'LHR', '2024-05-19 08:00:00', '2024-05-19 10:00:00', 'Sample Airlines', 250.00),
-    ('LHR', 'FRA', '2024-06-11 08:00:00', '2024-06-11 10:00:00', 'Sample Airlines', 250.00),
-    ('FRA', 'LHR', '2024-06-19 08:00:00', '2024-06-19 10:00:00', 'Sample Airlines', 250.00),
-    ('LHR', 'FRA', '2024-07-11 08:00:00', '2024-07-11 10:00:00', 'Sample Airlines', 250.00),
-    ('FRA', 'LHR', '2024-07-19 08:00:00', '2024-07-19 10:00:00', 'Sample Airlines', 250.00),
-    ('LHR', 'FRA', '2024-08-11 08:00:00', '2024-08-11 10:00:00', 'Sample Airlines', 250.00),
-    ('FRA', 'LHR', '2024-08-19 08:00:00', '2024-08-19 10:00:00', 'Sample Airlines', 250.00),
-    ('LHR', 'FRA', '2024-09-11 08:00:00', '2024-09-11 10:00:00', 'Sample Airlines', 250.00),
-    ('FRA', 'LHR', '2024-09-19 08:00:00', '2024-09-19 10:00:00', 'Sample Airlines', 250.00);
+    ('SA413', 'AMS', 'FRA', '2024-05-11 08:00:00', '2024-05-11 10:00:00', 'Sample Airlines', 250.00),
+    ('SA213', 'FRA', 'BRU', 'LHR', '2024-05-19 08:00:00', '2024-05-19 10:00:00', 'Sample Airlines', 250.00),
+    ('SA765', 'LHR', 'FRA', '2024-06-11 08:00:00', '2024-06-11 10:00:00', 'Sample Airlines', 250.00),
+    ('SA643', 'FRA', 'LHR', '2024-06-19 08:00:00', '2024-06-19 10:00:00', 'Sample Airlines', 250.00),
+    ('SA183', 'LHR', 'FRA', '2024-07-11 08:00:00', '2024-07-11 10:00:00', 'Sample Airlines', 250.00),
+    ('SA832', 'FRA', 'LHR', '2024-07-19 08:00:00', '2024-07-19 10:00:00', 'Sample Airlines', 250.00),
+    ('SA128', 'LHR', 'FRA', '2024-08-11 08:00:00', '2024-08-11 10:00:00', 'Sample Airlines', 250.00),
+    ('SA111', 'FRA', 'LHR', '2024-08-19 08:00:00', '2024-08-19 10:00:00', 'Sample Airlines', 250.00),
+    ('SA114', 'LHR', 'FRA', '2024-09-11 08:00:00', '2024-09-11 10:00:00', 'Sample Airlines', 250.00),
+    ('SA112', 'FRA', 'LHR', '2024-09-19 08:00:00', '2024-09-19 10:00:00', 'Sample Airlines', 250.00);
 

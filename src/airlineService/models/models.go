@@ -14,10 +14,11 @@ type Airport struct {
 
 type Flight struct {
 	ID                int       `json:"id"`
+	FlightCode        string    `json:"flightCode"`
 	DepartureLocation string    `json:"departureLocation"`
 	ArrivalLocation   string    `json:"arrivalLocation"`
-	DepartureDatetime time.Time `json:"departureTime"`
-	ArrivalDatetime   time.Time `json:"arrivalTime"`
+	DepartureDate 	  time.Time `json:"departureDate"`
+	ArrivalDate   	  time.Time `json:"arrivalDate"`
 	AirlineName       string    `json:"airlineName"`
 	Price             float64   `json:"price"`
 }

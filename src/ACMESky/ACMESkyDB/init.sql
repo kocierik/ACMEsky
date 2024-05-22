@@ -16,13 +16,15 @@ CREATE TABLE user_interests (
 );
 
 CREATE TABLE offers (
-    flight_code VARCHAR(100) PRIMARY KEY,
+    flight_code VARCHAR(10) PRIMARY KEY,
     activation_code VARCHAR(100) NOT NULL,
     departure_location VARCHAR(100) NOT NULL,
     arrival_location VARCHAR(100) NOT NULL,
     departure_date DATE NOT NULL,
     arrival_date DATE NOT NULL,
+    airline_name VARCHAR(100) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     valid BOOLEAN NOT NULL
 );
 
