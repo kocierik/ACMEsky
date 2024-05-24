@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1bz9q6q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.3.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1bz9q6q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="67a40fb" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0" camunda:diagramRelationId="a873e802-3e51-4e8b-98ac-f8917027831d">
   <bpmn:collaboration id="register-user-interest">
     <bpmn:participant id="acmesky" name="ACMESky" processRef="user-interest-registration" />
     <bpmn:participant id="user" name="Utente" />
-    <bpmn:messageFlow id="Flow_0vm4ru3" sourceRef="send-result" targetRef="user" />
     <bpmn:messageFlow id="Flow_1k3gnru" sourceRef="user" targetRef="receive-interest-event" />
   </bpmn:collaboration>
-  <bpmn:process id="user-interest-registration" name="Registrazione interesse dell&#39;utente" isExecutable="true">
+  <bpmn:process id="user-interest-registration" name="Registrazione interesse dell&#39;utente" isExecutable="true" camunda:historyTimeToLive="P365D">
     <bpmn:laneSet id="LaneSet_0s5q9sq">
       <bpmn:lane id="Lane_0dbf3r7" name="Registrazione interessi">
         <bpmn:flowNodeRef>register-interest</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_1qffons" name="Portale Web">
-        <bpmn:flowNodeRef>send-result</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>register-interest-completed</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>receive-interest-event</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:sequenceFlow id="Flow_1mezc6e" sourceRef="register-interest" targetRef="send-result" />
-    <bpmn:sequenceFlow id="Flow_05wxt2e" sourceRef="send-result" targetRef="register-interest-completed" />
+    <bpmn:endEvent id="register-interest-completed" name="Registrazione interesse completata">
+      <bpmn:incoming>Flow_1ak8jud</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="receive-interest-event" name="Ricezione di un interesse">
+      <bpmn:outgoing>Flow_12j1hpk</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0gz2849" messageRef="Message_1t0shz2" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_12j1hpk" sourceRef="receive-interest-event" targetRef="register-interest" />
+    <bpmn:sequenceFlow id="Flow_1ak8jud" sourceRef="register-interest" targetRef="register-interest-completed" />
     <bpmn:serviceTask id="register-interest" name="Registra interesse dell&#39;utente" camunda:type="external" camunda:topic="register-interest">
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -26,25 +31,8 @@
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_12j1hpk</bpmn:incoming>
-      <bpmn:outgoing>Flow_1mezc6e</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ak8jud</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sendTask id="send-result" name="Invio esito operazione registrazione interesse" camunda:type="external" camunda:topic="send-result">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="operation_result">${operation_result}</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1mezc6e</bpmn:incoming>
-      <bpmn:outgoing>Flow_05wxt2e</bpmn:outgoing>
-    </bpmn:sendTask>
-    <bpmn:endEvent id="register-interest-completed" name="Registrazione interesse completata">
-      <bpmn:incoming>Flow_05wxt2e</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:startEvent id="receive-interest-event" name="Ricezione di un interesse">
-      <bpmn:outgoing>Flow_12j1hpk</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0gz2849" messageRef="Message_1t0shz2" />
-    </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_12j1hpk" sourceRef="receive-interest-event" targetRef="register-interest" />
   </bpmn:process>
   <bpmn:message id="Message_1t0shz2" name="interest" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -58,26 +46,6 @@
       <bpmndi:BPMNShape id="Lane_0dbf3r7_di" bpmnElement="Lane_0dbf3r7" isHorizontal="true">
         <dc:Bounds x="159" y="52" width="570" height="125" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_12j1hpk_di" bpmnElement="Flow_12j1hpk">
-        <di:waypoint x="288" y="240" />
-        <di:waypoint x="350" y="240" />
-        <di:waypoint x="350" y="150" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05wxt2e_di" bpmnElement="Flow_05wxt2e">
-        <di:waypoint x="540" y="230" />
-        <di:waypoint x="612" y="230" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1mezc6e_di" bpmnElement="Flow_1mezc6e">
-        <di:waypoint x="400" y="110" />
-        <di:waypoint x="490" y="110" />
-        <di:waypoint x="490" y="190" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_191vikn_di" bpmnElement="register-interest">
-        <dc:Bounds x="300" y="70" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_00stusb_di" bpmnElement="send-result">
-        <dc:Bounds x="440" y="190" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0apxjgt_di" bpmnElement="register-interest-completed">
         <dc:Bounds x="612" y="212" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -87,16 +55,25 @@
       <bpmndi:BPMNShape id="Event_0b3ry7i_di" bpmnElement="receive-interest-event">
         <dc:Bounds x="252" y="222" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="234" y="192" width="76" height="27" />
+          <dc:Bounds x="166" y="226" width="76" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_191vikn_di" bpmnElement="register-interest">
+        <dc:Bounds x="370" y="70" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_12j1hpk_di" bpmnElement="Flow_12j1hpk">
+        <di:waypoint x="270" y="222" />
+        <di:waypoint x="270" y="110" />
+        <di:waypoint x="370" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ak8jud_di" bpmnElement="Flow_1ak8jud">
+        <di:waypoint x="420" y="150" />
+        <di:waypoint x="420" y="230" />
+        <di:waypoint x="612" y="230" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0ky43s8_di" bpmnElement="user" isHorizontal="true">
         <dc:Bounds x="129" y="400" width="600" height="60" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0vm4ru3_di" bpmnElement="Flow_0vm4ru3">
-        <di:waypoint x="490" y="270" />
-        <di:waypoint x="490" y="400" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1k3gnru_di" bpmnElement="Flow_1k3gnru">
         <di:waypoint x="270" y="400" />
         <di:waypoint x="270" y="258" />

@@ -5,14 +5,11 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from camunda.external_task.external_task_worker import ExternalTaskWorker
 
 from camundaworkers.workers.register_user_interest.tasks import TASKS as register_user_interest_TASKS
-from camundaworkers.workers.last_minute_notifications.tasks import TASKS as last_minute_notifications_TASKS
-from camundaworkers.workers.daily_flight_check.tasks import TASKS as daily_fligh_check_TASKS
-from camundaworkers.workers.buy_offer.tasks import TASKS as buy_offer_TASKS
+# from camundaworkers.workers.last_minute_notifications.tasks import TASKS as last_minute_notifications_TASKS
+# from camundaworkers.workers.daily_flight_check.tasks import TASKS as daily_fligh_check_TASKS
+# from camundaworkers.workers.buy_offer.tasks import TASKS as buy_offer_TASKS
 
-from .model.flight import Base
-from .model.base import create_sql_engine
-
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.logger import get_logger
 
 # configuration for the Client
 default_config = {
@@ -28,14 +25,11 @@ default_config = {
 def main():
     logger = get_logger()
     logger.info("Workers started")
-    BASE_URL = "http://camunda_acmesky:8080/engine-rest"
+    BASE_URL = "http://camunda:8080/engine-rest"
 
     """ Topics associated to the tasks
     """
-    TOPICS = register_user_interest_TASKS + last_minute_notifications_TASKS + daily_fligh_check_TASKS + buy_offer_TASKS
-
-    # Setup PostgreSQL
-    Base.metadata.create_all(create_sql_engine())
+    TOPICS = register_user_interest_TASKS # + last_minute_notifications_TASKS + daily_fligh_check_TASKS + buy_offer_TASKS
 
     """
     Creation and execution of different threads, one per worker/topic

@@ -1,9 +1,9 @@
 from camundaworkers.model.purchase_process_information import PurchaseProcessInformation
 from camundaworkers.model.flight import Flight, OfferMatch, PaymentTransaction
-from camundaworkers.model.base import create_sql_engine
+from camundaworkers.utils.db import create_sql_engine
 from camunda.external_task.external_task import ExternalTask, TaskResult
 from sqlalchemy.orm.session import sessionmaker
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.logger import get_logger
 from camundaworkers.model.offer_purchase_data import OfferPurchaseData
 
 import pika

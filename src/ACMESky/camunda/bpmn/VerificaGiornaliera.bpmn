@@ -15,7 +15,7 @@
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0opm8t8" sourceRef="flight-company" targetRef="TextAnnotation_054purg" />
   </bpmn:collaboration>
-  <bpmn:process id="daily-flight-check" name="Verifica giornaliera" isExecutable="true">
+  <bpmn:process id="daily-flight-check" name="Verifica giornaliera" isExecutable="true" camunda:historyTimeToLive="P365D">
     <bpmn:startEvent id="trigger-daily-check-event" name="24 h">
       <bpmn:extensionElements>
         <camunda:executionListener event="end">

@@ -1,12 +1,11 @@
 from camunda.external_task.external_task import ExternalTask, TaskResult
 import json
-from camundaworkers.model.base import create_sql_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import DatabaseError
 
+from camundaworkers.utils.db import create_sql_engine
 from camundaworkers.model.flight import Flight
-
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.logger import get_logger
 
 
 def save_last_minute_offers(task: ExternalTask) -> TaskResult:

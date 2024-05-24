@@ -2,7 +2,7 @@ from camundaworkers.model.purchase_process_information import PurchaseProcessInf
 from camunda.external_task.external_task import ExternalTask, TaskResult
 import pika
 import json
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.logger import get_logger
 
 
 def send_wrong_offer_code(task: ExternalTask) -> TaskResult:

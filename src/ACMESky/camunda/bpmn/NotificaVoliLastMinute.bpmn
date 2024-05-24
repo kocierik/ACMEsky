@@ -10,7 +10,7 @@
     <bpmn:messageFlow id="Flow_02eal55" sourceRef="notify-user-via-prontogram" targetRef="prontogram" />
     <bpmn:messageFlow id="Flow_1lrgrj1" sourceRef="prontogram" targetRef="notify-user-via-prontogram" />
   </bpmn:collaboration>
-  <bpmn:process id="notify-last-minute-flights" name="Notifica voli last minute" isExecutable="true">
+  <bpmn:process id="notify-last-minute-flights" name="Notifica voli last minute" isExecutable="true" camunda:historyTimeToLive="P365D">
     <bpmn:startEvent id="receive-last-minute-offers" name="Ricezione offerte last minute">
       <bpmn:outgoing>Flow_1ja8jn4</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0fhgp0x" messageRef="Message_1bbhyc8" />

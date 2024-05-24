@@ -1,8 +1,8 @@
 from camunda.external_task.external_task import ExternalTask, TaskResult
 from sqlalchemy.orm import sessionmaker
 
-from camundaworkers.logger import get_logger
-from camundaworkers.model.base import create_sql_engine
+from camundaworkers.utils.logger import get_logger
+from camundaworkers.utils.db import create_sql_engine
 
 from camundaworkers.model.flight import OfferMatch
 

@@ -37,9 +37,9 @@ services:
         depends_on:
             - acmesky_db
 
-    camunda_acmesky:
+    camunda:
         image: camunda/camunda-bpm-platform:latest
-        container_name: camunda_acmesky
+        container_name: camunda
         ports: 
             - 10000:8080
             - 9990:9990
@@ -49,7 +49,11 @@ services:
         container_name: camunda_workers
         env_file: ./src/ACMESky/camunda/.env
         environment:
-            - PYTHONHASHSEED=1
+            PYTHONHASHSEED: 1
+            POSTGRES_USER: pg
+            POSTGRES_PASSWORD: pass 
+            POSTGRES_HOST: acmesky_db 
+            POSTGRES_DB: acmesky
         depends_on:
             - acmesky_db
 

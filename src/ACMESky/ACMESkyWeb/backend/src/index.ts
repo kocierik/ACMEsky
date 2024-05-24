@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { registerUser, loginUser } from './routes/auth';
-import { createUserInterest, getUserInterests } from './routes/user';
+import { createUserInterest, getUserInterests } from './routes/user_interest';
 import { checkOfferAvailability } from './routes/offer';
 
 dotenv.config();

@@ -2,7 +2,7 @@ import json
 from camundaworkers.model.purchase_process_information import PurchaseProcessInformation
 import pika
 from camunda.external_task.external_task import ExternalTask, TaskResult
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.logger import get_logger
 
 
 def send_wrong_payment_status(task: ExternalTask) -> TaskResult:

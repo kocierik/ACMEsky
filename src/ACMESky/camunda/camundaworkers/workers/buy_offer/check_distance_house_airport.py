@@ -9,8 +9,8 @@ from sqlalchemy.orm import sessionmaker
 
 from camundaworkers.model.offer_purchase_data import OfferPurchaseData
 from camundaworkers.model.flight import OfferMatch
-from camundaworkers.model.base import create_sql_engine
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.db import create_sql_engine
+from camundaworkers.utils.logger import get_logger
 
 
 def check_distance_house_airport(task: ExternalTask) -> TaskResult:

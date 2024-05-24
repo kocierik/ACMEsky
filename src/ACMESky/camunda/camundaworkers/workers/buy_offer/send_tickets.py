@@ -1,8 +1,8 @@
 from camunda.external_task.external_task import ExternalTask, TaskResult
 from sqlalchemy.orm.session import sessionmaker
-from camundaworkers.model.base import create_sql_engine
+from camundaworkers.utils.db import create_sql_engine
 
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.logger import get_logger
 
 import json
 import pika

@@ -28,7 +28,7 @@
     <bpmn:messageFlow id="Flow_05n4e08" sourceRef="payment-provider" targetRef="payment-request" />
     <bpmn:messageFlow id="Flow_08bqgyk" name="Invio URL del Provider Pagamenti" sourceRef="payment-request" targetRef="user" />
   </bpmn:collaboration>
-  <bpmn:process id="buy-offer-for-user" name="Acquisto offerta" isExecutable="true">
+  <bpmn:process id="buy-offer-for-user" name="Acquisto offerta" isExecutable="true" camunda:historyTimeToLive="P365D">
     <bpmn:laneSet id="LaneSet_1wnt39r">
       <bpmn:lane id="Lane_16qfq77" name="Pagamenti">
         <bpmn:flowNodeRef>buy-flights</bpmn:flowNodeRef>

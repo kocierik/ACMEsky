@@ -1,10 +1,7 @@
 from sqlalchemy import Column, String, DateTime, Float, UniqueConstraint, Integer, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime, timezone
-
-Base = declarative_base()
-
+from camundaworkers.utils.db import Base
 
 class Flight(Base):
     __tablename__ = 'flights'

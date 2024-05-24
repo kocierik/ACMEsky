@@ -2,7 +2,7 @@ import json
 
 from camunda.external_task.external_task import ExternalTask, TaskResult
 
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.logger import get_logger
 from camundaworkers.model.offer_purchase_data import OfferPurchaseData
 
 from os import environ

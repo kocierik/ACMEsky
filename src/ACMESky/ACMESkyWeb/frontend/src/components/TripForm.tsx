@@ -8,7 +8,7 @@ interface FormData {
   arrival_location: string;
   from_date: string;
   to_date: string;
-  maxPrice: number;
+  max_price: number;
   user_id: string;
 }
 
@@ -17,7 +17,7 @@ const TripForm = () => {
   const [arrival_location, setArrivalLocation] = useState('');
   const [from_date, setFromDate] = useState('');
   const [to_date, setToDate] = useState('');
-  const [maxPrice, setMaxPrice] = useState(0);
+  const [max_price, setMaxPrice] = useState(0);
   const navigate = useNavigate(); 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -29,7 +29,7 @@ const TripForm = () => {
       arrival_location: arrival_location,
       from_date: from_date,
       to_date: to_date,
-      maxPrice
+      max_price
     };
 
     try {
@@ -97,8 +97,8 @@ const TripForm = () => {
                       <input type="date" name="to_date" id="to_date" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={to_date} onChange={(e) => setToDate(e.target.value)} placeholder="" />
                     </div>
                     <div className="md:col-span-1">
-                      <label htmlFor="maxPrice">Limite prezzo</label>
-                      <input type="number" name="maxPrice" id="maxPrice" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} placeholder="1000" />
+                      <label htmlFor="max_price">Limite prezzo</label>
+                      <input type="number" name="max_price" id="max_price" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={max_price} onChange={(e) => setMaxPrice(Number(e.target.value))} placeholder="1000" />
                     </div>
                   </div>
                 </div>

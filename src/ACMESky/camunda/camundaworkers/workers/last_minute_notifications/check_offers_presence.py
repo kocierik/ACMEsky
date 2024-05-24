@@ -5,10 +5,10 @@ import javaobj.v2 as javaobj
 import json
 from hashlib import sha256
 
-from camundaworkers.logger import get_logger
-from camundaworkers.utils import *
+from camundaworkers.utils.logger import get_logger
+from camundaworkers.utils.utils import *
 
-from camundaworkers.model.base import create_sql_engine
+from camundaworkers.utils.db import create_sql_engine
 from camundaworkers.model.flight import *
 from sqlalchemy.orm import sessionmaker
 

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import pool from "../utils/db"
 import { UserInterest } from '../interfaces';
+import { send_string_as_correlate_message } from '../utils/camunda_rest_client';
 
 dotenv.config();
 
@@ -19,27 +20,17 @@ async function getUserInterests(req: Request, res: Response<UserInterest[] | { e
   }
 }
 
+// Funzione per creare un nuovo interesse chiamando il servizio Camunda
 const createUserInterest = async (req: Request, res: Response<UserInterest | { error: string }>) => {
-  
-  
-
-  
-
-  return
   const userInterest: UserInterest = req.body;
 
-  try {
-    const result = await pool.query(
-      'INSERT INTO user_interests (user_id, departure_location, arrival_location, from_date, to_date, max_price) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [...Object.values(userInterest)]
-    );
-
-    const newUserInterest = result.rows[0];
-    res.status(201).json(newUserInterest);
-  } catch (error) {
-    console.error('Error creating user interest:', error);
-    res.status(500).json({ error: 'Internal server error' });
+  // Send message with the interest to Camunda
+  const response = await send_string_as_correlate_message("interest", [["interest", JSON.stringify(userInterest)]]);
+  if (response.status >= 300) {
+    console.error(`Fail to send message to Camunda. Response: ${await response.text()}`)
   }
-};
+
+  return res.status(response.status).json(userInterest);
+}
 
 export { getUserInterests, createUserInterest };

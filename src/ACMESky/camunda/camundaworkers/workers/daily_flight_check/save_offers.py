@@ -1,10 +1,10 @@
 from camunda.external_task.external_task import ExternalTask, TaskResult
 
-from camundaworkers.model.base import create_sql_engine
+from camundaworkers.utils.db import create_sql_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import DatabaseError
 
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.logger import get_logger
 
 from camundaworkers.model.flight import Flight
 

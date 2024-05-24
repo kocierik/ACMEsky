@@ -2,7 +2,7 @@ from camunda.external_task.external_task import ExternalTask, TaskResult
 import requests
 import json
 
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.logger import get_logger
 
 
 def notify_user_via_prontogram(task: ExternalTask) -> TaskResult:

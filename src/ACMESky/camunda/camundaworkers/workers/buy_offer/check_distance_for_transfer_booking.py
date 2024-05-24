@@ -1,6 +1,6 @@
 from camunda.external_task.external_task import ExternalTask, TaskResult
 
-from camundaworkers.logger import get_logger
+from camundaworkers.utils.logger import get_logger
 import json
 
 
