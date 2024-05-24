@@ -7,8 +7,8 @@ CREATE TABLE users (
 CREATE TABLE user_interests (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    departure_location VARCHAR(100) NOT NULL,
-    arrival_location VARCHAR(100) NOT NULL,
+    departure_location CHAR(3) NOT NULL,
+    arrival_location CHAR(3) NOT NULL,
     from_date DATE NOT NULL,
     to_date DATE NOT NULL,
     max_price DECIMAL(10, 2) NOT NULL,
@@ -18,8 +18,8 @@ CREATE TABLE user_interests (
 CREATE TABLE offers (
     flight_code VARCHAR(10) PRIMARY KEY,
     activation_code VARCHAR(100) NOT NULL,
-    departure_location VARCHAR(100) NOT NULL,
-    arrival_location VARCHAR(100) NOT NULL,
+    departure_location CHAR(3) NOT NULL,
+    arrival_location CHAR(3) NOT NULL,
     departure_date DATE NOT NULL,
     arrival_date DATE NOT NULL,
     airline_name VARCHAR(100) NOT NULL,

@@ -27,7 +27,12 @@ func (h handler) GetAirports(c *gin.Context) {
 	airport_codes := c.QueryArray("codes")
 	
 	var airports []models.Airport
-	h.DB.Where("code IN (?)", airport_codes).Find(&airports)
+	// If airport_codes is empty, return all airports
+	if len(airport_codes) == 0 {
+		h.DB.Find(&airports)
+	} else {
+		h.DB.Where("code IN (?)", airport_codes).Find(&airports)
+	}
 
 	c.JSON(http.StatusOK, airports)
 }

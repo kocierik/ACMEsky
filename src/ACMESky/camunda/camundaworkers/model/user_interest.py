@@ -24,8 +24,8 @@ class UserInterest(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey(User.id))
-    departure_location = Column(String(100))
-    arrival_location = Column(String(100))
+    departure_location = Column(String(3))
+    arrival_location = Column(String(3))
     from_date = Column(DateTime)
     to_date = Column(DateTime)
     max_price = Column(Float)
@@ -33,7 +33,6 @@ class UserInterest(Base):
     __table_args__ = (
         UniqueConstraint('user_id', 'departure_location', 'arrival_location', 'from_date', 'to_date', 'max_price'),
     )
-
 
     def __str__(self) -> str:
         return f"""UserInterest(

@@ -13,9 +13,13 @@ func main() {
 	h := handlers.New(DB)
 
 	router := gin.Default()
+	router.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Next()
+	})
 
-	router.GET("/flights", h.GetFlights)
 	router.GET("/airports", h.GetAirports)
+	router.GET("/flights", h.GetFlights)
 
 	log.Println("AIRLINE SERVICE API is running!")
 	router.Run(":8085")

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import Swal from 'sweetalert2';
-import { BASE_URL } from '../utils/const';
+import { BASE_URL, BASE_AIRLINE_URL } from '../utils/const';
 
 interface FormData {
   departure_location: string;
@@ -12,7 +12,15 @@ interface FormData {
   user_id: string;
 }
 
+interface IAirport {
+  code: string;
+  name: string;
+  city: string;
+  coordinates: string;
+}
+
 const TripForm = () => {
+  const [airports, setAirports] = useState<IAirport[]>([]);
   const [departure_location, setDepartureLocation] = useState('');
   const [arrival_location, setArrivalLocation] = useState('');
   const [from_date, setFromDate] = useState('');
@@ -20,6 +28,19 @@ const TripForm = () => {
   const [max_price, setMaxPrice] = useState(0);
   const navigate = useNavigate(); 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+  useEffect(() => {
+    const fetchAirports = async () => {
+      try {
+        const response = await fetch(`${BASE_AIRLINE_URL}/airports`);
+        const data: IAirport[] = await response.json();
+        setAirports(data);
+      } catch (error) {
+        console.error('Error fetching airports:', error);
+      }
+    };
+    fetchAirports();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -81,11 +102,21 @@ const TripForm = () => {
                   <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
                     <div className="md:col-span-5">
                       <label htmlFor="departure_location">Volo di partenza</label>
-                      <input type="text" name="departure_location" id="departure_location" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={departure_location} onChange={(e) => setDepartureLocation(e.target.value)} placeholder="Milano" />
+                      <select name="departure_location" id="departure_location" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={departure_location} onChange={(e) => setDepartureLocation(e.target.value)}>
+                        <option value="">Seleziona</option>
+                        {airports.map((airport) => (
+                          <option key={airport.code} value={airport.code}>{airport.code} - {airport.name}</option>
+                        ))}
+                      </select>
                     </div>
                     <div className="md:col-span-5">
                       <label htmlFor="arrival_location">Volo di arrivo</label>
-                      <input type="text" name="arrival_location" id="arrival_location" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={arrival_location} onChange={(e) => setArrivalLocation(e.target.value)} placeholder="Bologna" />
+                      <select name="arrival_location" id="arrival_location" className="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value={arrival_location} onChange={(e) => setArrivalLocation(e.target.value)}>
+                        <option value="">Seleziona</option>
+                        {airports.map((airport) => (
+                          <option key={airport.code} value={airport.code}>{airport.code} - {airport.name}</option>
+                        ))}
+                      </select>
                     </div>
                     <div className="md:col-span-3">
                       {/* range */}

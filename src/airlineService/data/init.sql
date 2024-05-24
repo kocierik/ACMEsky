@@ -1,7 +1,6 @@
 
 CREATE TABLE airports (
-    id SERIAL PRIMARY KEY,
-    code VARCHAR(3) NOT NULL,
+    code CHAR(3) NOT NULL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
     coordinates VARCHAR(100) NOT NULL
@@ -9,9 +8,9 @@ CREATE TABLE airports (
 
 CREATE TABLE flights (
     id SERIAL PRIMARY KEY,
-    flight_code VARCHAR(10) NOT NULL,
-    departure_location VARCHAR(3) NOT NULL,
-    arrival_location VARCHAR(3) NOT NULL,
+    flight_code CHAR(5) NOT NULL,
+    departure_location CHAR(3) NOT NULL,
+    arrival_location CHAR(3) NOT NULL,
     departure_date TIMESTAMP NOT NULL,
     arrival_date TIMESTAMP NOT NULL,
     airline_name VARCHAR(100) NOT NULL,
@@ -25,7 +24,7 @@ INSERT INTO airports (code, name, city, coordinates)
 VALUES
     ('AMS', 'Amsterdam Airport Schiphol', 'Amsterdam', '52.30860137939453, 4.763889312744141'),
     ('FRA', 'Frankfurt Airport', 'Frankfurt', '50.033333, 8.570556'),
-    ('LHR', 'London Heathfield', 'London', '51.47779846191406, -0.46194122245788574');
+    ('LHR', 'London Heathfield', 'London', '51.47779846191406, -0.46194122245788574'),
     ('CDG', 'Charles de Gaulle Airport', 'Paris', '49.01279830932617, 2.55'),
     ('TXL', 'Berlin Tegel Airport', 'Berlin', '52.5597, 13.2877'),
     ('ROM', 'Rome Ciampino Airport', 'Rome', '41.7994, 12.5949'),
@@ -47,7 +46,7 @@ VALUES
 INSERT INTO flights (flight_code, departure_location, arrival_location, departure_date, arrival_date, airline_name, price)
 VALUES
     ('SA413', 'AMS', 'FRA', '2024-05-11 08:00:00', '2024-05-11 10:00:00', 'Sample Airlines', 250.00),
-    ('SA213', 'FRA', 'BRU', 'LHR', '2024-05-19 08:00:00', '2024-05-19 10:00:00', 'Sample Airlines', 250.00),
+    ('SA213', 'FRA', 'BRU', '2024-05-19 08:00:00', '2024-05-19 10:00:00', 'Sample Airlines', 250.00),
     ('SA765', 'LHR', 'FRA', '2024-06-11 08:00:00', '2024-06-11 10:00:00', 'Sample Airlines', 250.00),
     ('SA643', 'FRA', 'LHR', '2024-06-19 08:00:00', '2024-06-19 10:00:00', 'Sample Airlines', 250.00),
     ('SA183', 'LHR', 'FRA', '2024-07-11 08:00:00', '2024-07-11 10:00:00', 'Sample Airlines', 250.00),

@@ -5,8 +5,7 @@ import (
 )
 
 type Airport struct {
-	ID          int    `json:"id"`
-	Code        string `json:"code"`
+	Code        string `json:"code" gorm:"primary_key"`
 	Name        string `json:"name"`
 	City        string `json:"city"`
 	Coordinates string `json:"coordinates"`
