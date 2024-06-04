@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kocierik/ACMEsky/airlineService/models"
+	"github.com/kocierik/ACMEsky/airlineService/services"
 	"gorm.io/gorm"
 )
 
@@ -37,8 +38,6 @@ func (h handler) GetAirports(c *gin.Context) {
 	c.JSON(http.StatusOK, airports)
 }
 
-// TODO: pull 5 random new flights every 10 minutes from random_flights.json file
-// TODO: OR random generation
 func (h handler) CreateFlight(c *gin.Context) {
 	var flight models.Flight
 	if err := c.ShouldBindJSON(&flight); err != nil {
@@ -51,6 +50,9 @@ func (h handler) CreateFlight(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create flight"})
 		return
 	}
+
+	// Notifica ACMESKY
+	services.FlightNotifier(flight)
 
 	c.JSON(http.StatusCreated, flight)
 }

@@ -1,14 +1,10 @@
 FROM golang:latest
 
-WORKDIR /app
-
-COPY go.mod .
-COPY go.sum .
+COPY .env /app/src/.env
+COPY src/ /app/src
+WORKDIR /app/src/
 
 RUN go mod download
-
-COPY . .
-
 RUN go build -o main .
 
 EXPOSE 8085

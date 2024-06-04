@@ -21,13 +21,14 @@ async function getUserInterests(req: Request, res: Response<UserInterest[] | { e
 }
 
 // Funzione per creare un nuovo interesse chiamando il servizio Camunda
-const createUserInterest = async (req: Request, res: Response<UserInterest | { error: string }>) => {
+async function createUserInterest(req: Request, res: Response<UserInterest | { error: string }>) {
   const userInterest: UserInterest = req.body;
 
   // Send message with the interest to Camunda
   const response = await send_string_as_correlate_message("interest", [["interest", JSON.stringify(userInterest)]]);
   if (response.status >= 300) {
     console.error(`Fail to send message to Camunda. Response: ${await response.text()}`)
+    return res.status(response.status).json({ error: 'Errore durante la creazione dell\'interesse' });
   }
 
   return res.status(response.status).json(userInterest);

@@ -20,6 +20,7 @@ func main() {
 
 	router.GET("/airports", h.GetAirports)
 	router.GET("/flights", h.GetFlights)
+	router.POST("/flights", h.CreateFlight)
 
 	log.Println("AIRLINE SERVICE API is running!")
 	router.Run(":8085")
