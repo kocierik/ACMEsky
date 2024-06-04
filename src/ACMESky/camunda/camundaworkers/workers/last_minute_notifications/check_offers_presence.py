@@ -9,7 +9,7 @@ from camundaworkers.utils.logger import get_logger
 from camundaworkers.utils.utils import *
 
 from camundaworkers.utils.db import create_sql_engine
-from camundaworkers.model.flight import *
+from ACMESky.camunda.camundaworkers.model.offer import *
 from sqlalchemy.orm import sessionmaker
 
 from pymongo import MongoClient

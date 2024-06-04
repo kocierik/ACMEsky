@@ -20,7 +20,7 @@
     <bpmn:serviceTask id="save-last-minute-offers" name="Salvataggio offerte last minute" camunda:type="external" camunda:topic="save-last-minute-offers">
       <bpmn:extensionElements>
         <camunda:inputOutput>
-          <camunda:inputParameter name="offers">${offers}</camunda:inputParameter>
+          <camunda:inputParameter name="flights">${flights}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ja8jn4</bpmn:incoming>
@@ -97,7 +97,7 @@
       <bpmn:incoming>Flow_091r9gv</bpmn:incoming>
     </bpmn:endEvent>
   </bpmn:process>
-  <bpmn:message id="Message_1bbhyc8" name="offers" />
+  <bpmn:message id="Message_1bbhyc8" name="flights" />
   <bpmn:error id="Error_19vetds" name="offer_saving_failed" errorCode="offer_saving_failed" camunda:errorMessage="Error inserting rows in the database" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="last-minute-notifications">

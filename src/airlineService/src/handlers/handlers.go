@@ -52,7 +52,7 @@ func (h handler) CreateFlight(c *gin.Context) {
 	}
 
 	// Notifica ACMESKY
-	services.FlightNotifier(flight)
+	services.FlightNotifier([]models.Flight{flight})
 
 	c.JSON(http.StatusCreated, flight)
 }

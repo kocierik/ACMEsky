@@ -15,7 +15,7 @@ CREATE TABLE user_interests (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE offers (
+CREATE TABLE flights (
     flight_code VARCHAR(10) NOT NULL,
     activation_code VARCHAR(100) NOT NULL,
     departure_location CHAR(3) NOT NULL,

@@ -6,10 +6,10 @@ import { Flight, Offer } from '../interfaces';
 dotenv.config();
 
 async function newFlight(req: Request, res: Response<Offer | { error: string }>) {
-  const flight: Flight = req.body;
+  const flights: [Flight] = req.body;
 
   // Send message with the interest to Camunda
-  const response = await send_string_as_correlate_message("offers", [["offers", JSON.stringify(flight)]]);
+  const response = await send_string_as_correlate_message("flights", [["flights", JSON.stringify(flights)]]);
   if (response.status >= 300) {
     console.error(`Fail to send message to Camunda. Response: ${await response.text()}`)
     return res.status(response.status).json({ error: 'Errore durante la creazione dell\'offerta' });

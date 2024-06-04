@@ -3,13 +3,14 @@ package services
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/kocierik/ACMEsky/airlineService/models"
 	"net/http"
 	"os"
+
+	"github.com/kocierik/ACMEsky/airlineService/models"
 )
 
-func FlightNotifier(flight models.Flight) {
-	flightJson, err := json.Marshal(flight)
+func FlightNotifier(flights []models.Flight) {
+	flightsJson, err := json.Marshal(flights)
 	if err != nil {
 		panic(err)
 	}
@@ -19,9 +20,9 @@ func FlightNotifier(flight models.Flight) {
 		acmesky_be = "http://localhost:3000/newFlight"
 	}
 
-	req, err := http.NewRequest("POST", acmesky_be, bytes.NewBuffer(flightJson))
+	req, err := http.NewRequest("POST", acmesky_be, bytes.NewBuffer(flightsJson))
 	if err != nil {
-		panic(err)	
+		panic(err)
 	}
 
 	resp, err := http.DefaultClient.Do(req)
@@ -35,4 +36,3 @@ func FlightNotifier(flight models.Flight) {
 		panic("Failed to notify user")
 	}
 }
-

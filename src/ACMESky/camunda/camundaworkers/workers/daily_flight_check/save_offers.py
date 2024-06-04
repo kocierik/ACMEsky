@@ -6,7 +6,7 @@ from sqlalchemy.exc import DatabaseError
 
 from camundaworkers.utils.logger import get_logger
 
-from camundaworkers.model.flight import Flight
+from ACMESky.camunda.camundaworkers.model.offer import Flight
 
 from json import loads
 

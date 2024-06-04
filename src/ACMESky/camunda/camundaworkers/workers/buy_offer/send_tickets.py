@@ -7,7 +7,7 @@ from camundaworkers.utils.logger import get_logger
 import json
 import pika
 
-from camundaworkers.model.flight import OfferMatch
+from ACMESky.camunda.camundaworkers.model.offer import OfferMatch
 from camundaworkers.model.offer_purchase_data import OfferPurchaseData
 
 

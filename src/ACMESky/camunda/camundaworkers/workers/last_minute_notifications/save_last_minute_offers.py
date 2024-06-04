@@ -4,34 +4,31 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import DatabaseError
 
 from camundaworkers.utils.db import create_sql_engine
-from camundaworkers.model.flight import Flight
+from ACMESky.camunda.camundaworkers.model.offer import Offer
 from camundaworkers.utils.logger import get_logger
 
 
 def save_last_minute_offers(task: ExternalTask) -> TaskResult:
     """
-    Saves the new flights received from a Flight Company on PostgreSQL
+    Saves the new offers received from a Flight Company on PostgreSQL
     :param task: the current task instance
     :return: the task result
     """
     logger = get_logger()
     logger.info("save_last_minute_offers")
 
+    offers = [Offer.from_dict(f) for f in json.loads(task.get_variable("flights"))]
+
     # Connects to PostgreSQL
     Session = sessionmaker(bind=create_sql_engine())
     session = Session()
-    flights_dict = json.loads(task.get_variable("offers"))
-    company_name = str(task.get_variable("company_name"))
-
-    # Creates the list of flights to save
-    flights = [Flight.from_dict(f, company_name) for f in flights_dict]
 
     try:
-        session.add_all(flights)
+        session.add_all(offers)
         session.commit()
-        logger.info(f"Added {len(flights)} flights to acmesky_db")
+        logger.info(f"Added {len(offers)} offers to acmesky_db")
     except DatabaseError:
-        logger.warn(f"Database error while inserting {len(flights)}")
+        logger.warn(f"Database error while inserting {len(offers)}")
         return task.bpmn_error(error_code='offer_saving_failed',
                                error_message='Error inserting rows in the database')
 

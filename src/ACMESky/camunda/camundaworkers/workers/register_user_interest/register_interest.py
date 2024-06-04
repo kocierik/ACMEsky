@@ -19,8 +19,7 @@ def register_interest(task: ExternalTask) -> TaskResult:
     user_interest_dict = json.loads(task.get_variable("interest"))
     user_interest = UserInterest.from_dict(user_interest_dict)
 
-    """ Connection and save on PostgreSQL
-    """
+    # Connection and save on PostgreSQL
     Session = sessionmaker(bind=create_sql_engine())
     session = Session()
 
