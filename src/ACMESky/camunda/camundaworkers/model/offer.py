@@ -7,53 +7,31 @@ class Offer(Base):
     __tablename__ = 'offers'
 
     @staticmethod
-    def from_dict(flight_dict: dict):
+    def from_dict(flight_id: str, user_id: str):
         """
-        Create a Offer object starting from data contained in a dictionary related to a flight
-        :param flight_dict: a dictionary which contains the flight data
+        Create a Offer object starting from the flight_id and the user_id
+        :param flight_id: the id of the flight
+        :param user_id: the id of the user
         :return: a Offer object
         """
         return Offer(
-            id=flight_dict.get('id'),
-            flight_code=flight_dict.get('flightCode'),
-            departure_location=flight_dict.get('departureLocation'),
-            arrival_location=flight_dict.get('arrivalLocation'),
-            departure_date=flight_dict.get('departureDate'),
-            arrival_date=flight_dict.get('arrivalDate'),
-            airline_name=flight_dict.get('airlineName'),
-            price=flight_dict.get('price'),
-            created_at= datetime.now(),
-            valid=True,
-            activation_code=str(uuid.uuid4())
+            flight_id=flight_id,
+            user_id=user_id,
+            activation_code=str(uuid.uuid4())[:8],
+            payed=False
         )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    flight_code = Column(String(10), nullable=False)
-    activation_code = Column(String(100), nullable=False)
-    departure_location = Column(String(3), nullable=False)
-    arrival_location = Column(String(3), nullable=False)
-    departure_date = Column(DateTime, nullable=False)
-    arrival_date = Column(DateTime, nullable=False)
-    airline_name = Column(String(100), nullable=False)
-    price = Column(Float, nullable=False)
-    created_at = Column(DateTime, nullable=False)
-    valid = Column(Boolean, nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint('flight_code'),
-    )
+    user_id = Column(Integer, ForeignKey(User.id))
+    flight_id = Column(String(100))
+    activation_code = Column(String(8))
+    payed = Column(Boolean)
 
     def __str__(self) -> str:
         return f"""Offer(
-                id: {self.id},
-                flight_code: {self.flight_code},
+                id: {self.id}, 
+                user_id: {self.user_id}, 
+                flight_id: {self.flight_id},
                 activation_code: {self.activation_code},
-                departure_location: {self.departure_location},
-                arrival_location: {self.arrival_location},
-                departure_date: {self.departure_date},
-                arrival_date: {self.arrival_date},
-                airline_name: {self.airline_name},
-                price: {self.price},
-                created_at: {self.created_at},
-                valid: {self.valid}
+                payed: {self.payed}
                 )"""

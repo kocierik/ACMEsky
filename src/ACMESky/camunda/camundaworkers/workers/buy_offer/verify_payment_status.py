@@ -1,6 +1,6 @@
 from sqlalchemy.orm.session import sessionmaker
 from camundaworkers.utils.db import create_sql_engine
-from ACMESky.camunda.camundaworkers.model.offer import PaymentTransaction
+from camundaworkers.model.offer import PaymentTransaction
 from camunda.external_task.external_task import ExternalTask, TaskResult
 from camundaworkers.utils.logger import get_logger
 

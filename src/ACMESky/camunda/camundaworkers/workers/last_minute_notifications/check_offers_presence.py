@@ -1,20 +1,16 @@
-from datetime import date
-from camunda.external_task.external_task import ExternalTask, TaskResult
-import base64
-import javaobj.v2 as javaobj
 import json
-from hashlib import sha256
+import base64
+from datetime import date
+import javaobj.v2 as javaobj
+from sqlalchemy.orm import sessionmaker
+from camunda.external_task.external_task import ExternalTask, TaskResult
 
 from camundaworkers.utils.logger import get_logger
-from camundaworkers.utils.utils import *
+from camundaworkers.utils.utils import comeback_match_offer_interest, departure_match_offer_interest, find_min_cost_flights_couple
 
 from camundaworkers.utils.db import create_sql_engine
-from ACMESky.camunda.camundaworkers.model.offer import *
-from sqlalchemy.orm import sessionmaker
-
-from pymongo import MongoClient
-from bson import ObjectId
-from os import environ
+from camundaworkers.model.offer import Offer
+from camundaworkers.model.flight import Flight
 
 
 def check_offers_presence(task: ExternalTask) -> TaskResult:
@@ -39,38 +35,30 @@ def check_offers_presence(task: ExternalTask) -> TaskResult:
     - 5: key "interests"
     - 6: value of "interests"
     """
-    deserialized_user = javaobj.loads(base64.b64decode(task.get_variable('user'))).dump().split('\n')
+    deserialized_user_interests = javaobj.loads(base64.b64decode(task.get_variable('user_interests'))).dump().split('\n')
 
-    prontogram_username = str(deserialized_user[4].replace('\t', ''))
-    user_interests = json.loads(deserialized_user[6].replace('\t', '').replace('\'', '\"'))
-
-    offer_codes = []
-    offer_infos = []
-
-    # Connecting to MongoDB
-    username = environ.get("MONGO_USER", "root")
-    password = environ.get("MONGO_PASSWORD", "password")
-    client = MongoClient(f"mongodb://{username}:{password}@acmesky_mongo:27017")
-    acmesky_db = client['ACMESky']
-    interests_collection = acmesky_db['interests']
+    user_id = str(deserialized_user_interests[4].replace('\t', ''))
+    user_interests = json.loads(deserialized_user_interests[6].replace('\t', '').replace('\'', '\"'))
 
     # Creating a session for PostgreSQL
     Session = sessionmaker(bind=create_sql_engine())
     session = Session()
 
-    # Retrieving all the previously savedflights
-    offers = session.query(Flight).all()
+    # Retrieving all the previously saved flights
+    flights = session.query(Flight).all()
 
-    """
-    Checks if some interest matches one or more flights.
-    For each interest, the offers are filtered since we are looking for some matching offers: if we can find any, 
-    then we get those with the minimum cost and later check if the total cost is above the maximum cost requested 
-    by the user. If all goes well, a new OfferMatch with an unique offer code is created and saved into PostgreSQL.
+    offers: list[Offer] = []
+
+    # TODO: Check if there is a match between the user interests and the flights
+    # TODO: Create an Offer and save it on PostgreSQL and add it to the offers list
+    for interest in user_interests:
+        pass
+
     """
     for interest in user_interests:
         # Filter using the utils function departure_match_offer_interest and comeback_match_offer_interest
-        outbound_flights = list(filter(lambda flight: departure_match_offer_interest(flight, interest), offers))
-        comeback_flights = list(filter(lambda flight: comeback_match_offer_interest(flight, interest), offers))
+        outbound_flights = list(filter(lambda flight: departure_match_offer_interest(flight, interest), flights))
+        comeback_flights = list(filter(lambda flight: comeback_match_offer_interest(flight, interest), flights))
         # logger.info(f"outbound_flights: {outbound_flights}")
         # logger.info(f"comeback_flights: {comeback_flights}")
 
@@ -120,11 +108,10 @@ def check_offers_presence(task: ExternalTask) -> TaskResult:
                         Costo offerta: {(min_outbound_flight.cost + min_comeback_flight.cost)} €.
                         """
                     )
+    """
 
     session.commit()
     logger.info(f"Offer codes: {offer_codes}")
     return task.complete(global_variables={
-        'offer_codes': json.dumps(offer_codes),
-        'offer_infos': json.dumps(offer_infos),
-        'prontogram_username': prontogram_username
+        "offers": offers
     })

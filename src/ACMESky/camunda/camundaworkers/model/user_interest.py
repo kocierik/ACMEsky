@@ -29,18 +29,18 @@ class UserInterest(Base):
     from_date = Column(DateTime)
     to_date = Column(DateTime)
     max_price = Column(Float)
-    
+
     __table_args__ = (
         UniqueConstraint('user_id', 'departure_location', 'arrival_location', 'from_date', 'to_date', 'max_price'),
     )
 
     def __str__(self) -> str:
         return f"""UserInterest(
-                id: {self.id}, 
-                user_id: {self.user_id}, 
+                id: {self.id},
+                user_id: {self.user_id},
                 departure_location: {self.departure_location},
                 arrival_location: {self.arrival_location},
-                from_date: {self.from_date}, 
-                to_date: {self.to_date}, 
+                from_date: {self.from_date},
+                to_date: {self.to_date},
                 max_price: {self.max_price}
                 )"""

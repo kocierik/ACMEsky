@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_11uorba" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.3.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_11uorba" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="b2addad" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0" camunda:diagramRelationId="ee6dd3b0-bc75-430f-985a-030dc60295c0">
   <bpmn:collaboration id="last-minute-notifications">
     <bpmn:participant id="acmesky" name="ACMESky" processRef="notify-last-minute-flights" />
     <bpmn:participant id="flight-company" name="Compagnia aerea" />
     <bpmn:participant id="prontogram" name="ProntoGram" />
     <bpmn:participant id="user" name="Utente" />
-    <bpmn:messageFlow id="Flow_0fc3s5k" sourceRef="flight-company" targetRef="receive-last-minute-offers" />
+    <bpmn:messageFlow id="Flow_0fc3s5k" sourceRef="flight-company" targetRef="receive-last-minute-flights" />
     <bpmn:messageFlow id="Flow_0b5j9qq" name="Messaggio con codice offerta" sourceRef="prontogram" targetRef="user" />
     <bpmn:messageFlow id="Flow_02eal55" sourceRef="notify-user-via-prontogram" targetRef="prontogram" />
     <bpmn:messageFlow id="Flow_1lrgrj1" sourceRef="prontogram" targetRef="notify-user-via-prontogram" />
   </bpmn:collaboration>
   <bpmn:process id="notify-last-minute-flights" name="Notifica voli last minute" isExecutable="true" camunda:historyTimeToLive="P365D">
-    <bpmn:startEvent id="receive-last-minute-offers" name="Ricezione offerte last minute">
+    <bpmn:startEvent id="receive-last-minute-flights" name="Ricezione voli last minute">
       <bpmn:outgoing>Flow_1ja8jn4</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0fhgp0x" messageRef="Message_1bbhyc8" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1ja8jn4" sourceRef="receive-last-minute-offers" targetRef="save-last-minute-offers" />
+    <bpmn:sequenceFlow id="Flow_1ja8jn4" sourceRef="receive-last-minute-flights" targetRef="save-last-minute-flights" />
     <bpmn:sequenceFlow id="Flow_091r9gv" sourceRef="notify-offers-to-users" targetRef="receive-last-minute-offers-completed" />
-    <bpmn:serviceTask id="save-last-minute-offers" name="Salvataggio offerte last minute" camunda:type="external" camunda:topic="save-last-minute-offers">
+    <bpmn:serviceTask id="save-last-minute-flights" name="Salvataggio voli last minute" camunda:type="external" camunda:topic="save-last-minute-flights">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="flights">${flights}</camunda:inputParameter>
@@ -27,8 +27,8 @@
       <bpmn:outgoing>Flow_0agva7c</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0azgdjm" sourceRef="offer-saving-failure" targetRef="receive-last-minute-offers-failed" />
-    <bpmn:sequenceFlow id="Flow_0agva7c" sourceRef="save-last-minute-offers" targetRef="retrieve-user-interests" />
-    <bpmn:boundaryEvent id="offer-saving-failure" name="Fallimento nel salvataggio" attachedToRef="save-last-minute-offers">
+    <bpmn:sequenceFlow id="Flow_0agva7c" sourceRef="save-last-minute-flights" targetRef="retrieve-user-interests" />
+    <bpmn:boundaryEvent id="offer-saving-failure" name="Fallimento nel salvataggio" attachedToRef="save-last-minute-flights">
       <bpmn:outgoing>Flow_0azgdjm</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_1ao7gof" errorRef="Error_19vetds" camunda:errorMessageVariable="Error inserting rows in the database" />
     </bpmn:boundaryEvent>
@@ -44,7 +44,7 @@
     <bpmn:subProcess id="notify-offers-to-users" name="Notifica presenza offerte agli utenti">
       <bpmn:incoming>Flow_0rs1xvz</bpmn:incoming>
       <bpmn:outgoing>Flow_091r9gv</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics camunda:collection="#{users}" camunda:elementVariable="user" />
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="#{users_interests}" camunda:elementVariable="user_interests" />
       <bpmn:startEvent id="notify-users-for-offers-start-event" name="Verifica offerte per il k-esimo utente">
         <bpmn:outgoing>Flow_1veajlh</bpmn:outgoing>
       </bpmn:startEvent>
@@ -60,16 +60,16 @@
       <bpmn:sequenceFlow id="Flow_1veajlh" sourceRef="notify-users-for-offers-start-event" targetRef="check-offers-presence" />
       <bpmn:sequenceFlow id="Flow_1vuna2x" sourceRef="check-offers-presence" targetRef="offers-presence-start-gateway" />
       <bpmn:sequenceFlow id="Flow_0dt1vhx" name="Sì" sourceRef="offers-presence-start-gateway" targetRef="notify-user-via-prontogram">
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${offer_codes != '[]'}</bpmn:conditionExpression>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${offers != '[]'}</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:sequenceFlow id="Flow_1lu6og9" sourceRef="notify-user-via-prontogram" targetRef="offers-presence-end-gateway" />
       <bpmn:sequenceFlow id="Flow_03zklof" name="No" sourceRef="offers-presence-start-gateway" targetRef="offers-presence-end-gateway">
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${offer_codes == '[]'}</bpmn:conditionExpression>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${offers == '[]'}</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:serviceTask id="check-offers-presence" name="Controllo presenza offerte last minute" camunda:type="external" camunda:topic="check-offers-presence">
         <bpmn:extensionElements>
           <camunda:inputOutput>
-            <camunda:inputParameter name="user">${user}</camunda:inputParameter>
+            <camunda:inputParameter name="user_interests">${user_interests}</camunda:inputParameter>
           </camunda:inputOutput>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1veajlh</bpmn:incoming>
@@ -104,35 +104,15 @@
       <bpmndi:BPMNShape id="Participant_1fpm23o_di" bpmnElement="acmesky" isHorizontal="true">
         <dc:Bounds x="180" y="52" width="1360" height="250" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0rs1xvz_di" bpmnElement="Flow_0rs1xvz">
-        <di:waypoint x="680" y="177" />
-        <di:waypoint x="730" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0agva7c_di" bpmnElement="Flow_0agva7c">
-        <di:waypoint x="490" y="177" />
-        <di:waypoint x="580" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0azgdjm_di" bpmnElement="Flow_0azgdjm">
-        <di:waypoint x="490" y="119" />
-        <di:waypoint x="490" y="95" />
-        <di:waypoint x="522" y="95" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_091r9gv_di" bpmnElement="Flow_091r9gv">
-        <di:waypoint x="1410" y="177" />
-        <di:waypoint x="1472" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ja8jn4_di" bpmnElement="Flow_1ja8jn4">
-        <di:waypoint x="298" y="177" />
-        <di:waypoint x="390" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_11cqgag_di" bpmnElement="receive-last-minute-offers">
+      <bpmndi:BPMNShape id="Event_11cqgag_di" bpmnElement="receive-last-minute-flights">
         <dc:Bounds x="262" y="159" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="239" y="129" width="83" height="27" />
+          <dc:Bounds x="247" y="129" width="68" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1wvb2n1_di" bpmnElement="save-last-minute-offers">
+      <bpmndi:BPMNShape id="Activity_1wvb2n1_di" bpmnElement="save-last-minute-flights">
         <dc:Bounds x="390" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1gd0pyo_di" bpmnElement="retrieve-user-interests">
         <dc:Bounds x="580" y="137" width="100" height="80" />
@@ -146,43 +126,6 @@
       <bpmndi:BPMNShape id="Activity_058igjb_di" bpmnElement="notify-offers-to-users" isExpanded="true">
         <dc:Bounds x="730" y="77" width="680" height="200" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0ikez8c_di" bpmnElement="Flow_0ikez8c">
-        <di:waypoint x="1315" y="177" />
-        <di:waypoint x="1342" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0u1nazj_di" bpmnElement="Flow_0u1nazj">
-        <di:waypoint x="1248" y="217" />
-        <di:waypoint x="1360" y="217" />
-        <di:waypoint x="1360" y="195" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03zklof_di" bpmnElement="Flow_03zklof">
-        <di:waypoint x="1050" y="152" />
-        <di:waypoint x="1050" y="120" />
-        <di:waypoint x="1290" y="120" />
-        <di:waypoint x="1290" y="152" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1032" y="133" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1lu6og9_di" bpmnElement="Flow_1lu6og9">
-        <di:waypoint x="1230" y="177" />
-        <di:waypoint x="1265" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0dt1vhx_di" bpmnElement="Flow_0dt1vhx">
-        <di:waypoint x="1075" y="177" />
-        <di:waypoint x="1130" y="177" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1098" y="159" width="12" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1vuna2x_di" bpmnElement="Flow_1vuna2x">
-        <di:waypoint x="960" y="177" />
-        <di:waypoint x="1025" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1veajlh_di" bpmnElement="Flow_1veajlh">
-        <di:waypoint x="806" y="177" />
-        <di:waypoint x="860" y="177" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1hunt5p_di" bpmnElement="notify-users-for-offers-start-event">
         <dc:Bounds x="770" y="159" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -216,6 +159,43 @@
           <dc:Bounds x="1189" y="242" width="84" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1veajlh_di" bpmnElement="Flow_1veajlh">
+        <di:waypoint x="806" y="177" />
+        <di:waypoint x="860" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vuna2x_di" bpmnElement="Flow_1vuna2x">
+        <di:waypoint x="960" y="177" />
+        <di:waypoint x="1025" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dt1vhx_di" bpmnElement="Flow_0dt1vhx">
+        <di:waypoint x="1075" y="177" />
+        <di:waypoint x="1130" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1098" y="159" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lu6og9_di" bpmnElement="Flow_1lu6og9">
+        <di:waypoint x="1230" y="177" />
+        <di:waypoint x="1265" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03zklof_di" bpmnElement="Flow_03zklof">
+        <di:waypoint x="1050" y="152" />
+        <di:waypoint x="1050" y="120" />
+        <di:waypoint x="1290" y="120" />
+        <di:waypoint x="1290" y="152" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1032" y="133" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u1nazj_di" bpmnElement="Flow_0u1nazj">
+        <di:waypoint x="1248" y="217" />
+        <di:waypoint x="1360" y="217" />
+        <di:waypoint x="1360" y="195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ikez8c_di" bpmnElement="Flow_0ikez8c">
+        <di:waypoint x="1315" y="177" />
+        <di:waypoint x="1342" y="177" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_096bi7u_di" bpmnElement="receive-last-minute-offers-completed">
         <dc:Bounds x="1472" y="159" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -228,6 +208,27 @@
           <dc:Bounds x="405" y="106" width="70" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ja8jn4_di" bpmnElement="Flow_1ja8jn4">
+        <di:waypoint x="298" y="177" />
+        <di:waypoint x="390" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_091r9gv_di" bpmnElement="Flow_091r9gv">
+        <di:waypoint x="1410" y="177" />
+        <di:waypoint x="1472" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0azgdjm_di" bpmnElement="Flow_0azgdjm">
+        <di:waypoint x="490" y="119" />
+        <di:waypoint x="490" y="95" />
+        <di:waypoint x="522" y="95" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0agva7c_di" bpmnElement="Flow_0agva7c">
+        <di:waypoint x="490" y="177" />
+        <di:waypoint x="580" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rs1xvz_di" bpmnElement="Flow_0rs1xvz">
+        <di:waypoint x="680" y="177" />
+        <di:waypoint x="730" y="177" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0l2oyz5_di" bpmnElement="flight-company" isHorizontal="true">
         <dc:Bounds x="160" y="430" width="440" height="60" />
       </bpmndi:BPMNShape>

@@ -4,7 +4,7 @@ from camunda.external_task.external_task import ExternalTask, TaskResult
 from sqlalchemy.orm.session import sessionmaker
 from camundaworkers.utils.logger import get_logger
 from camundaworkers.utils.db import create_sql_engine
-from ACMESky.camunda.camundaworkers.model.offer import OfferMatch
+from camundaworkers.model.offer import OfferMatch
 from camundaworkers.model.offer_purchase_data import OfferPurchaseData
 
 
