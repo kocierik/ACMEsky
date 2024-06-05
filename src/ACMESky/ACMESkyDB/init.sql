@@ -16,8 +16,7 @@ CREATE TABLE user_interests (
 );
 
 CREATE TABLE flights (
-    flight_code VARCHAR(10) NOT NULL,
-    activation_code VARCHAR(100) NOT NULL,
+    flight_code VARCHAR(10) NOT NULL PRIMARY KEY,
     departure_location CHAR(3) NOT NULL,
     arrival_location CHAR(3) NOT NULL,
     departure_date DATE NOT NULL,
@@ -26,14 +25,14 @@ CREATE TABLE flights (
     price DECIMAL(10, 2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     valid BOOLEAN NOT NULL,
-    PRIMARY KEY (flight_code, activation_code)
 );
 
-CREATE TABLE payments (
+CREATE TABLE offers (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    offer_id VARCHAR(100) NOT NULL,
+    flight_id VARCHAR(100) NOT NULL,
+    activation_code CHAR(8) NOT NULL,
     payed BOOLEAN NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (offer_id) REFERENCES offers(flight_code)
+    FOREIGN KEY (flight_id) REFERENCES flights(flight_code)
 );
