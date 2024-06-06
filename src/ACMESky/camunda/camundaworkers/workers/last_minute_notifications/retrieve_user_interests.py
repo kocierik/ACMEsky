@@ -18,22 +18,24 @@ def retrieve_user_interests(task: ExternalTask) -> TaskResult:
     Session = sessionmaker(bind=create_sql_engine())
     session = Session()
 
-    users_interests = {}
+    users_interests = []
     try:
         users_interests_list: list[UserInterest] = session.query(UserInterest).all()
 
-        # Store all the interests in a dictionary with the user_id as key and the list of interests as value
+        users_interests_dict = {}
         for user_interest in users_interests_list:
-            user_id = user_interest.user_id
-            if user_id in users_interests:
-                users_interests[user_id].append(user_interest.to_dict())
-            else:
-                users_interests[user_id] = [user_interest.to_dict()]
+            if user_interest.user_id not in users_interests_dict:
+                users_interests_dict[user_interest.user_id] = []
+            users_interests_dict[user_interest.user_id].append(user_interest.to_dict())
+
+        for user_id, interests in users_interests_dict.items():
+            users_interests.append({"user_id": user_id, "interests": interests})
+
     except Exception as e:
         logger.error("Database error while retrieving users interests. Error: %s", e)
         return task.bpmn_error(error_code='',
                                error_message='Error retrieving users interests from the database')
 
-    logger.info("There are %s users interest to be checked", len(users_interests))
+    logger.info("There are %s users to be checked", len(users_interests))
     logger.info("users_interests: %s", users_interests)
     return task.complete(global_variables={"users_interests": users_interests})
