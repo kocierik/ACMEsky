@@ -33,6 +33,7 @@ CREATE TABLE offers (
     interest_id INT NOT NULL,
     activation_code CHAR(8) NOT NULL,
     payed BOOLEAN NOT NULL,
+    bankURL VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (flight_id) REFERENCES flights(flight_code),

@@ -12,7 +12,6 @@ type Airport struct {
 }
 
 type Flight struct {
-	ID                int       `json:"id"`
 	FlightCode        string    `json:"flightCode"`
 	DepartureLocation string    `json:"departureLocation"`
 	ArrivalLocation   string    `json:"arrivalLocation"`

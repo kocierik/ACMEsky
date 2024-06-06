@@ -25,10 +25,15 @@ func FlightNotifier(flights []models.Flight) {
 		panic(err)
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
 		panic(err)
 	}
+
+	println("New Flight notified to ACMESKY")
 
 	defer resp.Body.Close()
 
@@ -36,3 +41,4 @@ func FlightNotifier(flights []models.Flight) {
 		panic("Failed to notify user")
 	}
 }
+

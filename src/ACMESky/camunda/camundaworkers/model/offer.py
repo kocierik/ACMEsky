@@ -24,6 +24,7 @@ class Offer(Base):
             interest_id=interest_id,
             activation_code=str(uuid.uuid4())[:8],
             payed=False,
+            bankURL="",
             created_at=datetime.datetime.utcnow()
         )
 
@@ -33,6 +34,7 @@ class Offer(Base):
     interest_id = Column(Integer, ForeignKey(UserInterest.id))
     activation_code = Column(String(8))
     payed = Column(Boolean)
+    bankURL = Column(String(255))
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     def __str__(self) -> str:
@@ -43,5 +45,6 @@ class Offer(Base):
                 interest_id: {self.interest_id},
                 activation_code: {self.activation_code},
                 payed: {self.payed},
+                bankURL: {self.bankURL},
                 created_at: {self.created_at}
                 )"""

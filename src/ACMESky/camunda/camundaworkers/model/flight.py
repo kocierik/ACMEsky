@@ -13,12 +13,12 @@ class Flight(Base):
         :return: a Flight object
         """
         return Flight(
-            flight_code=flight_dict.get('flight_code'),
-            departure_location=flight_dict.get('departure_location'),
-            arrival_location=flight_dict.get('arrival_location'),
-            departure_date=flight_dict.get('departure_date'),
-            arrival_date=flight_dict.get('arrival_date'),
-            airline_name=flight_dict.get('airline_name'),
+            flight_code=flight_dict.get('flightCode'),
+            departure_location=flight_dict.get('departureLocation'),
+            arrival_location=flight_dict.get('arrivalLocation'),
+            departure_date=flight_dict.get('departureDate'),
+            arrival_date=flight_dict.get('arrivalDate'),
+            airline_name=flight_dict.get('airlineName'),
             price=flight_dict.get('price'),
             valid=True
         )

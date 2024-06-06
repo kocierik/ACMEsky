@@ -7,8 +7,7 @@ CREATE TABLE airports (
 );
 
 CREATE TABLE flights (
-    id SERIAL PRIMARY KEY,
-    flight_code CHAR(5) NOT NULL,
+    flight_code CHAR(5) NOT NULL PRIMARY KEY,
     departure_location CHAR(3) NOT NULL,
     arrival_location CHAR(3) NOT NULL,
     departure_date TIMESTAMP NOT NULL,

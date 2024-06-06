@@ -23,12 +23,12 @@ class UserInterest(Base):
         )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey(User.id))
-    departure_location = Column(String(3))
-    arrival_location = Column(String(3))
-    from_date = Column(DateTime)
-    to_date = Column(DateTime)
-    max_price = Column(Float)
+    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+    departure_location = Column(String(3), nullable=False)
+    arrival_location = Column(String(3), nullable=False)
+    from_date = Column(DateTime, nullable=False)
+    to_date = Column(DateTime, nullable=False)
+    max_price = Column(Float, nullable=False)
 
     __table_args__ = (
         UniqueConstraint('user_id', 'departure_location', 'arrival_location', 'from_date', 'to_date', 'max_price'),
@@ -44,3 +44,14 @@ class UserInterest(Base):
                 to_date: {self.to_date},
                 max_price: {self.max_price}
                 )"""
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'departure_location': self.departure_location,
+            'arrival_location': self.arrival_location,
+            'from_date': self.from_date.isoformat(),
+            'to_date': self.to_date.isoformat(),
+            'max_price': self.max_price,
+        }
