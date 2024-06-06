@@ -20,7 +20,6 @@ class Flight(Base):
             arrival_date=flight_dict.get('arrival_date'),
             airline_name=flight_dict.get('airline_name'),
             price=flight_dict.get('price'),
-            created_at= datetime.datetime.now(),
             valid=True
         )
 
@@ -31,7 +30,6 @@ class Flight(Base):
     arrival_date = Column(DateTime)
     airline_name = Column(String(100))
     price = Column(Float)
-    created_at = Column(DateTime)
     valid = Column(Boolean)
 
 
@@ -44,6 +42,5 @@ class Flight(Base):
                 arrival_date: {self.arrival_date}, 
                 airline_name: {self.airline_name},
                 price: {self.price},
-                created_at: {self.created_at},
                 valid: {self.valid}
                 )"""

@@ -15,8 +15,12 @@ const checkOfferAvailability = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Offerta non trovata' });
     }
 
-    if (!offer.valid) {
-      return res.status(403).json({ error: 'Offerta non più disponibile' });
+    if (offer.payed) {
+      return res.status(403).json({ error: 'Offerta già pagata' });
+    }
+
+    if (offer.created_at < new Date(Date.now() - 24 * 60 * 60 * 1000)) {
+      return res.status(403).json({ error: 'Offerta scaduta' });
     }
 
     // Offerta trovata e disponibile

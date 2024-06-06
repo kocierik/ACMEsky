@@ -25,4 +25,5 @@ def retrieve_user_interests(task: ExternalTask) -> TaskResult:
                                error_message='Error retrieving users interests from the database')
 
     logger.info("There are %s users interest to be checked", len(users_interests))
+    logger.info("users_interests: %s", users_interests)
     return task.complete(global_variables={"users_interests": users_interests})

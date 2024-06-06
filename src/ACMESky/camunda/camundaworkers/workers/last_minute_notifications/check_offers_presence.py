@@ -75,15 +75,11 @@ def check_offers_presence(task: ExternalTask) -> TaskResult:
                     comeback_flight_id=min_comeback_flight.id,
                 )
 
-                """
-                Checks if the offer match (through the offer code) was already created 
-                (i.e. the offer code already exists).
-                """
+                # Checks if the offer match (through the offer code) was already created 
+                # (i.e. the offer code already exists).
                 if offer_code not in interest["offer_codes"]:
-                    """ 
-                    Checks if the offer match already exist, this could happen if another user 
-                    pushed an equivalent interest.  
-                    """
+                    # Checks if the offer match already exist, this could happen if another user 
+                    # pushed an equivalent interest.  
                     previous_matches = session.query(OfferMatch).filter(OfferMatch.offer_code == offer_code).all()
                     if len(previous_matches) == 0:
                         session.add(new_match)
@@ -102,11 +98,11 @@ def check_offers_presence(task: ExternalTask) -> TaskResult:
                     # Adds the offer code to those that will be sent through ProntoGram and generates the message.
                     offer_codes.append(offer_code)
                     offer_infos.append(
-                        f"""
+                        f
                         Andata: da {min_outbound_flight.departure_airport_code} ({min_outbound_flight.departure_datetime}) a {min_outbound_flight.arrival_airport_code} ({min_outbound_flight.arrival_datetime}).
                         Ritorno: da {min_comeback_flight.departure_airport_code} ({min_comeback_flight.departure_datetime}) a {min_comeback_flight.arrival_airport_code} ({min_comeback_flight.arrival_datetime}).
                         Costo offerta: {(min_outbound_flight.cost + min_comeback_flight.cost)} €.
-                        """
+                        #
                     )
     """
 
