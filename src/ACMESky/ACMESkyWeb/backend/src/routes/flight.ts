@@ -14,7 +14,7 @@ async function newFlight(req: Request, res: Response<{ message: string } | { err
     return res.status(response.status).json({ error: 'Errore durante la creazione dell\'offerta' });
   }
 
-  return res.status(response.status).json({ message: 'Offerta creata correttamente' });
+  return res.status(200).json({ message: 'Offerta creata correttamente' });
 }
 
 export { newFlight };

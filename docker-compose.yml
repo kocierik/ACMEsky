@@ -97,10 +97,8 @@ services:
 
     prontogram_backend:
         build: ./src/prontogram/backend
-        environment:
-            - SERVICE_NAME=Prontogram
         ports:
-            - "8050:8000"
+            - "8050:8050"
         restart: always
 
     rent_service_1:

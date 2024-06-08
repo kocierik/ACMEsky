@@ -4,20 +4,30 @@ include "interface.iol"
 
 inputPort ProntogramServicePort
 {
-    Location: "socket://localhost:8000"
+    Location: "socket://localhost:8050"
     Interfaces: IProntogramService
     Protocol: http {
-        format = "json"
-        // contentType = "application/json"
+        format -> httpResponse.format
+        statusCode -> httpResponse.statusCode
+        response.headers.("Access-Control-Allow-Origin") = "*"
+        response.headers.("Access-Control-Allow-Headers") = "*"
+        response.headers.("Access-Control-Allow-Credentials") = "true"
+        response.headers.("Access-Control-Allow-Methods") = "*"
         osc << {
             getOffers << {
                 template = "/api/offers"
                 method = "get"
+                format = "json"
+                statusCodes = 200
+                statusCodes.TypeMismatch = 400
             }
             addOffer << {
                 template = "/api/offer"
                 method = "post"
-            }   
+                format = "json"
+                statusCodes = 200
+                statusCodes.TypeMismatch = 400
+            }
         }
     }
     
@@ -35,12 +45,11 @@ main {
     [
         addOffer(AddOfferRequest)(Offer){
             with(Offer) {
-                .id = new;
-                .content = AddOfferRequest.content;
-                .code = AddOfferRequest.code;
-                .receiver_user_id = AddOfferRequest.receiver_user_id
+                .activation_code = AddOfferRequest.activation_code;
+                .user_id = AddOfferRequest.user_id;
+                .message = AddOfferRequest.message
             }
-            inbox -> global.inbox.(Offer.receiver_user_id)
+            inbox -> global.inbox.(Offer.user_id)
             synchronized(inboxLock) {
                 idx = #inbox
                 inbox[idx] << Offer
@@ -63,9 +72,6 @@ main {
 
             valueToPrettyString@StringUtils(OfferList)( s )
             println@Console("Offers " + s)()
-
-            valueToPrettyString@StringUtils(inbox)( s )
-            println@Console("Offers left " + s)()
         }
     ]
 }

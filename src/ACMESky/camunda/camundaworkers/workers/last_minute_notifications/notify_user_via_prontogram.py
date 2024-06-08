@@ -1,9 +1,8 @@
 from camunda.external_task.external_task import ExternalTask, TaskResult
 import requests
-import json
 
+from camundaworkers.model.offer import Offer
 from camundaworkers.utils.logger import get_logger
-
 
 def notify_user_via_prontogram(task: ExternalTask) -> TaskResult:
     """
@@ -14,22 +13,20 @@ def notify_user_via_prontogram(task: ExternalTask) -> TaskResult:
     logger = get_logger()
     logger.info("notify_user_via_prontogram")
 
-    offers = json.loads(task.get_variable("offers"))
+    offers: list[Offer] = [Offer.from_dict(offer) for offer in task.get_variable("offers")]
+    logger.info(f"offers length: {len(offers)}")
 
-    logger.info(f"offers: {offers}")
+    for offer in offers:
+        prontogram_message = {
+            "user_id": offer.user_id,
+            "activation_code": offer.activation_code,
+            "message": f"ACMESky ha trovato per te la seguente offerta:\nInserisci il codice offerta {offer.activation_code} sul sito di ACMESky per poterne usufruire. Affrettati, sarà valido per sole 24 ore!"
+        }
 
-    # for offer_code, offer_info in zip(offer_codes, offer_infos):
-    #     prontogram_message = {
-    #         "sender": "ACMESky",
-    #         "receiver": prontogram_username,
-    #         "body": f"ACMESky ha trovato per te la seguente offerta:\n{offer_info}\nInserisci il codice offerta {offer_code} sul sito di ACMESky per poterne usufruire. Affrettati, sarà valido per sole 24 ore!"
-    #     }
+        r = requests.post("http://prontogram_backend:8050/api/offer", json=prontogram_message)
 
-    #     # logger.info(json.dumps(prontogram_message))
-    #     r = requests.post("http://prontogram_backend:8080/messages", json=prontogram_message)
-
-    #     logger.info(f"ProntoGram response: {r.status_code}")
-    #     if r.status_code >= 300:
-    #         logger.warn(r.text)
+        logger.info(f"Prontogram response: {r.status_code}")
+        if r.status_code >= 300:
+            logger.warn(r.text)
 
     return task.complete()

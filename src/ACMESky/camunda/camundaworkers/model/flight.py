@@ -1,6 +1,4 @@
-import datetime
-import uuid
-from sqlalchemy import Column, String, DateTime, Float, UniqueConstraint, Integer, Boolean
+from sqlalchemy import Column, String, DateTime, Float, Boolean
 from camundaworkers.utils.db import Base
 
 class Flight(Base):

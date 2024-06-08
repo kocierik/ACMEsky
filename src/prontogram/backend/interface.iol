@@ -1,12 +1,13 @@
 type AddOfferRequest: void {
-    .receiver_user_id: string
-    .code: string
-    .content: string
+    .user_id: string
+    .activation_code: string
+    .message: string
 }
 
 type Offer: void {
-    .code: string
-    .content: string
+    .user_id: string
+    .activation_code: string
+    .message: string
 }
 
 type OfferList: void {
@@ -21,6 +22,6 @@ interface IProntogramService
 {
 
     RequestResponse:
-        addOffer(AddOfferRequest)(Offer)
+        addOffer(AddOfferRequest)(Offer),
         getOffers(UserId)(OfferList)
 }
