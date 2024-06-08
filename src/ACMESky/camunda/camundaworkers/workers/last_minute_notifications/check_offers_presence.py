@@ -1,6 +1,7 @@
 from datetime import date, datetime
 import javaobj.v2 as javaobj
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from camunda.external_task.external_task import ExternalTask, TaskResult
 
 from camundaworkers.utils.logger import get_logger
@@ -53,9 +54,12 @@ def check_offers_presence(task: ExternalTask) -> TaskResult:
                     total_price = flight.price + return_flight.price
 
                     if total_price <= max_price:
-                        offer = Offer.create(flight.flight_code, user_interests.get("user_id"), interest.get("id"))
-                        session.add(offer)
-                        offers.append(offer.to_dict())
+                        try:
+                            session.query(Offer).filter(Offer.flight_id == flight.flight_code, Offer.user_id == user_interests.get("user_id"), Offer.interest_id == interest.get("id")).one()
+                        except NoResultFound:
+                            offer = Offer.create(flight.flight_code, user_interests.get("user_id"), interest.get("id"))
+                            session.add(offer)
+                            offers.append(offer.to_dict())
 
     session.commit()
     logger.info("Offers: %s", offers)
