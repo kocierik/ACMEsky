@@ -15,9 +15,9 @@
       <bpmn:outgoing>Flow_1ja8jn4</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0fhgp0x" messageRef="Message_1bbhyc8" />
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1ja8jn4" sourceRef="receive-last-minute-flights" targetRef="save-last-minute-flights" />
+    <bpmn:sequenceFlow id="Flow_1ja8jn4" sourceRef="receive-last-minute-flights" targetRef="save-flights" />
     <bpmn:sequenceFlow id="Flow_091r9gv" sourceRef="notify-offers-to-users" targetRef="receive-last-minute-offers-completed" />
-    <bpmn:serviceTask id="save-last-minute-flights" name="Salvataggio voli last minute" camunda:type="external" camunda:topic="save-last-minute-flights">
+    <bpmn:serviceTask id="save-flights" name="Salvataggio voli last minute" camunda:type="external" camunda:topic="save-flights">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="flights">${flights}</camunda:inputParameter>
@@ -27,8 +27,8 @@
       <bpmn:outgoing>Flow_0agva7c</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0azgdjm" sourceRef="offer-saving-failure" targetRef="receive-last-minute-offers-failed" />
-    <bpmn:sequenceFlow id="Flow_0agva7c" sourceRef="save-last-minute-flights" targetRef="retrieve-user-interests" />
-    <bpmn:boundaryEvent id="offer-saving-failure" name="Fallimento nel salvataggio" attachedToRef="save-last-minute-flights">
+    <bpmn:sequenceFlow id="Flow_0agva7c" sourceRef="save-flights" targetRef="retrieve-user-interests" />
+    <bpmn:boundaryEvent id="offer-saving-failure" name="Fallimento nel salvataggio" attachedToRef="save-flights">
       <bpmn:outgoing>Flow_0azgdjm</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_1ao7gof" errorRef="Error_19vetds" camunda:errorMessageVariable="Error inserting rows in the database" />
     </bpmn:boundaryEvent>
@@ -110,7 +110,7 @@
           <dc:Bounds x="247" y="129" width="68" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1wvb2n1_di" bpmnElement="save-last-minute-flights">
+      <bpmndi:BPMNShape id="Activity_1wvb2n1_di" bpmnElement="save-flights">
         <dc:Bounds x="390" y="137" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>

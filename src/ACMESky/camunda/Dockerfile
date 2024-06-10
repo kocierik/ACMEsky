@@ -1,7 +1,7 @@
-FROM python:3.8.6
+FROM python:latest
 
 RUN apt-get update && \
-    apt-get -y install netcat dos2unix && \
+    apt-get -y install netcat-traditional dos2unix && \
     apt-get clean
 
 RUN mkdir camunda_diagram

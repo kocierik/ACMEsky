@@ -8,14 +8,14 @@ from camundaworkers.model.flight import Flight
 from camundaworkers.utils.logger import get_logger
 
 
-def save_last_minute_flights(task: ExternalTask) -> TaskResult:
+def save_flights(task: ExternalTask) -> TaskResult:
     """
     Saves the new flights received from a Flight Company on PostgreSQL
     :param task: the current task instance
     :return: the task result
     """
     logger = get_logger()
-    logger.info("save_last_minute_flights")
+    logger.info("save_flights")
 
     flights = [Flight.from_dict(f) for f in json.loads(task.get_variable("flights"))]
 

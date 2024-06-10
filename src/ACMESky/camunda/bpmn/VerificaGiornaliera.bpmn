@@ -19,14 +19,13 @@
     <bpmn:startEvent id="trigger-daily-check-event" name="24 h">
       <bpmn:extensionElements>
         <camunda:executionListener event="end">
-          <camunda:script scriptFormat="groovy">execution.setVariable(
-    "companies",["http://flight_company_1:8080","http://flight_company_2:8080","http://flight_company_3:8080"]
-);</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.setVariable("companies",["http://airline_service:8085"]);</camunda:script>
         </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1i460k5</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0hmn7pr">
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/PT24H</bpmn:timeCycle>
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/P1D</bpmn:timeCycle>
+        <!-- <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R5/PT10S</bpmn:timeCycle> -->
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1i460k5" sourceRef="trigger-daily-check-event" targetRef="check-flight-companies-offers" />
@@ -43,8 +42,8 @@
         <bpmn:incoming>Flow_18bijsr</bpmn:incoming>
         <bpmn:incoming>Flow_0072rty</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0185oav" sourceRef="save-offers" targetRef="flight-company-check-end-event" />
-      <bpmn:serviceTask id="save-offers" name="Salvataggio offerte" camunda:type="external" camunda:topic="save-offers">
+      <bpmn:sequenceFlow id="Flow_0185oav" sourceRef="save-flights" targetRef="flight-company-check-end-event" />
+      <bpmn:serviceTask id="save-flights" name="Salvataggio offerte" camunda:type="external" camunda:topic="save-flights">
         <bpmn:incoming>Flow_1kuz36e</bpmn:incoming>
         <bpmn:outgoing>Flow_0185oav</bpmn:outgoing>
       </bpmn:serviceTask>
@@ -57,7 +56,7 @@
         <bpmn:incoming>Flow_1usn7dn</bpmn:incoming>
         <bpmn:outgoing>Flow_1kuz36e</bpmn:outgoing>
       </bpmn:sendTask>
-      <bpmn:sequenceFlow id="Flow_1kuz36e" sourceRef="get-flight-offers" targetRef="save-offers" />
+      <bpmn:sequenceFlow id="Flow_1kuz36e" sourceRef="get-flight-offers" targetRef="save-flights" />
       <bpmn:boundaryEvent id="timeout-flight-company" name="Timeout 1 minuto" attachedToRef="get-flight-offers">
         <bpmn:outgoing>Flow_18bijsr</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_0xntvll">
@@ -65,7 +64,7 @@
         </bpmn:timerEventDefinition>
       </bpmn:boundaryEvent>
       <bpmn:sequenceFlow id="Flow_18bijsr" sourceRef="timeout-flight-company" targetRef="flight-company-check-end-event" />
-      <bpmn:boundaryEvent id="Event_0ashjos" attachedToRef="save-offers">
+      <bpmn:boundaryEvent id="Event_0ashjos" attachedToRef="save-flights">
         <bpmn:outgoing>Flow_0072rty</bpmn:outgoing>
         <bpmn:errorEventDefinition id="ErrorEventDefinition_0xy4yxw" />
       </bpmn:boundaryEvent>
@@ -80,7 +79,7 @@
     <bpmn:subProcess id="notify-offers-to-users" name="Notifica presenza offerte agli utenti">
       <bpmn:incoming>Flow_1t521pp</bpmn:incoming>
       <bpmn:outgoing>Flow_1p1ilzm</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics camunda:collection="#{users}" camunda:elementVariable="user" />
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="#{users_interests}" camunda:elementVariable="user_interests" />
       <bpmn:startEvent id="notify-users-for-offers-start-event" name="Verifica offerte per il k-esimo utente">
         <bpmn:outgoing>Flow_17g0zdb</bpmn:outgoing>
       </bpmn:startEvent>
@@ -96,7 +95,7 @@
       <bpmn:sequenceFlow id="Flow_17g0zdb" sourceRef="notify-users-for-offers-start-event" targetRef="check-offers-presence" />
       <bpmn:sequenceFlow id="Flow_1biu0lw" sourceRef="check-offers-presence" targetRef="offers-presence-start-gateway" />
       <bpmn:sequenceFlow id="Flow_034g0p4" name="Sì" sourceRef="offers-presence-start-gateway" targetRef="notify-user-via-prontogram">
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${offer_codes != '[]'}</bpmn:conditionExpression>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${offers != '[]'}</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:endEvent id="notify-users-for-offers-end-event" name="Effettuata la verifica per il k-esimo utente">
         <bpmn:incoming>Flow_1dwk2q8</bpmn:incoming>
@@ -104,12 +103,12 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0nhr33c" sourceRef="notify-user-via-prontogram" targetRef="offers-presence-end-gateway" />
       <bpmn:sequenceFlow id="Flow_14n3tiu" name="No" sourceRef="offers-presence-start-gateway" targetRef="offers-presence-end-gateway">
-        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${offer_codes == '[]'}</bpmn:conditionExpression>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${offers == '[]'}</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:serviceTask id="check-offers-presence" name="Controllo presenza offerte" camunda:type="external" camunda:topic="check-offers-presence">
         <bpmn:extensionElements>
           <camunda:inputOutput>
-            <camunda:inputParameter name="user">${user}</camunda:inputParameter>
+            <camunda:inputParameter name="user_interests">${user_interests}</camunda:inputParameter>
           </camunda:inputOutput>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_17g0zdb</bpmn:incoming>
@@ -203,7 +202,7 @@
           <dc:Bounds x="865.5" y="120" width="87" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0hm89lt_di" bpmnElement="save-offers">
+      <bpmndi:BPMNShape id="Activity_0hm89lt_di" bpmnElement="save-flights">
         <dc:Bounds x="680" y="137" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1bzhtzd_di" bpmnElement="get-flight-offers">

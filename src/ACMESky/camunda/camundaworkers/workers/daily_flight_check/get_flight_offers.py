@@ -1,8 +1,9 @@
 from camunda.external_task.external_task import ExternalTask, TaskResult
 from camundaworkers.utils.logger import get_logger
 import requests
+import pytz
 from json import dumps
-
+from datetime import datetime
 
 def get_flight_offers(task: ExternalTask) -> TaskResult:
     """
@@ -16,20 +17,15 @@ def get_flight_offers(task: ExternalTask) -> TaskResult:
     url = task.get_variable("company")
     logger.info("Contacting: " + url)
 
-    new_flights = requests.get(url + "/flights/offers").json()
+    new_flights = requests.get(url + "/flights").json()
 
-    # Workaround for Camunda limitation on the length of the string that can be saved as process variable.
-    if new_flights == {}:
-        logger.info(f"Empty json from the flight company at URL {url}")
-        return task.complete({'offers_0': dumps([]), 'offers_packets': 1})
-    else:
-        # Workaround: Camunda string global variables can hold maximum 4000 chars per string.
-        # Therefore we must split the dumped string every 3500 characters (just to be sure).
-        stringified_flights = dumps(new_flights.get('flights'))
-        offers_packets = (len(stringified_flights) // 3500) + 1
-        global_vars = {'offers_packets': offers_packets}
-        for packet in range(offers_packets):
-            start = packet * 3500
-            end = start + 3500
-            global_vars[f'offers_{packet}'] = stringified_flights[start:end]
-        return task.complete(global_variables=global_vars)
+    # Filter new_flights by taking only the flight that has a departure_date in the future
+    today = datetime.now(pytz.timezone('Europe/Rome'))
+    new_flights = [flight for flight in new_flights if datetime.fromisoformat(flight['departureDate']) > today]
+
+    # TODO: filter new_flights by taking only the flights that are not stored in the database
+
+    logger.info("Received %s new flights from today on", len(new_flights))
+    return task.complete(global_variables={"flights": dumps(new_flights)})
+
+
