@@ -1,34 +1,52 @@
+import { useEffect, useState } from "react";
 import "./App.css";
 
 interface IUserInterest {
   offerCode: number;
   departure_location: string;
   arrival_location: string;
-  departure_date: string;
-  arrival_date: string;
+  from_date: string;
+  to_date: string;
   max_price: number;
 }
 
-const userInterests : IUserInterest[] = [
-  {
-    offerCode: 10356,
-    departure_location: "New York",
-    arrival_location: "Los Angeles",
-    departure_date: new Date("2024-04-15").toUTCString().slice(0,-3),
-    arrival_date: new Date("2024-04-20").toUTCString().slice(0,-3),
-    max_price: 500
-  },
-  {
-    offerCode: 10357,
-    departure_location: "Roma",
-    arrival_location: "Rimini",
-    departure_date: new Date("2024-02-15").toUTCString().slice(0,-3),
-    arrival_date: new Date("2025-07-12").toUTCString().slice(0,-3),
-    max_price: 1200
-  },
-]
+interface IUser {
+  id: number;
+  email: string;
+}
 
 function App() {
+
+  const [userInterests, setUserInterests] = useState<IUserInterest[]>([]);
+
+  const userData: IUser = JSON.parse(localStorage.getItem('user_id') || '{}');
+  console.log(userInterests);
+  const fetchUserInterests = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/getUser/${userData}/interests`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUserInterests(data);
+      } else {
+        console.error('Error fetching user interests:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching user interests:', error);
+    }
+  };
+
+
+  useEffect(()=> {
+    fetchUserInterests()
+  },[])
 
   return (
     <div className="flex flex-col overflow-x-auto">
@@ -67,7 +85,8 @@ function App() {
                     className="border-b border-neutral-200 dark:border-white/10"
                   >
                     <td className="whitespace-nowrap text-center py-4">
-                      {interest.offerCode}
+                      {/* TODO: DA modificare poiche' il codice e' da prendere dal backend di prontogram */}
+                      {interest.offerCode ? interest.offerCode : "Non Disponibile"}
                     </td>
                     <td className="whitespace-nowrap text-center py-4">
                       {interest.departure_location}
@@ -76,10 +95,10 @@ function App() {
                       {interest.arrival_location}
                     </td>
                     <td className="whitespace-nowrap text-center px-6 py-4">
-                      {String(interest.departure_date)}
+                      {String(interest.from_date)}
                     </td>
                     <td className="whitespace-nowrap text-center px-6 py-4">
-                      {String(interest.arrival_date)}
+                      {String(interest.to_date)}
                     </td>
                     <td className="whitespace-nowrap text-center px-6 py-4">
                       {interest.max_price}

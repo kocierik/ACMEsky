@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function Navbar() {
-  const [isLoggedIn, _] = useState(!!localStorage.getItem("token"));
+  const [isLoggedIn, _] = useState(localStorage.getItem("token"));
   const navigate = useNavigate(); 
 
 
@@ -27,7 +27,7 @@ function Navbar() {
 
 
           <div className="flex items-center justify-end gap-3">
-            {!isLoggedIn && (
+            {!isLoggedIn ? (
               <>
                 <Link
                   to="/register"
@@ -42,7 +42,9 @@ function Navbar() {
                   Accedi
                 </Link>
               </>
-            )}
+            ) : <button onClick={()=> {localStorage.clear(); window.location.reload() }} className=" items-center justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all duration-150 hover:bg-gray-50 sm:inline-flex">
+              Logout
+            </button> }
           </div>
         </div>
       </div>
