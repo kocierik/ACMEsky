@@ -37,6 +37,11 @@ services:
         depends_on:
             - acmesky_db
 
+    acmesky_sse:
+        build: ./src/ACMESky/ACMESkySSE
+        ports:
+            - "3030:3000"
+
     camunda:
         image: camunda/camunda-bpm-platform:latest
         container_name: camunda
