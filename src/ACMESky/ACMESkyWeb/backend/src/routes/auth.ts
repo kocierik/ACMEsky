@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-import pool from "../utils/db"
+import { v4 as uuidv4 } from 'uuid';  // Import the UUID package
+import pool from "../utils/db";
 import { User } from '../interfaces';
 
 dotenv.config();
@@ -21,16 +22,18 @@ async function registerUser(req: Request, res: Response) {
 
     // Se l'utente non esiste già, procedi con la registrazione
     const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await pool.query<User>('INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *', [
+    const userUuid = uuidv4();  // Generate a new UUID
+    const result = await pool.query<User>('INSERT INTO users (email, password, uuid) VALUES ($1, $2, $3) RETURNING *', [
       email,
       hashedPassword,
+      userUuid,
     ]);
     const user = result.rows[0];
 
     // Genera il token JWT
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
-    res.status(201).json({ message: 'Registrazione avvenuta con successo', id: user.id, token, status: 200});
+    res.status(201).json({ message: 'Registrazione avvenuta con successo', id: user.id, uuid: user.uuid, token, status: 200});
   } catch (error) {
     console.error('Errore durante la registrazione:', error);
     res.status(500).json({ error: 'Errore durante la registrazione', status: 500 });
@@ -49,7 +52,7 @@ async function loginUser(req: Request, res: Response) {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (passwordMatch) {
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Accesso riuscito', token, id: user.id, status: 200 });
+        res.status(200).json({ message: 'Accesso riuscito', token, id: user.id, uuid: user.uuid, status: 200 });
         return;
       }
     }
@@ -62,4 +65,3 @@ async function loginUser(req: Request, res: Response) {
 }
 
 export { registerUser, loginUser };
-
