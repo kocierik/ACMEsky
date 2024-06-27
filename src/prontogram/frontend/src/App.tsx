@@ -18,7 +18,7 @@ interface IUser {
 function App() {
 
   const [userInterests, setUserInterests] = useState<IUserInterest[]>([]);
-
+  const [userId,setUserId] = useState("")
   const userData: IUser = JSON.parse(localStorage.getItem('user_id') || '{}');
   console.log(userInterests);
   const fetchUserInterests = async () => {
@@ -48,12 +48,33 @@ function App() {
     fetchUserInterests()
   },[])
 
+  function handleSearch(event: MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    console.log('Searching for user ID:', userId);
+  }
+
   return (
     <div className="flex flex-col overflow-x-auto">
       <h1 className="text-2xl flex-1 flex justify-center my-8">
       </h1>
       <div className="sm:-mx-6 lg:-mx-8">
-        <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+      <label className="mb-2 text-gray-500">
+          Puoi trovare il tuo User ID nella sezione profilo del tuo account ACMEsky.
+        </label>
+        <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8 ">
+        <input
+          type="text"
+          value={userId}
+          onChange={(e) => setUserId(e.target.value)}
+          placeholder="Inserisci User ID"
+          className="border px-4 py-2 rounded mb-5"
+        />
+        <button
+          onClick={handleSearch}
+          className="ml-4 px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Cerca Offerte
+        </button>
+
           <div className="overflow-x-auto">
             <table className="min-w-full text-start text-sm ">
               <thead className="border-b border-neutral-200 ">
