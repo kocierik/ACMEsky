@@ -68,8 +68,8 @@ function Profile() {
                   <tr key={i} className="border-b border-neutral-200 dark:border-white/10">
                     <td className="whitespace-nowrap text-center py-4">{interest.departure_location}</td>
                     <td className="whitespace-nowrap text-center px-6 py-4">{interest.arrival_location}</td>
-                    <td className="whitespace-nowrap text-center px-6 py-4">{String(interest.from_date)}</td>
-                    <td className="whitespace-nowrap text-center px-6 py-4">{String(interest.to_date)}</td>
+                    <td className="whitespace-nowrap text-center px-6 py-4">{String(interest.from_date).slice(0,10)}</td>
+                    <td className="whitespace-nowrap text-center px-6 py-4">{String(interest.to_date).slice(0,10)}</td>
                     <td className="whitespace-nowrap text-center px-6 py-4">{interest.max_price}</td>
                   </tr>
                 ))}
