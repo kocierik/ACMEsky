@@ -8,8 +8,8 @@ interface IOffer {
   codice_offerta: string;
   departure_location: string;
   arrival_location: string;
-  departure_date: string; // Formato data come stringa (yyyy-mm-dd)
-  arrival_date: string; // Formato data come stringa (yyyy-mm-dd)
+  from_date: string; // Formato data come stringa (yyyy-mm-dd)
+  to_date: string; // Formato data come stringa (yyyy-mm-dd)
   price: number; // Prezzo come numero decimale
   disponibile: boolean;
 }
@@ -68,8 +68,8 @@ const OfferForm = () => {
             codiceOfferta: offer.codice_offerta,
             departureLocation: offer.departure_location,
             arrivalLocation: offer.arrival_location,
-            departureDate: offer.departure_date,
-            arrivalDate: offer.arrival_date,
+            departureDate: offer.from_date,
+            arrivalDate: offer.to_date,
             price: offer.price,
           }),
         }
@@ -99,6 +99,7 @@ const OfferForm = () => {
 
   const handleDistance = async () => {
     try {
+      console.log(offer)
       const response = await fetch(
         `${BASE_URL_GEO}/distance?origins=${domicilio}&destinations=${offer?.departure_location}`,
         {
@@ -225,10 +226,10 @@ const OfferForm = () => {
                           {offer.arrival_location}
                         </td>
                         <td className="whitespace-nowrap text-center px-6 py-4">
-                          {String(offer.departure_date)}
+                          {String(offer.from_date)}
                         </td>
                         <td className="whitespace-nowrap text-center px-6 py-4">
-                          {String(offer.arrival_date)}
+                          {String(offer.to_date)}
                         </td>
                         <td className="whitespace-nowrap text-center px-6 py-4">
                           {offer.price}

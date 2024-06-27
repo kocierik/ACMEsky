@@ -37,6 +37,11 @@ services:
         depends_on:
             - acmesky_db
 
+    acmesky_sse:
+        build: ./src/ACMESky/ACMESkySSE
+        ports:
+            - "3030:3000"
+
     camunda:
         image: camunda/camunda-bpm-platform:latest
         container_name: camunda
@@ -57,24 +62,58 @@ services:
         depends_on:
             - acmesky_db
 
-    airline_service:
+    airline_service_1:
         build: ./src/airlineService
         env_file: ./src/airlineService/.env
+        environment:
+            POSTGRES_HOST: airline_db_1
+            AIRLINE_NAME: American Airlines
         ports:
             - 8085:8085
         command: sh -c "sleep 5 && ./main"
         restart: always
         depends_on:
-          - airline_db
+          - airline_db_1
 
-    airline_db:
+    airline_db_1:
         image: postgres:latest
         restart: always
         env_file: ./src/airlineService/.env
+        environment:
+            POSTGRES_HOST: airline_db_1
+            AIRLINE_NAME: American Airlines
+            AIRLINE_PREFIX: AA
         ports:
           - "5433:5432"
         volumes:
-          - ./src/airlineService/data/init.sql:/docker-entrypoint-initdb.d/init.sql
+          - ./src/airlineService/data/init_sql.sh:/docker-entrypoint-initdb.d/init_sql.sh
+          - airline_db_data:/var/lib/postgresql
+
+    airline_service_2:
+        build: ./src/airlineService
+        env_file: ./src/airlineService/.env
+        environment:
+            POSTGRES_HOST: airline_db_2
+            AIRLINE_NAME: Emic Airlines
+        ports:
+            - 8086:8085
+        command: sh -c "sleep 5 && ./main"
+        restart: always
+        depends_on:
+          - airline_db_2
+
+    airline_db_2:
+        image: postgres:latest
+        restart: always
+        env_file: ./src/airlineService/.env
+        environment:
+            POSTGRES_HOST: airline_db_2
+            AIRLINE_NAME: Emic Airlines
+            AIRLINE_PREFIX: EA
+        ports:
+          - "5434:5432"
+        volumes:
+          - ./src/airlineService/data/init_sql.sh:/docker-entrypoint-initdb.d/init_sql.sh
           - airline_db_data:/var/lib/postgresql
 
     bank_frontend:

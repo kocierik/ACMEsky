@@ -19,13 +19,13 @@
     <bpmn:startEvent id="trigger-daily-check-event" name="24 h">
       <bpmn:extensionElements>
         <camunda:executionListener event="end">
-          <camunda:script scriptFormat="groovy">execution.setVariable("companies",["http://airline_service:8085"]);</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.setVariable("companies",["http://airline_service_1:8085", "http://airline_service_2:8085"]);</camunda:script>
         </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1i460k5</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0hmn7pr">
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/P1D</bpmn:timeCycle>
-        <!-- <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R5/PT10S</bpmn:timeCycle> -->
+        <!-- <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/P1D</bpmn:timeCycle> -->
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R5/PT10S</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1i460k5" sourceRef="trigger-daily-check-event" targetRef="check-flight-companies-offers" />

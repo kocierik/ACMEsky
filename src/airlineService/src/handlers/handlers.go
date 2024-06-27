@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kocierik/ACMEsky/airlineService/models"
@@ -40,6 +41,8 @@ func (h handler) GetAirports(c *gin.Context) {
 
 func (h handler) CreateFlight(c *gin.Context) {
 	var flight models.Flight
+	flight.AirlineName = os.Getenv("AIRLINE_NAME")
+
 	if err := c.ShouldBindJSON(&flight); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
