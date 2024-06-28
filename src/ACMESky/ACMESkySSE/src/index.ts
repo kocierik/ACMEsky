@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ app.use(cors({
   exposedHeaders: ['Content-Type'],
 }));
 
-let clients: Response[] = [];
+let listeners: Record<string, Response> = {};
 
 // Middleware per aggiungere header CORS a tutte le risposte
 app.use((req, res, next) => {
@@ -30,18 +31,24 @@ app.get('/events', (req, res) => {
   res.setHeader('Connection', 'keep-alive');
   res.flushHeaders();
 
-  clients.push(res);
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+  const data = jwt.verify(token, process.env.SECRET || 'default_secret') as { userId: string };
+  const userId = data.userId;
+
+  listeners[userId] = res;
 
   req.on('close', () => {
-    clients = clients.filter(client => client !== res);
+    delete listeners[userId];
   });
 });
 
 function sendEvent(eventName: string, message: any) {
-  clients.forEach(client => {
-    client.write(`event: ${eventName}\n`);
-    client.write(`data: ${JSON.stringify(message)}\n\n`);
-  });
+  listeners[message['userId']].write(`event: ${eventName}\n`);
+  listeners[message['userId']].write(`data: ${JSON.stringify(message)}\n\n`);
 }
 
 app.post('/send-flightInfos', (req, res) => {
