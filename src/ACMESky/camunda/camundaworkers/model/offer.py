@@ -27,7 +27,6 @@ class Offer(Base):
             interest_id=interest_id,
             activation_code=str(uuid.uuid4())[:8],
             payed=False,
-            bankurl="",
             created_at=datetime.utcnow()
         )
     
@@ -44,7 +43,6 @@ class Offer(Base):
             interest_id=offer_dict['interest_id'],
             activation_code=offer_dict['activation_code'],
             payed=offer_dict['payed'],
-            bankurl=offer_dict['bankurl'],
             created_at=datetime.fromisoformat(offer_dict['created_at'])
         )
 
@@ -53,7 +51,6 @@ class Offer(Base):
     interest_id = Column(Integer, ForeignKey(UserInterest.id), primary_key=True)
     activation_code = Column(String(8))
     payed = Column(Boolean)
-    bankurl = Column(String(255))
     created_at = Column(DateTime, default=datetime.utcnow)
 
     def __str__(self) -> str:
@@ -63,7 +60,6 @@ class Offer(Base):
                 interest_id: {self.interest_id},
                 activation_code: {self.activation_code},
                 payed: {self.payed},
-                bankurl: {self.bankurl},
                 created_at: {self.created_at}
                 )"""
 
@@ -74,7 +70,6 @@ class Offer(Base):
             'interest_id': self.interest_id,
             'activation_code': self.activation_code,
             'payed': self.payed,
-            'bankurl': self.bankurl,
             'created_at': self.created_at.isoformat()
         }
 

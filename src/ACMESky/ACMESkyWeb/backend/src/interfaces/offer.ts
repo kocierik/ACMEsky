@@ -4,6 +4,5 @@ export interface Offer {
   interest_id: number;
   activation_code: string;
   payed: boolean;
-  bankurl: string;
   created_at: Date;
 }

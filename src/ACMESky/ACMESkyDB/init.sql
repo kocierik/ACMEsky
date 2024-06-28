@@ -33,7 +33,6 @@ CREATE TABLE offers (
     interest_id INT NOT NULL,
     activation_code CHAR(8) NOT NULL,
     payed BOOLEAN NOT NULL,
-    bankurl VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, flight_id, interest_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
@@ -61,5 +60,5 @@ INSERT INTO flights (flight_code, departure_location, arrival_location, departur
 ('CD456', 'LHR', 'CDG', '2024-08-16', '2024-08-16', 'AirlineB', 180.00, TRUE);
 
 
-INSERT INTO offers (user_id, flight_id, interest_id, activation_code, payed, bankurl) VALUES
-(1, 'CD456', 2, 'ACTCODE2', FALSE, 'http://bankurl.com/payment2');
+INSERT INTO offers (user_id, flight_id, interest_id, activation_code, payed) VALUES
+(1, 'CD456', 2, 'ACTCODE2', FALSE);
