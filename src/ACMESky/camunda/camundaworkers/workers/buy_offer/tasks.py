@@ -16,7 +16,6 @@ from camundaworkers.workers.buy_offer.book_transfer import book_transfer
 
 TASKS = [
     ("verify-offer-code-validity", verify_offer_code_validity),
-    ("rehabilitation-offer-code", rehabilitation_offer_code),
     ("send-correct-offer-code", send_correct_offer_code),
     ("send-wrong-offer-code", send_wrong_offer_code),
     ("payment-request", payment_request),
