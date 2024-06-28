@@ -31,7 +31,7 @@ async function registerUser(req: Request, res: Response) {
     const user = result.rows[0];
 
     // Genera il token JWT
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '4h' });
 
     res.status(201).json({ message: 'Registrazione avvenuta con successo', id: user.id, uuid: user.uuid, token, status: 200});
   } catch (error) {
@@ -51,7 +51,7 @@ async function loginUser(req: Request, res: Response) {
     if (user) {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (passwordMatch) {
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '4h' });
         res.status(200).json({ message: 'Accesso riuscito', token, id: user.id, uuid: user.uuid, status: 200 });
         return;
       }
