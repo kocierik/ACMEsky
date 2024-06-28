@@ -39,7 +39,7 @@ function Register() {
       }
       if (data.token) {
         localStorage.setItem("token", data.token)
-        localStorage.setItem("user", JSON.stringify({email: email, id: data.id}))
+        localStorage.setItem("user", JSON.stringify({email: email, id: data.id, uuid: data.uuid}))
       }
       Swal.fire({
         title: "Ottimo!",

@@ -1,9 +1,8 @@
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 function Navbar() {
-  const [isLoggedIn, _] = useState(!!localStorage.getItem("token"));
   const navigate = useNavigate(); 
 
 
@@ -23,26 +22,6 @@ function Navbar() {
               <PaperAirplaneIcon className="h-6 w-6 text-primary" />
               <p className="ml-1">Prontogram</p>
             </Link>
-          </div>
-
-
-          <div className="flex items-center justify-end gap-3">
-            {!isLoggedIn && (
-              <>
-                <Link
-                  to="/register"
-                  className=" items-center justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all duration-150 hover:bg-gray-50 sm:inline-flex"
-                >
-                  Registrati
-                </Link>
-                <Link
-                  to="/login"
-                  className=" items-center justify-center rounded-xl bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all duration-150 hover:bg-gray-50 sm:inline-flex"
-                >
-                  Accedi
-                </Link>
-              </>
-            )}
           </div>
         </div>
       </div>
