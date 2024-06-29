@@ -23,7 +23,7 @@ class UserInterest(Base):
         )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+    user_id = Column(String(36), ForeignKey(User.id), nullable=False)
     departure_location = Column(String(3), nullable=False)
     arrival_location = Column(String(3), nullable=False)
     from_date = Column(DateTime, nullable=False)

@@ -5,7 +5,7 @@ from camundaworkers.utils.db import Base
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String(36), primary_key=True)
     email = Column(String(100))
     password = Column(String(255))
 

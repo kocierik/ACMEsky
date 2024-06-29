@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 
 interface IUser {
-  id: number;
+  id: string;
   email: string;
-  uuid: string;
 }
 
 interface IUserInterest {
@@ -49,7 +48,7 @@ function Profile() {
   return (
     <div className="flex flex-col overflow-x-auto">
       <h1 className='text-2xl flex-1 flex justify-center my-8'>Bentornato {userData?.email}</h1>
-      <h4 className='text-lg flex-1 flex justify-center'>UserID: {userData?.uuid}</h4>
+      <h4 className='text-lg flex-1 flex justify-center'>UserID: {userData?.id}</h4>
       <div className="sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
           <div className="overflow-x-auto">
