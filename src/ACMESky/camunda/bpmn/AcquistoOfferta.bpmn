@@ -150,7 +150,6 @@
       <bpmn:serviceTask id="verify-offer-code-validity" name="Verifica validità codice offerta" camunda:type="external" camunda:topic="verify-offer-code-validity">
         <bpmn:extensionElements>
           <camunda:inputOutput>
-            <camunda:outputParameter name="user_communication_code">${user_communication_code}</camunda:outputParameter>
             <camunda:outputParameter name="offer_code_validity">${offer_code_validity}</camunda:outputParameter>
           </camunda:inputOutput>
         </bpmn:extensionElements>

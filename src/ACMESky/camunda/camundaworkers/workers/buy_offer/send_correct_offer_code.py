@@ -1,8 +1,14 @@
-from camundaworkers.model.purchase_process_information import PurchaseProcessInformation
-import pika
 import json
+import requests
+from os import environ
+from sqlalchemy.orm.session import sessionmaker
 from camunda.external_task.external_task import ExternalTask, TaskResult
+from camundaworkers.model.offer import Offer
+from camundaworkers.model.flight import Flight
+from camundaworkers.model.offer_purchase_data import OfferPurchaseData
+from camundaworkers.utils.const import EventSSEType
 from camundaworkers.utils.logger import get_logger
+from camundaworkers.utils.db import create_sql_engine
 
 
 def send_correct_offer_code(task: ExternalTask) -> TaskResult:
@@ -12,24 +18,22 @@ def send_correct_offer_code(task: ExternalTask) -> TaskResult:
     :return: the task result
     """
     logger = get_logger()
-    logger.info("send_correct_offer_code")
+    logger.info("send_wrong_offer_code")
 
-    user_communication_code = str(task.get_variable("user_communication_code"))
+    offer_purchase_data = OfferPurchaseData.from_dict(json.loads(task.get_variable("offer_purchase_data")))
 
-    # Connects to RabbitMQ and publishes the message
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host="acmesky_mq"))
-    channel = connection.channel()
-    channel.queue_declare(queue=user_communication_code, durable=True)
-    success = PurchaseProcessInformation(message=f"Il codice offerta inserito è valido.",
-                                         communication_code=user_communication_code)
+    # Creating a session for PostgreSQL
+    Session = sessionmaker(bind=create_sql_engine())
+    session = Session()
 
-    channel.basic_publish(
-        exchange="",
-        routing_key=user_communication_code,
-        body=bytes(json.dumps(success.to_dict()), "utf-8"),
-        properties=pika.BasicProperties(delivery_mode=2),
-    )
+    # Gets the offer and the flight
+    offer = session.query(Offer).filter(Offer.activation_code == offer_purchase_data.offer_code).one()
+    flight = session.query(Flight).filter(Flight.flight_code == offer.flight_code).one()
 
-    connection.close()
+    # Notifies the user that the code is valid and notify it sending the flight infos
+    url = f'{environ.get("ACMESKY_SSE_URL", "http://acmesky_sse:3000")}/send/{EventSSEType.FLIGHT_INFOS}'
+    body = {'userId': offer_purchase_data.user_id, 'message': 'Offer code is valid', 'flight': flight.to_dict()}
+    requests.post(url, json=body)
+
 
     return task.complete()

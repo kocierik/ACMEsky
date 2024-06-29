@@ -42,3 +42,15 @@ class Flight(Base):
                 price: {self.price},
                 valid: {self.valid}
                 )"""
+    
+    def to_dict(self):
+        return {
+            'flight_code': self.flight_code,
+            'departure_location': self.departure_location,
+            'arrival_location': self.arrival_location,
+            'departure_date': self.departure_date.isoformat(),
+            'arrival_date': self.arrival_date.isoformat(),
+            'airline_name': self.airline_name,
+            'price': self.price,
+            'valid': self.valid
+        }

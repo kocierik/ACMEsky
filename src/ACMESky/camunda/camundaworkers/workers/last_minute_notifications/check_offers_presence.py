@@ -43,12 +43,12 @@ def check_offers_presence(task: ExternalTask) -> TaskResult:
         max_price: float = interest.get("max_price")
 
         # Retrieving all the flights which go from the departure location to the arrival location
-        departure_location_flights: list[Flight] = session.query(Flight).filter(Flight.departure_location == departure_location, Flight.arrival_location == arrival_location).all()
+        departure_location_flights: list[Flight] = session.query(Flight).filter(Flight.valid == True).filter(Flight.departure_location == departure_location, Flight.arrival_location == arrival_location).all()
 
         for flight in departure_location_flights:
             # Check if the flight has a departure date in the range of the user interest dates
             if flight.departure_date >= from_date and flight.departure_date <= to_date:
-                return_flight = session.query(Flight).filter(Flight.departure_location == arrival_location, Flight.arrival_location == departure_location).filter(Flight.departure_date >= flight.arrival_date).order_by(Flight.price.asc()).first()
+                return_flight = session.query(Flight).filter(Flight.valid == True).filter(Flight.departure_location == arrival_location, Flight.arrival_location == departure_location).filter(Flight.departure_date >= flight.arrival_date).order_by(Flight.price.asc()).first()
 
                 if return_flight and flight.arrival_date <= return_flight.departure_date <= to_date:
                     total_price = flight.price + return_flight.price
