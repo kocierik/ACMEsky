@@ -4,7 +4,7 @@ import cors from 'cors';
 import { registerUser, loginUser } from './routes/auth';
 import { createUserInterest, getUserInterests } from './routes/user_interest';
 import { newFlight } from './routes/flight'
-import { checkOfferAvailability } from './routes/offer';
+import { buyOffer } from './routes/offer';
 
 dotenv.config();
 
@@ -14,7 +14,7 @@ app.use(cors())
 
 app.post('/register', registerUser);
 app.post('/login', loginUser);
-app.get('/checkoffert/:offerCode', checkOfferAvailability);
+app.post('/buyOffer', buyOffer);
 app.get('/getUser/:userId/interests', getUserInterests);
 app.post('/createUserInterest', createUserInterest);
 app.post('/newFlight', newFlight);
