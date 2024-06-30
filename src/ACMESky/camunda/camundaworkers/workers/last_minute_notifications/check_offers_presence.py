@@ -55,9 +55,9 @@ def check_offers_presence(task: ExternalTask) -> TaskResult:
 
                     if total_price <= max_price:
                         try:
-                            session.query(Offer).filter(Offer.flight_id == flight.flight_code, Offer.user_id == user_interests.get("user_id"), Offer.interest_id == interest.get("id")).one()
+                            session.query(Offer).filter(Offer.dep_flight_id == flight.flight_code, Offer.arr_flight_id == return_flight.flight_code, Offer.user_id == user_interests.get("user_id"), Offer.interest_id == interest.get("id")).one()
                         except NoResultFound:
-                            offer = Offer.create(flight.flight_code, user_interests.get("user_id"), interest.get("id"))
+                            offer = Offer.create(flight.flight_code, return_flight.flight_code, user_interests.get("user_id"), interest.get("id"))
                             session.add(offer)
                             offers.append(offer.to_dict())
 
