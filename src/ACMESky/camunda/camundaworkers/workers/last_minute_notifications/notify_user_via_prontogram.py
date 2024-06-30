@@ -25,13 +25,16 @@ def notify_user_via_prontogram(task: ExternalTask) -> TaskResult:
 
     for offer in offers:
         flights = session.query(Flight).filter(or_(Flight.flight_code == offer.dep_flight_id, Flight.flight_code == offer.arr_flight_id)).all()
-        flights_infos = [f"[{flight.airline_name}] {flight.departure_location} -> {flight.arrival_location} - {flight.departure_date} -> {flight.arrival_date} - {flight.price}€" for flight in flights]
+        flights_infos = [f"{flight.airline_name} \n"
+                         f"{flight.departure_location} -> {flight.arrival_location} \n"
+                         f"{flight.departure_date} -> {flight.arrival_date} \n"
+                         f"{flight.price}€ \n" for flight in flights]
         flights_infos = "\n".join(flights_infos)
 
         prontogram_message = {
             "user_id": offer.user_id,
             "activation_code": offer.activation_code,
-            "message": f"ACMESky ha trovato per te la seguente offerta:\nInserisci il codice offerta {offer.activation_code} sul sito di ACMESky per poterne usufruire. Affrettati, sarà valido per sole 24 ore!\n{flights_infos}"
+            "message": f"{flights_infos}"
         }
 
         r = requests.post("http://prontogram_backend:8050/api/offer", json=prontogram_message)
