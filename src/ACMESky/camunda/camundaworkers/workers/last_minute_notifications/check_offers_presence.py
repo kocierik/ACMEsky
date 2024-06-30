@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 import javaobj.v2 as javaobj
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
@@ -38,8 +38,8 @@ def check_offers_presence(task: ExternalTask) -> TaskResult:
         # 3. The sum of X.price and Y.price is lower than user_interest.max_price
         departure_location: str = interest.get("departure_location")
         arrival_location: str = interest.get("arrival_location")
-        from_date: date = date.fromisoformat(interest.get("from_date"))
-        to_date: date = date.fromisoformat(interest.get("to_date"))
+        from_date: datetime = datetime.fromisoformat(interest.get("from_date"))
+        to_date: datetime = datetime.fromisoformat(interest.get("to_date"))
         max_price: float = interest.get("max_price")
 
         # Retrieving all the flights which go from the departure location to the arrival location

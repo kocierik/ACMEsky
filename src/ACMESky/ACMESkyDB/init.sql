@@ -19,8 +19,8 @@ CREATE TABLE flights (
     flight_code CHAR(5) NOT NULL PRIMARY KEY,
     departure_location CHAR(3) NOT NULL,
     arrival_location CHAR(3) NOT NULL,
-    departure_date DATE NOT NULL,
-    arrival_date DATE NOT NULL,
+    departure_date TIMESTAMP NOT NULL,
+    arrival_date TIMESTAMP NOT NULL,
     airline_name VARCHAR(100) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     valid BOOLEAN NOT NULL

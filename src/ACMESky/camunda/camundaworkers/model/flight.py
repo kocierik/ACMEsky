@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, Float, Boolean
+from sqlalchemy import Column, String, Float, Boolean, TIMESTAMP as Timestamp
 from camundaworkers.utils.db import Base
 
 class Flight(Base):
@@ -24,8 +24,8 @@ class Flight(Base):
     flight_code = Column(String(10), primary_key=True)
     departure_location = Column(String(3))
     arrival_location = Column(String(3))
-    departure_date = Column(DateTime)
-    arrival_date = Column(DateTime)
+    departure_date = Column(Timestamp)
+    arrival_date = Column(Timestamp)
     airline_name = Column(String(100))
     price = Column(Float)
     valid = Column(Boolean)
