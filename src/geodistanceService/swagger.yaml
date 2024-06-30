@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: Distance Calculation API
+  version: 1.0.0
+  description: API for calculating distances between locations using the Distance Matrix API
+
+servers:
+  - url: http://localhost:8040
+
+paths:
+  /distance:
+    get:
+      summary: Calculate distance between two locations
+      description: Returns the distance between the origin and destination locations
+      tags:
+        - Distance
+      parameters:
+        - in: query
+          name: origins
+          required: true
+          schema:
+            type: string
+          description: The starting location
+        - in: query
+          name: destinations
+          required: true
+          schema:
+            type: string
+          description: The ending location
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  distance:
+                    type: string
+                    description: The distance between the two locations
+        '500':
+          description: Internal server error
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  schemas:
+    DistanceResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        rows:
+          type: array
+          items:
+            type: object
+            properties:
+              elements:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    distance:
+                      type: object
+                      properties:
+                        text:
+                          type: string
+                        value:
+                          type: integer

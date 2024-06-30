@@ -1,0 +1,69 @@
+openapi: 3.0.0
+info:
+  title: SSE Server API
+  version: 1.0.0
+  description: A server for Server-Sent Events (SSE) with authentication
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /events:
+    get:
+      summary: Subscribe to SSE events
+      description: Establishes a connection for receiving Server-Sent Events
+      responses:
+        '200':
+          description: Successful connection
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+      security:
+        - cookieAuth: []
+
+  /send/{event}:
+    post:
+      summary: Send an SSE event
+      description: Sends a custom event to subscribed clients
+      parameters:
+        - in: path
+          name: event
+          required: true
+          schema:
+            type: string
+          description: The name of the event to send
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: The ID of the user to send the event to
+              additionalProperties: true
+      responses:
+        '200':
+          description: Event sent successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+
+security:
+  - cookieAuth: []
+
+tags:
+  - name: SSE
+    description: Server-Sent Events operations

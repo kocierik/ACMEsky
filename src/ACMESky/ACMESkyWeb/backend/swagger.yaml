@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: User Management and Flight Booking API
+  version: 1.0.0
+  description: API for user management, flight booking, and user interests
+
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      tags:
+        - User Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  id:
+                    type: string
+                  token:
+                    type: string
+                  status:
+                    type: integer
+        '400':
+          description: User already exists
+        '500':
+          description: Internal server error
+
+  /login:
+    post:
+      summary: Login user
+      tags:
+        - User Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  token:
+                    type: string
+                  id:
+                    type: string
+                  status:
+                    type: integer
+        '401':
+          description: Invalid credentials
+        '500':
+          description: Internal server error
+
+  /flights:
+    post:
+      summary: Create a new flight offer
+      tags:
+        - Flights
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              # Add properties based on your flight object structure
+      responses:
+        '200':
+          description: Offer created successfully
+        '500':
+          description: Error creating offer
+
+  /offers/buy:
+    post:
+      summary: Purchase an offer
+      tags:
+        - Offers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                offerCode:
+                  type: string
+                address:
+                  type: string
+      responses:
+        '200':
+          description: Purchase request sent to Camunda
+        '500':
+          description: Error during purchase
+
+  /users/{userId}/interests:
+    get:
+      summary: Get user interests
+      tags:
+        - User Interests
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User interests retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserInterest'
+        '500':
+          description: Error retrieving user interests
+
+    post:
+      summary: Create a new user interest
+      tags:
+        - User Interests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInterest'
+      responses:
+        '200':
+          description: Interest created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInterest'
+        '500':
+          description: Error creating interest
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    UserInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    UserInterest:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: string
+        departure_location:
+          type: string
+        arrival_location:
+          type: string
+        from_date:
+          type: string
+          format: date-time
+        to_date:
+          type: string
+          format: date-time
+        max_price:
+          type: number
+
+    Offer:
+      type: object
+      properties:
+        user_id:
+          type: string
+        dep_flight_id:
+          type: string
+        arr_flight_id:
+          type: string
+        interest_id:
+          type: integer
+        activation_code:
+          type: string
+        payed:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+
+security:
+  - bearerAuth: []

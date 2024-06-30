@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: AcmeSky Checkout API
+  version: 1.0.0
+  description: API for handling offer checkouts and payments
+
+servers:
+  - url: http://localhost:3001
+
+paths:
+  /checkout/{offerCode}:
+    post:
+      summary: Process a checkout for an offer
+      tags:
+        - Checkout
+      parameters:
+        - in: path
+          name: offerCode
+          required: true
+          schema:
+            type: string
+          description: The code of the offer being checked out
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              # Add properties based on your checkout data structure
+      responses:
+        '200':
+          description: Checkout completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  offer:
+                    type: object
+                  code:
+                    type: string
+
+  /received-data/{offerCode}:
+    get:
+      summary: Get received data for a specific offer
+      tags:
+        - Offers
+      parameters:
+        - in: path
+          name: offerCode
+          required: true
+          schema:
+            type: string
+          description: The code of the offer to retrieve
+      responses:
+        '200':
+          description: Offer data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                # Add properties based on your offer data structure
+        '404':
+          description: Offer not found
+        '500':
+          description: Internal server error
+
+  /process-payment/{offerCode}:
+    post:
+      summary: Process payment and update offer availability
+      tags:
+        - Payment
+      parameters:
+        - in: path
+          name: offerCode
+          required: true
+          schema:
+            type: string
+          description: The code of the offer being paid for
+      responses:
+        '200':
+          description: Payment processed and availability updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  offer:
+                    type: object
+        '404':
+          description: Offer not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Offer:
+      type: object
+      properties:
+        codice_offerta:
+          type: string
+        disponibile:
+          type: boolean
+        # Add other properties based on your offer structure

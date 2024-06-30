@@ -51,7 +51,7 @@ function App() {
                 {offers.map((offer, i) => (
                   <div key={i} className="bg-white rounded-lg shadow-md p-6 transition-transform hover:scale-105">
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm font-semibold text-gray-500">Offer #{i + 1}</span>
+                      <span className="text-sm font-semibold text-gray-500">Offerta #{i + 1}</span>
                       <span className="px-2 py-1 text-xs font-bold text-white bg-green-500 rounded-full">
                         Active
                       </span>

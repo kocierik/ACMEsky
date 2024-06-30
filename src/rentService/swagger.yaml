@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: Rent Service API
+  version: 1.0.0
+  description: API for booking rentals
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /bookRent:
+    post:
+      summary: Book a rent
+      tags:
+        - Rent
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/RentRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/RentResponse'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    RentRequest:
+      type: object
+      properties:
+        clientName:
+          type: string
+        clientSurname:
+          type: string
+        fromAddress:
+          type: string
+        toAddress:
+          type: string
+        arrivalDateTime:
+          type: string
+          format: date-time
+      required:
+        - clientName
+        - clientSurname
+        - fromAddress
+        - toAddress
+        - arrivalDateTime
+
+    RentResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        departureDateTime:
+          type: string
+          format: date-time
+        arrivalDateTime:
+          type: string
+          format: date-time
+        rentId:
+          type: string
+      required:
+        - status

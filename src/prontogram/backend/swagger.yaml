@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+  title: Prontogram Service API
+  version: 1.0.0
+  description: API for managing offers in Prontogram
+
+servers:
+  - url: http://localhost:8050
+
+paths:
+  /api/offers:
+    get:
+      summary: Get offers for a user
+      tags:
+        - Offers
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The user ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferList'
+        '400':
+          description: Bad request
+
+  /api/offer:
+    post:
+      summary: Add a new offer
+      tags:
+        - Offers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddOfferRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        '400':
+          description: Bad request
+
+components:
+  schemas:
+    AddOfferRequest:
+      type: object
+      properties:
+        user_id:
+          type: string
+        activation_code:
+          type: string
+        message:
+          type: string
+      required:
+        - user_id
+        - activation_code
+        - message
+
+    Offer:
+      type: object
+      properties:
+        user_id:
+          type: string
+        activation_code:
+          type: string
+        message:
+          type: string
+
+    OfferList:
+      type: object
+      properties:
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offer'
+
+    UserId:
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
