@@ -2,6 +2,7 @@ import json
 import requests
 from os import environ
 from sqlalchemy.orm.session import sessionmaker
+from sqlalchemy import or_
 from camunda.external_task.external_task import ExternalTask, TaskResult
 from camundaworkers.model.offer import Offer
 from camundaworkers.model.flight import Flight
@@ -29,7 +30,7 @@ def send_correct_offer_code(task: ExternalTask) -> TaskResult:
     # Gets the flights from the offer
     flights = (
         session.query(Flight)
-        .join(Offer, Flight.flight_code == Offer.dep_flight_id or Flight.flight_code == Offer.arr_flight_id)
+        .join(Offer, or_(Flight.flight_code == Offer.dep_flight_id, Flight.flight_code == Offer.arr_flight_id))
         .filter(Offer.activation_code == offer_purchase_data.offer_code)
         .all()
     )
