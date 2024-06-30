@@ -1,45 +1,73 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
+import { BASE_URL } from './utils/const'
+
+interface IFlight {
+  flight_code: string;
+  departure_location: string;
+  arrival_location: string;
+  arrival_date: string; // Formato data come stringa (yyyy-mm-dd)
+  departure_date: string; // Formato data come stringa (yyyy-mm-dd)
+  airline_name: string;
+  price: number; // Prezzo come numero decimale
+}
+
+interface IOffer {
+  amount: number;
+  payment_receiver: string;
+  offer_code: string;
+  description: string;
+  flights: IFlight[];
+}
+
+interface IPayment {
+  nameOnCard: string;
+  cardNumber: string;
+  expirationDate: string;
+  securityCode: string;
+  amount: number;
+}
 
 function App() {
-  const [offer, setOffer] = useState(null);
+  const { paymentCode } = useParams();
+
+  const [offer, setOffer] = useState<IOffer | undefined>(undefined);
   const [nameOnCard, setNameOnCard] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
   const [securityCode, setSecurityCode] = useState("");
-  const { offerCode } = useParams();
 
-  async function fetchReceivedData() {
+  async function fetchOfferData() {
     try {
-      const response = await fetch(`http://localhost:3001/received-data/${offerCode}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
+      const response = await fetch(`${BASE_URL}/${paymentCode}`, { method: "GET" });
       if (!response.ok) {
         Swal.fire({
           title: "Ops!",
-          text: "Offerta non esistente!",
+          text: "Codice pagamento non valido!",
           icon: "error",
         });
       }
       const data = await response.json();
       setOffer(data);
-      console.log(data);
     } catch (error) {
       console.error("Errore durante la richiesta dei dati:", error);
     }
   }
   useEffect(() => {
-    fetchReceivedData();
+    fetchOfferData();
   }, []);
 
-  async function handlePayment(paymentData) {
+  async function handlePayment() {
+    const paymentData: IPayment = {
+      nameOnCard,
+      cardNumber,
+      expirationDate,
+      securityCode,
+      amount: offer!.amount,
+    };
     try {
-      const response = await fetch(`http://localhost:3001/process-payment/${offer.codiceOfferta}`, {
+      const response = await fetch(`${BASE_URL}/buy/${paymentCode}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,36 +75,22 @@ function App() {
         },
         body: JSON.stringify(paymentData),
       });
-      const result = await response.json();
-      // Gestisci la risposta del server
-      console.log(result);
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
       Swal.fire({
         title: "Ottimo!",
-        text: "Acquisto completato con successo! \n Riceverai il biglietto via mail.",
+        text: "Acquisto completato con successo!\nPuoi tornare alla pagine di ACMESky",
         icon: "success",
-      }).then(_ => {
-        window.location.href = `http://localhost:8080`;
       });
     } catch (error) {
       Swal.fire({
         title: 'Errore!',
-        text: 'Si è verificato un errore durante il pagamento.',
+        text: 'Si è verificato un errore durante il pagamento: ' + error,
         icon: 'error'
       });
-      console.error("Errore durante il pagamento:", error);
     }
   }
-
-  const handlePayNowClick = async () => {
-    const paymentData = {
-      nameOnCard,
-      cardNumber,
-      expirationDate,
-      securityCode,
-      amount: offer.price,
-    };
-    await handlePayment(paymentData);
-  };
 
   return (
     <>
@@ -93,12 +107,12 @@ function App() {
             </div>
             <div className="mb-10">
               <h1 className="text-center font-bold text-xl uppercase">
-                Secure payment info
+                Info Pagamento
               </h1>
             </div>
             <div className="mb-3">
               <label className="font-bold text-sm mb-2 ml-1">
-                Name on card
+                Nome Intestatario
               </label>
               <div>
                 <input
@@ -111,7 +125,7 @@ function App() {
               </div>
             </div>
             <div className="mb-3">
-              <label className="font-bold text-sm mb-2 ml-1">Card number</label>
+              <label className="font-bold text-sm mb-2 ml-1">Numero Carta</label>
               <div>
                 <input
                   className="w-full px-3 py-2 mb-1 border-2 border-gray-200 rounded-md focus:outline-none focus:border-indigo-500 transition-colors"
@@ -125,7 +139,7 @@ function App() {
             <div className="mb-3 -mx-2 flex items-end">
               <div className="px-2 w-1/2">
                 <label className="font-bold text-sm mb-2 ml-1">
-                  Expiration date
+                  Data di scadenza
                 </label>
                 <div>
                   <input
@@ -152,10 +166,10 @@ function App() {
             </div>
             <div>
               <button
-                onClick={async () => await handlePayNowClick()}
+                onClick={async () => await handlePayment()}
                 className="block w-full max-w-xs mx-auto bg-indigo-500 hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold"
               >
-                PAY NOW
+                PAGA ORA
               </button>
             </div>
           </div>
@@ -166,27 +180,29 @@ function App() {
               <div className="px-6 py-4 flex flex-col bg-white">
                 <div className="font-bold text-xl mb-2">Offerta</div>
                 <div className="mb-2">
+                  <span className="text-gray-700">Descrizione:</span>{" "}
+                  {offer.description}
+                </div>
+                <div className="mb-2">
                   <span className="text-gray-700">Codice Offerta:</span>{" "}
-                  {offer.codice_offerta}
+                  {offer.offer_code}
                 </div>
                 <div className="mb-2">
-                  <span className="text-gray-700">Partenza:</span>{" "}
-                  {offer.departure_location}
+                  <span className="text-gray-700">Pagamento versato a:</span>{" "}
+                  {offer.payment_receiver}
                 </div>
                 <div className="mb-2">
-                  <span className="text-gray-700">Arrivo:</span>{" "}
-                  {offer.arrival_location}
+                  <span className="text-gray-700">Prezzo Totale:</span> {offer.amount}
                 </div>
                 <div className="mb-2">
-                  <span className="text-gray-700">Data di Partenza:</span>{" "}
-                  {offer.departure_date}
+                  <span className="text-gray-700">Volo di andata:</span>{" "} 
+                  {offer.flights[0].airline_name} - {offer.flights[0].flight_code}<br />
+                  {offer.flights[0].departure_location} -&gt; {offer.flights[0].arrival_location} {offer.flights[0].departure_date} -&gt; {offer.flights[0].arrival_date}
                 </div>
                 <div className="mb-2">
-                  <span className="text-gray-700">Data di Arrivo:</span>{" "}
-                  {offer.arrival_date}
-                </div>
-                <div className="mb-2">
-                  <span className="text-gray-700">Prezzo:</span> {offer.price}
+                  <span className="text-gray-700">Volo di ritorno:</span>{" "} 
+                  {offer.flights[1].airline_name} - {offer.flights[1].flight_code}<br />
+                  {offer.flights[1].departure_location} -&gt; {offer.flights[1].arrival_location} {offer.flights[1].departure_date} -&gt; {offer.flights[1].arrival_date}
                 </div>
               </div>
             </div>

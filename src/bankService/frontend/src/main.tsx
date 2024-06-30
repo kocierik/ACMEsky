@@ -1,13 +1,12 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
+import App from './App.tsx'
 import './index.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
   <Router>
     <Routes>
-      <Route path="/received-data/:offerCode" element={<App />} />
+      <Route path="/:paymentCode" element={<App />} />
     </Routes>
   </Router>
 )

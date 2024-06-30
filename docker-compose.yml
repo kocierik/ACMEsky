@@ -124,7 +124,7 @@ services:
     bank_backend:
         build: ./src/bankService/backend/
         ports:
-            - "3001:3001"
+            - "3001:3000"
         environment:
             NODE_ENV: production
             

@@ -10,11 +10,15 @@ COPY package*.json ./
 # Installa le dipendenze del progetto
 RUN npm install 
 
-# Copia il file di configurazione
-COPY server.js .
+# Copia i file di configurazione
+COPY tsconfig.json ./
+COPY index.ts .
+
+# Compila i file TypeScript
+RUN npm run build
 
 # Esponi la porta su cui il server Node.js sta ascoltando (la porta predefinita è 3000)
-EXPOSE 3001
+EXPOSE 3000
 
 # Comando di avvio predefinito per il container
-CMD ["node", "server.js"]
+CMD ["node", "dist/index.js"]

@@ -40,8 +40,12 @@ const OfferForm = () => {
     eventSource.addEventListener('payment_url', event => {
       const data = JSON.parse(event.data);
       console.log('Received payment URL:', data);
-      // window.location.href = data.url; 
-      window.open(data.url, '_blank');
+      Swal.fire({
+        title: "Pagamento in corso",
+        text: "Chiudi la finestra quando avrai completato il pagamento",
+        icon: "success",
+      });
+      window.open(data.payment_url, '_blank');
     });
 
     eventSource.addEventListener('tickets', event => {
@@ -192,16 +196,6 @@ const OfferForm = () => {
                     </tbody>
                   </table>
                 </div>
-              </div>
-            </div>
-
-            <div className="md:col-span-5 text-center mt-2 mb-5">
-              <div className="inline-flex items-center">
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Acquista
-                </button>
               </div>
             </div>
           </div>

@@ -16,4 +16,10 @@ const buyOffer = async (req: Request, res: Response) => {
   return res.status(200).json({ message: 'Acquisto offerta inoltrato a Camunda' });
 }
 
-export { buyOffer };
+const paymentResult = async (req: Request, res: Response) => {
+  console.log(req.body)
+
+  return res.status(200).json({ message: 'Acquisto offerta inoltrato a Camunda' });
+}
+
+export { buyOffer, paymentResult };
