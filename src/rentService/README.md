@@ -49,14 +49,3 @@ Implementato in Jolie, utilizza SOAP per esporre i servizi.
 | - | - | - | - |
 | RentSOAPBinding | SOAP11 | Rent | Document/Literal-Wrapped |
 
-## Run service:
-```sh
-jolie server.ol $SERVICE_NAME
-```
-
-### Create and run the docker stack
-```sh
-docker-compose up
-```
-&nbsp;
-<div class="page-break"></div>

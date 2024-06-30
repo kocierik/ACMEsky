@@ -45,7 +45,7 @@ function App() {
           </button>
 
           <div className="max-w-4xl mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-4">Your Offers</h2>
+            <h2 className="text-2xl font-bold mb-4">Le tue offerte</h2>
             {offers && offers.length > 0 ? (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {offers.map((offer, i) => (
@@ -56,17 +56,17 @@ function App() {
                         Active
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold mb-2">Activation Code</h3>
+                    <h3 className="text-lg font-bold mb-2">Codice di attivazione</h3>
                     <p className="text-2xl font-mono bg-gray-100 p-2 rounded mb-4">
                       {offer?.activation_code}
                     </p>
-                    <h4 className="text-md font-semibold mb-2">Message</h4>
+                    <h4 className="text-md font-semibold mb-2">Descrizione</h4>
                     <p className="text-gray-700">{offer?.message}</p>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center">No offers available at the moment.</p>
+              <p className="text-gray-500 text-center">Nessuna offerta disponibile al momento.</p>
             )}
           </div>
         </div>

@@ -2,29 +2,6 @@
 
 Questo progetto offre un servizio API per la gestione dei voli e dei biglietti, consentendo agli utenti di ottenere informazioni sui voli disponibili e sui dettagli dei biglietti.
 
-### Prerequisiti
-
-- Go 
-- Docker
-- Docker Compose
-
-### Configurazione
-
-Modifica il file .env con le tue configurazioni (se necessario).
-
-```
-POSTGRES_USER=pg
-POSTGRES_PASSWORD=pass
-POSTGRES_DB=airline
-```
-
-## Utilizzo
-
- Avvia il server:
-```
-go run main.go
-```
-
 ## API Endpoint
 
 Il server espone degli endpoint per ottenere i voli.
