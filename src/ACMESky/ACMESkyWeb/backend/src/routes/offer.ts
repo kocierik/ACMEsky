@@ -3,9 +3,7 @@ import { send_string_as_correlate_message } from '../utils/camunda_rest_client';
 
 // TODO: extract JWT from request through middleware
 const buyOffer = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
-  const offerCode = req.params.offerCode;
-  const address = req.body.address;
+  const { userId, offerCode, address } = req.body as { userId: string; offerCode: string; address: string };
 
   // Send message with the activationCode and the address to Camunda
   const response = await send_string_as_correlate_message("offer_purchase_data", [["offer_purchase_data", JSON.stringify({ offerCode, address, userId })]]);
