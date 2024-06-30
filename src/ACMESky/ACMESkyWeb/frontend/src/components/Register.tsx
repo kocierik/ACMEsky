@@ -40,6 +40,7 @@ function Register() {
       if (data.token) {
         localStorage.setItem("token", data.token)
         localStorage.setItem("user", JSON.stringify({email: email, id: data.id }))
+        document.cookie = `token=${data.token}`;
       }
       Swal.fire({
         title: "Ottimo!",

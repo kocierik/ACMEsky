@@ -10,17 +10,28 @@ interface IUserInterest {
   max_price: number;
 }
 
+interface OfferI {
+  user_id : string
+  activation_code: string
+  message: string
+}
+
 function App() {
 
   const [userInterests, _setUserInterests] = useState<IUserInterest[]>([]);
   const [userId,setUserId] = useState("")
+  const [offers,setOffers] = useState<OfferI>()
 
   useEffect(()=> {
     // fetchUserInterests()
   },[])
 
-  function fetchUserInterests(): void {
+  async function fetchUserInterests() {
     console.log('Searching for UUID:', userId);
+    const response = await fetch(`/api/offers?id=${userId}`)
+    const data = await response.json()
+    setOffers(data)
+    console.log("data offers --> ", data);
   }
 
   return (
@@ -47,58 +58,8 @@ function App() {
         </button>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full text-start text-sm ">
-              <thead className="border-b border-neutral-200 ">
-                <tr>
-                <th scope="col" className="px-6 py-4">
-                    Codice Offerta
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Luogo di Partenza
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Luogo di Arrivo
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Data di Partenza
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Data di Arrivo
-                  </th>
-                  <th scope="col" className="px-6 py-4">
-                    Prezzo Massimo
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {userInterests.map((interest, i) => (
-                  <tr
-                    key={i}
-                    className="border-b border-neutral-200 dark:border-white/10"
-                  >
-                    <td className="whitespace-nowrap text-center py-4">
-                      {/* TODO: DA modificare poiche' il codice e' da prendere dal backend di prontogram */}
-                      {interest.offerCode ? interest.offerCode : "Non Disponibile"}
-                    </td>
-                    <td className="whitespace-nowrap text-center py-4">
-                      {interest.departure_location}
-                    </td>
-                    <td className="whitespace-nowrap text-center px-6 py-4">
-                      {interest.arrival_location}
-                    </td>
-                    <td className="whitespace-nowrap text-center px-6 py-4">
-                      {String(interest.from_date)}
-                    </td>
-                    <td className="whitespace-nowrap text-center px-6 py-4">
-                      {String(interest.to_date)}
-                    </td>
-                    <td className="whitespace-nowrap text-center px-6 py-4">
-                      {interest.max_price}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            Il tuo codice di attivazione è {offers?.activation_code}
+            {offers?.message}
           </div>
         </div>
       </div>
