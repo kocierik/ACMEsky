@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 
@@ -7,23 +8,16 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
-  origin: '*', // Allow all origins
+  origin: 'http://localhost:8080', // Allow only the specified origin
+  credentials: true,
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
   exposedHeaders: ['Content-Type'],
 }));
 
 let listeners: Record<string, Response> = {};
-
-// Middleware per aggiungere header CORS a tutte le risposte
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Expose-Headers', 'Content-Type');
-  next();
-});
 
 app.get('/events', (req: Request, res: Response) => {
   res.setHeader('Content-Type', 'text/event-stream');
@@ -47,6 +41,9 @@ app.get('/events', (req: Request, res: Response) => {
 });
 
 function sendEvent(eventName: string, data: any) {
+  if (!listeners[data['userId']]) {
+    return;
+  }
   listeners[data['userId']].write(`event: ${eventName}\n`);
   listeners[data['userId']].write(`data: ${JSON.stringify(data)}\n\n`);
 }
@@ -56,7 +53,7 @@ app.post("/send/:event", (req: Request, res: Response) => {
   res.status(200).send(`${req.params.event} event sent`);
 });
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`SSE server running on port ${PORT}`);
 });

@@ -19,7 +19,7 @@ def send_correct_offer_code(task: ExternalTask) -> TaskResult:
     :return: the task result
     """
     logger = get_logger()
-    logger.info("send_wrong_offer_code")
+    logger.info("send_correct_offer_code")
 
     offer_purchase_data = OfferPurchaseData.from_dict(json.loads(task.get_variable("offer_purchase_data")))
 
@@ -36,7 +36,7 @@ def send_correct_offer_code(task: ExternalTask) -> TaskResult:
     )
 
     # Notifies the user that the code is valid and notify it sending the flight infos
-    url = f'{environ.get("ACMESKY_SSE_URL", "http://acmesky_sse:3000")}/send/{EventSSEType.FLIGHTS_INFOS}'
+    url = f'{environ.get("ACMESKY_SSE_URL", "http://acmesky_sse:3000")}/send/{EventSSEType.FLIGHTS_INFOS.value}'
     body = {'userId': offer_purchase_data.user_id, 'message': 'Offer code is valid', 'flights': [flight.to_dict() for flight in flights]}
     requests.post(url, json=body)
 

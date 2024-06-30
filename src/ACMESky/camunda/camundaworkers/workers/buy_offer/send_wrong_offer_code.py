@@ -19,7 +19,7 @@ def send_wrong_offer_code(task: ExternalTask) -> TaskResult:
     offer_purchase_data = OfferPurchaseData.from_dict(json.loads(task.get_variable("offer_purchase_data")))
 
     # Notifies the user that the code is invalid or expired
-    url = f'{environ.get("ACMESKY_SSE_URL", "http://acmesky_sse:3000")}/send/{EventSSEType.ERROR}'
+    url = f'{environ.get("ACMESKY_SSE_URL", "http://acmesky_sse:3000")}/send/{EventSSEType.ERROR.value}'
     body = {'userId': offer_purchase_data.user_id, 'message': 'Invalid or expired offer code.'}
     requests.post(url, json=body)
 

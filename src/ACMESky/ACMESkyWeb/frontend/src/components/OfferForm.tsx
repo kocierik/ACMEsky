@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BASE_URL, BASE_URL_SSE } from "../utils/const";
 import Swal from "sweetalert2";
 
-interface IOffer {
+interface IFlight {
   flight_code: string;
   departure_location: string;
   arrival_location: string;
@@ -16,16 +16,9 @@ interface IOffer {
 const OfferForm = () => {
   const [codiceOfferta, setCodiceOfferta] = useState("");
   const [domicilio, setDomicilio] = useState("");
-  
-  //da eliminare
-  const [offer, _setOffer] = useState<IOffer>();
-  const [distance, _setDistance] = useState<number | null>(0);
-  //
+  const [flights, setFlights] = useState<IFlight[]>([])
 
-  const [flights,setFlights] = useState<IOffer[]>([])
-
-   // START handle SSE server
-  useEffect(() => {
+   const handleSSE = async () => {
     const eventSource = new EventSource(`${BASE_URL_SSE}/events`, {withCredentials: true});
 
     eventSource.addEventListener('flightInfos', event => {
@@ -41,6 +34,7 @@ const OfferForm = () => {
         text: data.message,
         icon: "error",
       });
+      eventSource.close();
     });
 
     eventSource.addEventListener('payment_url', event => {
@@ -56,7 +50,7 @@ const OfferForm = () => {
     });
 
 
-    eventSource.addEventListener('flights_info', event => {
+    eventSource.addEventListener('flights_infos', event => {
       const data = JSON.parse(event.data);
       console.log('Received flights:', data.flights);
       setFlights(data.flights)
@@ -69,13 +63,12 @@ const OfferForm = () => {
     return () => {
       eventSource.close();
     };
-  }, []);
-// END handle SSE server
-
-
+  };
 
   const handleSearch = async () => {
     try {
+      await handleSSE();
+
       const response = await fetch(`${BASE_URL}/buyOffer/`, {
         method: "POST",
         headers: {
@@ -97,7 +90,6 @@ const OfferForm = () => {
         });
         return;
       }
-      console.log("DONE");
 
     } catch (error) {
       Swal.fire({
@@ -135,14 +127,7 @@ const OfferForm = () => {
                 onChange={(e) => setDomicilio(e.target.value)}
                 placeholder="Bologna"
                 />
-            {(distance != 0 && offer) && (
-              <div className="flex flex-1 mt-1 flex-col mb-1">
-                <p>Distanza: {distance} {' '} km</p>
-                {(distance! < 30 && distance != 0) && "Hai diritto alla navetta fino all'aereoporto"}
-              </div>
-            )}
-            {((distance! > 30 || distance == 0) && offer ) && "Non hai diritto alla navetta fino all'aereoporto"}
-          </div>
+            </div>
           </div>
           <div className="md:col-span-5 text-right mt-2">
             <div className="inline-flex items-end">

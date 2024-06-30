@@ -25,11 +25,11 @@ def verify_offer_code_validity(task: ExternalTask) -> TaskResult:
 
     # Checks if the offer is valid and not expired
     one_day_ago = datetime.datetime.now(tz=datetime.timezone.utc) - datetime.timedelta(hours=24)
-    offers_lenght = session.query(Offer).filter(Offer.activation_code == offer_purchase_data.offer_code, Offer.creation_date >= one_day_ago).count()
+    offers_lenght = session.query(Offer).filter(Offer.activation_code == offer_purchase_data.offer_code, Offer.created_at >= one_day_ago).count()
 
     if offers_lenght < 1:
         session.rollback()
-        logger.error("0 matches were found for the given offer code ", offer_purchase_data.offer_code)
+        logger.error("0 matches were found for the given offer code %s", offer_purchase_data.offer_code)
         return task.complete(global_variables={'offer_code_validity': False})
 
     session.commit()
