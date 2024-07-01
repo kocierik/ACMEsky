@@ -1,40 +1,26 @@
-import json
-from camundaworkers.model.purchase_process_information import PurchaseProcessInformation
-import pika
 from camunda.external_task.external_task import ExternalTask, TaskResult
+from os import environ
+import json
+import requests
 from camundaworkers.utils.logger import get_logger
+from camundaworkers.utils.const import EventSSEType
+from camundaworkers.model.payment_info import PaymentInfo
 
 
 def send_wrong_payment_status(task: ExternalTask) -> TaskResult:
     """
-    Notifies the user that the payment has timed out.
+    Notifies the user that the payment was not completed
     :param task: the current task instance
     :return: the task result
     """
     logger = get_logger()
     logger.info("send_wrong_payment_status")
 
-    user_communication_code = str(task.get_variable("user_communication_code"))
+    payment_info = PaymentInfo.from_dict(json.loads(task.get_variable("payment_status")))
 
-    # Connect to RabbitMQ and publish the message
-    connection = pika.BlockingConnection(pika.ConnectionParameters("acmesky_mq"))
-    channel = connection.channel()
-
-    channel.queue_declare(queue=user_communication_code, durable=True)
-
-    error = PurchaseProcessInformation(
-        message="Il processo di acquisto è fallito. Riprova nuovamente.",
-        communication_code=user_communication_code,
-        is_error=True,
-    )
-
-    channel.basic_publish(
-        exchange="",
-        routing_key=user_communication_code,
-        body=bytes(json.dumps(error.to_dict()), "utf-8"),
-        properties=pika.BasicProperties(delivery_mode=2),
-    )
-
-    connection.close()
+    # Notifies the user that the payment was not completed
+    url = f'{environ.get("ACMESKY_SSE_URL", "http://acmesky_sse:3000")}/send/{EventSSEType.ERROR.value}'
+    body = {'userId': payment_info.user_id, 'message': 'Payment was not completed. Refresh the page and try again.'}
+    requests.post(url, json=body, timeout=20)
 
     return task.complete()

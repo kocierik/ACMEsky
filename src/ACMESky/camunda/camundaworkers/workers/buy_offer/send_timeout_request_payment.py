@@ -1,8 +1,11 @@
 import json
-from camundaworkers.model.purchase_process_information import PurchaseProcessInformation
-import pika
+from os import environ
+import requests
 from camunda.external_task.external_task import ExternalTask, TaskResult
+
 from camundaworkers.utils.logger import get_logger
+from camundaworkers.utils.const import EventSSEType
+from camundaworkers.model.offer_purchase_data import OfferPurchaseData
 
 
 def send_timeout_request_payment(task: ExternalTask) -> TaskResult:
@@ -14,27 +17,11 @@ def send_timeout_request_payment(task: ExternalTask) -> TaskResult:
     logger = get_logger()
     logger.info("send_timeout_request_payment")
 
-    user_communication_code = str(task.get_variable("user_communication_code"))
+    offer_purchase_data = OfferPurchaseData.from_dict(json.loads(task.get_variable("offer_purchase_data")))
 
-    # Connects to RabbitMQ and publishes the message
-    connection = pika.BlockingConnection(pika.ConnectionParameters("acmesky_mq"))
-    channel = connection.channel()
-
-    channel.queue_declare(queue=user_communication_code, durable=True)
-
-    error = PurchaseProcessInformation(
-        message="Il processo di acquisto è stato interrotto perché è passato troppo tempo dall'invio della richiesta. Riprova nuovamente.",
-        communication_code=user_communication_code,
-        is_error=True,
-    )
-
-    channel.basic_publish(
-        exchange="",
-        routing_key=user_communication_code,
-        body=bytes(json.dumps(error.to_dict()), "utf-8"),
-        properties=pika.BasicProperties(delivery_mode=2),
-    )
-
-    connection.close()
+    # Notifies the user that the payment has timed out
+    url = f'{environ.get("ACMESKY_SSE_URL", "http://acmesky_sse:3000")}/send/{EventSSEType.ERROR.value}'
+    body = {'userId': offer_purchase_data.user_id, 'message': 'Payment request timed out.'}
+    requests.post(url, json=body, timeout=20)
 
     return task.complete()

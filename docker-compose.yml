@@ -9,6 +9,11 @@ services:
         image: postgres:latest
         restart: always
         env_file: ./src/ACMESky/ACMESkyDB/.env
+        environment:
+            POSTGRES_USER: pg
+            POSTGRES_PASSWORD: pass 
+            POSTGRES_HOST: acmesky_db 
+            POSTGRES_DB: acmesky
         ports:
             - "5432:5432"
         volumes:

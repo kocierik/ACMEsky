@@ -6,6 +6,7 @@ import json
 import requests
 
 from camundaworkers.utils.const import EventSSEType
+from camundaworkers.model.payment_info import PaymentInfo
 from camundaworkers.model.offer import Offer
 from camundaworkers.model.flight import Flight
 from camundaworkers.utils.db import create_sql_engine
@@ -37,25 +38,27 @@ def payment_request(task: ExternalTask) -> TaskResult:
         .filter(Offer.activation_code == offer_purchase_data.offer_code)
         .all()
     )
-    flights_cost = sum([flight.price for flight in flights])
+    flights_cost = sum(flight.price for flight in flights)
     flights_companies = {flight.airline_name for flight in flights}
     companies_info = 'dalle compagnie ' + ', '.join(flights_companies) if len(flights_companies) > 1 else 'dalla compagnia ' + flights_companies.pop()
 
     # Sends the payment request generation to the Payment Provider and get back the URL to send to the user.
-    payment_request_to_send = {
-        "amount": flights_cost,
-        "payment_receiver": "ACMESky",
-        "offer_code": offer_purchase_data.offer_code,
-        "description": f"Il costo totale dell'offerta è: € {flights_cost}. I biglietti verranno acquistati {companies_info}",
-        "user_id": offer_purchase_data.user_id,
-        "flights": [flight.to_dict() for flight in flights]
-    }
+    payment_request_to_send = PaymentInfo(
+        amount=flights_cost,
+        payment_receiver="ACMESky",
+        offer_code=offer_purchase_data.offer_code,
+        description=f"Il costo totale dell'offerta è: € {flights_cost}. I biglietti verranno acquistati {companies_info}",
+        user_id=offer_purchase_data.user_id,
+        flights=[flight.to_dict() for flight in flights],
+        process_instance_id=task.get_process_instance_id()
+    )
+
     payment_provider_url = environ.get("PAYMENT_PROVIDER_URL", "http://bank_backend:3000")
-    payment_response = requests.post(payment_provider_url + "/createPaymentUrl", json=payment_request_to_send).json()
+    payment_response = requests.post(payment_provider_url + "/createPaymentUrl", json=payment_request_to_send.to_dict(), timeout=20).json()
 
     # Notifies the user with the payment URL
     url = f'{environ.get("ACMESKY_SSE_URL", "http://acmesky_sse:3000")}/send/{EventSSEType.PAYMENT_URL.value}'
     body = {'userId': offer_purchase_data.user_id, 'payment_url': payment_response['paymentUrl']}
-    requests.post(url, json=body)
+    requests.post(url, json=body, timeout=20)
 
     return task.complete()

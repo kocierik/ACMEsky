@@ -17,9 +17,15 @@ const buyOffer = async (req: Request, res: Response) => {
 }
 
 const paymentResult = async (req: Request, res: Response) => {
-  console.log(req.body)
+  // Send message with the payment result to Camunda
+  const response = await send_string_as_correlate_message("payment_status", [["payment_status", JSON.stringify(req.body)]], req.body.process_instance_id);
 
-  return res.status(200).json({ message: 'Acquisto offerta inoltrato a Camunda' });
+  if (response.status >= 300) {
+    console.error(`Fail to send message to Camunda. Response: ${await response.text()}`)
+    return res.status(response.status).json({ error: 'Errore durante la ricezione del risultato del pagamento' });
+  }
+
+  return res.status(200).json({ message: 'Risultati del pagamento inoltrati a Camunda' });
 }
 
 export { buyOffer, paymentResult };

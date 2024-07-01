@@ -30,7 +30,7 @@ app.get('/events', (req: Request, res: Response) => {
     res.status(401).send('Unauthorized');
     return;
   }
-  const data = jwt.verify(token, process.env.SECRET || 'default_secret') as { userId: string };
+  const data = jwt.verify(token, process.env.JWT_SECRET || 'default_secret') as { userId: string };
   const userId = data.userId;
 
   listeners[userId] = res;

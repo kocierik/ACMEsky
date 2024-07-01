@@ -42,15 +42,16 @@ app.post('/buy/:paymentCode', async (req: Request, res: Response) => {
     await fetch(`http://acmesky_backend:3000/paymentResult`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify( { paymentCode, payed: false, ...offersData[paymentCode] } ),
+      body: JSON.stringify( offersData[paymentCode] ),
     });
     return;
   }
   
+  offersData[paymentCode]['payed'] = true;
   await fetch(`http://acmesky_backend:3000/paymentResult`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify( { paymentCode, payed: true, ...offersData[paymentCode] } ),
+    body: JSON.stringify( offersData[paymentCode] ),
   });
   delete offersData[paymentCode];
 
@@ -62,6 +63,8 @@ app.post('/createPaymentUrl', async (req: Request, res: Response) => {
   const paymentData = req.body;
 
   const paymentCode = crypto.randomBytes(20).toString('hex');
+  
+  paymentData['payment_code'] = paymentCode;
   offersData[paymentCode] = paymentData;
 
   const paymentUrl = `${FE_HOST}/${paymentCode}`;
