@@ -61,7 +61,7 @@ function App() {
                       {offer?.activation_code}
                     </p>
                     <h4 className="text-md font-semibold mb-2">Descrizione</h4>
-                    <p className="text-gray-700">{offer?.message}</p>
+                    <p className="text-gray-700" dangerouslySetInnerHTML={{__html: offer?.message.replaceAll('\n', '<br />')}}></p>
                   </div>
                 ))}
               </div>
