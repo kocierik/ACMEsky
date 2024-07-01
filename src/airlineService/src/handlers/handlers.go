@@ -27,7 +27,7 @@ func (h handler) GetFlights(c *gin.Context) {
 
 func (h handler) GetAirports(c *gin.Context) {
 	airport_codes := c.QueryArray("codes")
-	
+
 	var airports []models.Airport
 	// If airport_codes is empty, return all airports
 	if len(airport_codes) == 0 {

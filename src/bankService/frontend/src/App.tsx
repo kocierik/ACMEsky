@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
 import { BASE_URL } from './utils/const'
+import { generateAndDownloadPDF } from "./utils/util";
 
-interface IFlight {
+export interface IFlight {
   flight_code: string;
   departure_location: string;
   arrival_location: string;
@@ -13,7 +14,7 @@ interface IFlight {
   price: number; // Prezzo come numero decimale
 }
 
-interface IOffer {
+export interface IOffer {
   amount: number;
   payment_receiver: string;
   offer_code: string;
@@ -37,6 +38,7 @@ function App() {
   const [cardNumber, setCardNumber] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
   const [securityCode, setSecurityCode] = useState("");
+
 
   async function fetchOfferData() {
     try {
@@ -82,6 +84,17 @@ function App() {
         title: "Ottimo!",
         text: "Acquisto completato con successo!\nPuoi tornare alla pagine di ACMESky",
         icon: "success",
+      }).then((result: { isConfirmed: any; }) => {
+        if (result.isConfirmed && offer) {
+          generateAndDownloadPDF(offer).catch(error => {
+            console.error('Errore nella generazione del PDF:', error);
+            Swal.fire({
+              title: 'Errore!',
+              text: 'Si è verificato un errore durante la generazione del PDF.',
+              icon: 'error'
+            });
+          });
+        }
       });
     } catch (error) {
       Swal.fire({
