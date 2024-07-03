@@ -43,7 +43,7 @@ app.post('/buy/:paymentCode', async (req: Request, res: Response) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify( offersData[paymentCode] ),
-    });
+    }).catch(console.error);
     return;
   }
   
@@ -52,7 +52,7 @@ app.post('/buy/:paymentCode', async (req: Request, res: Response) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify( offersData[paymentCode] ),
-  });
+  }).catch(console.error);
   delete offersData[paymentCode];
 
   res.status(200).json({ message: 'Acquisto effettuato correttamente' });

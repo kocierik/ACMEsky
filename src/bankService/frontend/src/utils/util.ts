@@ -30,8 +30,8 @@ export async function generateAndDownloadPDF(offer: IOffer) {
   // Genera e aggiungi il QR code sotto "BOARDING PASS"
   const qrCodeData = JSON.stringify({
     offerCode: offer.offer_code,
-    outboundFlight: offer.flights[0].flight_code,
-    returnFlight: offer.flights[1].flight_code
+    outboundFlight: offer.flights[0].flightCode,
+    returnFlight: offer.flights[1].flightCode
   });
 
   try {
@@ -47,19 +47,19 @@ export async function generateAndDownloadPDF(offer: IOffer) {
 
   // Dettagli del volo di andata
   addText('OUTBOUND FLIGHT', 15, 75, 14, 'helvetica', 'bold');
-  addText(`Flight: ${offer.flights[0].flight_code}`, 15, 85);
-  addText(`From: ${offer.flights[0].departure_location}`, 15, 95);
-  addText(`To: ${offer.flights[0].arrival_location}`, 15, 105);
-  addText(`Date: ${offer.flights[0].departure_date}`, 15, 115);
-  addText(`Airline: ${offer.flights[0].airline_name}`, 15, 125);
+  addText(`Flight: ${offer.flights[0].flightCode}`, 15, 85);
+  addText(`From: ${offer.flights[0].departureLocation}`, 15, 95);
+  addText(`To: ${offer.flights[0].arrivalLocation}`, 15, 105);
+  addText(`Date: ${offer.flights[0].departureDate}`, 15, 115);
+  addText(`Airline: ${offer.flights[0].airlineName}`, 15, 125);
 
   // Dettagli del volo di ritorno
   addText('RETURN FLIGHT', 15, 145, 14, 'helvetica', 'bold');
-  addText(`Flight: ${offer.flights[1].flight_code}`, 15, 155);
-  addText(`From: ${offer.flights[1].departure_location}`, 15, 165);
-  addText(`To: ${offer.flights[1].arrival_location}`, 15, 175);
-  addText(`Date: ${offer.flights[1].departure_date}`, 15, 185);
-  addText(`Airline: ${offer.flights[1].airline_name}`, 15, 195);
+  addText(`Flight: ${offer.flights[1].flightCode}`, 15, 155);
+  addText(`From: ${offer.flights[1].departureLocation}`, 15, 165);
+  addText(`To: ${offer.flights[1].arrivalLocation}`, 15, 175);
+  addText(`Date: ${offer.flights[1].departureDate}`, 15, 185);
+  addText(`Airline: ${offer.flights[1].airlineName}`, 15, 195);
 
   // Dettagli dell'offerta
   addText('OFFER DETAILS', 15, 215, 14, 'helvetica', 'bold');

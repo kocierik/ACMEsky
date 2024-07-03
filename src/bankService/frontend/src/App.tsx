@@ -5,12 +5,12 @@ import { BASE_URL } from './utils/const'
 import { generateAndDownloadPDF } from "./utils/util";
 
 export interface IFlight {
-  flight_code: string;
-  departure_location: string;
-  arrival_location: string;
-  arrival_date: string; // Formato data come stringa (yyyy-mm-dd)
-  departure_date: string; // Formato data come stringa (yyyy-mm-dd)
-  airline_name: string;
+  flightCode: string;
+  departureLocation: string;
+  arrivalLocation: string;
+  arrivalDate: string; // Formato data come stringa (yyyy-mm-dd)
+  departureDate: string; // Formato data come stringa (yyyy-mm-dd)
+  airlineName: string;
   price: number; // Prezzo come numero decimale
 }
 
@@ -51,6 +51,7 @@ function App() {
         });
       }
       const data = await response.json();
+      console.log(data);
       setOffer(data);
     } catch (error) {
       console.error("Errore durante la richiesta dei dati:", error);
@@ -209,13 +210,13 @@ function App() {
                 </div>
                 <div className="mb-2">
                   <span className="text-gray-700">Volo di andata:</span>{" "} 
-                  {offer.flights[0].airline_name} - {offer.flights[0].flight_code}<br />
-                  {offer.flights[0].departure_location} -&gt; {offer.flights[0].arrival_location} {offer.flights[0].departure_date} -&gt; {offer.flights[0].arrival_date}
+                  {offer.flights[0].airlineName} - {offer.flights[0].flightCode}<br />
+                  {offer.flights[0].departureLocation} -&gt; {offer.flights[0].arrivalLocation} {offer.flights[0].departureDate} -&gt; {offer.flights[0].arrivalDate}
                 </div>
                 <div className="mb-2">
                   <span className="text-gray-700">Volo di ritorno:</span>{" "} 
-                  {offer.flights[1].airline_name} - {offer.flights[1].flight_code}<br />
-                  {offer.flights[1].departure_location} -&gt; {offer.flights[1].arrival_location} {offer.flights[1].departure_date} -&gt; {offer.flights[1].arrival_date}
+                  {offer.flights[1].airlineName} - {offer.flights[1].flightCode}<br />
+                  {offer.flights[1].departureLocation} -&gt; {offer.flights[1].arrivalLocation} {offer.flights[1].departureDate} -&gt; {offer.flights[1].arrivalDate}
                 </div>
               </div>
             </div>
