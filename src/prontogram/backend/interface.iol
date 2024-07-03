@@ -13,6 +13,7 @@ type Offer: void {
     .user_id: string
     .activation_code: string
     .message: string
+    .valid: bool
 }
 
 type OfferList: void {

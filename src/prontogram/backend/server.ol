@@ -43,7 +43,6 @@ inputPort ProntogramServicePort
 execution { concurrent }
 
 init {
-    global.users = {}
     global.inbox = {}
 }
 
@@ -54,7 +53,8 @@ main {
             with(Offer) {
                 .activation_code = AddOfferRequest.activation_code;
                 .user_id = AddOfferRequest.user_id;
-                .message = AddOfferRequest.message
+                .message = AddOfferRequest.message;
+                .valid = true
             }
             inbox -> global.inbox.(Offer.user_id)
             synchronized(inboxLock) {
@@ -87,7 +87,7 @@ main {
             synchronized(inboxLock) {
                 for( i = 0, i < #inbox, i++ ) {
                     if( inbox[i].activation_code == DeleteOfferRequest.activation_code) {
-                        inbox[i] = void
+                        inbox[i].valid = false
                     }
                 }
             }

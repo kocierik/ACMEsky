@@ -6,6 +6,7 @@ interface OfferI {
   user_id: string
   activation_code: string
   message: string
+  valid: boolean
 }
 
 function App() {
@@ -52,8 +53,8 @@ function App() {
                   <div key={i} className="bg-white rounded-lg shadow-md p-6 transition-transform hover:scale-105">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-sm font-semibold text-gray-500">Offerta #{i + 1}</span>
-                      <span className="px-2 py-1 text-xs font-bold text-white bg-green-500 rounded-full">
-                        Active
+                      <span className={`px-2 py-1 text-xs font-bold ${offer.valid ? 'text-green-500' : 'text-red-500'} rounded-full`}>
+                        {offer.valid ? 'Active' : 'Invalid'}
                       </span>
                     </div>
                     <h3 className="text-lg font-bold mb-2">Codice di attivazione</h3>

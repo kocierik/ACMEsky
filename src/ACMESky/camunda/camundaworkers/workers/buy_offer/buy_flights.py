@@ -46,9 +46,11 @@ def buy_flights(task: ExternalTask) -> TaskResult:
     
     # Set valid flag to false for all flights bought
     session.query(Flight).filter(Flight.flight_code.in_([flight.flight_code for flight in flights])).update({Flight.valid: False})
-    
+
     tickets = {
         'payment': payment_info.to_dict(),
         'rent': {}
     }
+
+    session.commit()
     return task.complete(global_variables={"total_amount": payment_info.amount, "tickets": json.dumps(tickets)})
