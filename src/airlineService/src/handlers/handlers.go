@@ -65,13 +65,15 @@ func (h handler) CreateFlight(c *gin.Context) {
 }
 
 func (h handler) CreateRandomFlight() {
+	departureDate := randomDate()
+
 	// Generate random flight data
 	flight := models.Flight{
-		FlightCode:        randomString(5),
+		FlightCode:        os.Getenv("AIRLINE_PREFIX") + randomCode(5),
 		DepartureLocation: randomAirportCode(),
 		ArrivalLocation:   randomAirportCode(),
-		DepartureDate:     randomDate(),
-		ArrivalDate:       randomDate(),
+		DepartureDate:     departureDate,
+		ArrivalDate:       departureDate.Add(3 * time.Hour),
 		AirlineName:       os.Getenv("AIRLINE_NAME"),
 		Price:             randomPrice(),
 	}
@@ -88,8 +90,8 @@ func (h handler) CreateRandomFlight() {
 	log.Println("New flight created and notified to ACMESKY:", flight.FlightCode)
 }
 
-func randomString(n int) string {
-	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+func randomCode(n int) string {
+	const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 	b := make([]byte, n)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]

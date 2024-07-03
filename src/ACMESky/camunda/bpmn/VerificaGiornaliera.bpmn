@@ -25,7 +25,7 @@
       <bpmn:outgoing>Flow_1i460k5</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0hmn7pr">
         <!-- <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/P1D</bpmn:timeCycle> -->
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R5/PT10S</bpmn:timeCycle>
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/PT1M</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1i460k5" sourceRef="trigger-daily-check-event" targetRef="check-flight-companies-offers" />

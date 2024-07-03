@@ -50,8 +50,8 @@ class Offer(Base):
         )
 
     user_id = Column(String(36), ForeignKey(User.id), primary_key=True)
-    dep_flight_id = Column(String(5), ForeignKey(Flight.flight_code), primary_key=True)
-    arr_flight_id = Column(String(5), ForeignKey(Flight.flight_code), primary_key=True)
+    dep_flight_id = Column(String(7), ForeignKey(Flight.flight_code), primary_key=True)
+    arr_flight_id = Column(String(7), ForeignKey(Flight.flight_code), primary_key=True)
     interest_id = Column(Integer, ForeignKey(UserInterest.id), primary_key=True)
     activation_code = Column(String(8))
     payed = Column(Boolean)

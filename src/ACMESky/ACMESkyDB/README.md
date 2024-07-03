@@ -42,8 +42,8 @@ Panoramica dello schema del database per il progetto AcmeSky.
 | price              | DECIMAL       | NOT NULL     | Prezzo dell'offerta di volo.                   |
 | disponibile        | BOOLEAN       | NOT NULL     | Indica se l'offerta è disponibile (true) o meno (false). |
 | user_id            | CHAR(36)      | NOT NULL     | Identificatore univoco dell'utente.            |
-| dep_flight_id      | CHAR(5)       | NOT NULL     | Codice del volo di partenza.                   |
-| arr_flight_id      | CHAR(5)       | NOT NULL     | Codice del volo di arrivo.                     |
+| dep_flight_id      | CHAR(7)       | NOT NULL     | Codice del volo di partenza.                   |
+| arr_flight_id      | CHAR(7)       | NOT NULL     | Codice del volo di arrivo.                     |
 | interest_id        | INT           | NOT NULL     | Identificatore dell'interesse dell'utente.     |
 | activation_code    | CHAR(8)       | NOT NULL     | Codice di attivazione dell'offerta.            |
 | payed              | BOOLEAN       | NOT NULL     | Indica se l'offerta è stata pagata (true) o meno (false). |
@@ -56,7 +56,7 @@ Panoramica dello schema del database per il progetto AcmeSky.
 
 | Colonna            | Tipo dati       | Vincoli      | Descrizione                                 |
 |--------------------|-----------------|--------------|---------------------------------------------|
-| flight_code        | CHAR(5)         | PRIMARY KEY  | Codice univoco del volo.                    |
+| flight_code        | CHAR(7)         | PRIMARY KEY  | Codice univoco del volo.                    |
 | departure_location | CHAR(3)         | NOT NULL     | Codice IATA del luogo di partenza del volo. |
 | arrival_location   | CHAR(3)         | NOT NULL     | Codice IATA del luogo di arrivo del volo.   |
 | departure_date     | TIMESTAMP       | NOT NULL     | Data e ora di partenza del volo.            |

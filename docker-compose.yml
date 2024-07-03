@@ -59,6 +59,8 @@ services:
         environment:
             POSTGRES_HOST: airline_db_1
             AIRLINE_NAME: American Airlines
+            AIRLINE_PREFIX: AA
+            FLIGHT_GENERATION_INTERVAL: 30s
         ports:
             - 8085:8085
         command: sh -c "sleep 5 && ./main"
@@ -86,6 +88,8 @@ services:
         environment:
             POSTGRES_HOST: airline_db_2
             AIRLINE_NAME: Emic Airlines
+            AIRLINE_PREFIX: EA
+            FLIGHT_GENERATION_INTERVAL: 60s
         ports:
             - 8086:8085
         command: sh -c "sleep 5 && ./main"
