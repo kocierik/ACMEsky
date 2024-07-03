@@ -28,6 +28,13 @@ inputPort ProntogramServicePort
                 statusCodes = 200
                 statusCodes.TypeMismatch = 400
             }
+            deleteOffer << {
+                template = "/api/offer"
+                method = "delete"
+                format = "json"
+                statusCodes = 200
+                statusCodes.TypeMismatch = 400
+            }
         }
     }
     
@@ -55,8 +62,8 @@ main {
                 inbox[idx] << Offer
             }
 
+            println@Console("Offer added")()
             valueToPrettyString@StringUtils(Offer)( s )
-            println@Console("Offer " + s)()
         }
     ]
     [
@@ -70,8 +77,22 @@ main {
                 }
             }
 
+            println@Console("Offers retrieved")()
             valueToPrettyString@StringUtils(OfferList)( s )
-            println@Console("Offers " + s)()
+        }
+    ]
+    [
+        deleteOffer(DeleteOfferRequest)(void){
+            inbox -> global.inbox.(DeleteOfferRequest.user_id)
+            synchronized(inboxLock) {
+                for( i = 0, i < #inbox, i++ ) {
+                    if( inbox[i].activation_code == DeleteOfferRequest.activation_code) {
+                        inbox[i] = void
+                    }
+                }
+            }
+            println@Console("Offer deleted")()
+            valueToPrettyString@StringUtils(DeleteOfferRequest)( s )
         }
     ]
 }

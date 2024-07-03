@@ -4,6 +4,11 @@ type AddOfferRequest: void {
     .message: string
 }
 
+type DeleteOfferRequest: void {
+    .user_id: string
+    .activation_code: string
+}
+
 type Offer: void {
     .user_id: string
     .activation_code: string
@@ -23,5 +28,6 @@ interface IProntogramService
 
     RequestResponse:
         addOffer(AddOfferRequest)(Offer),
-        getOffers(UserId)(OfferList)
+        getOffers(UserId)(OfferList),
+        deleteOffer(DeleteOfferRequest)(void)
 }
