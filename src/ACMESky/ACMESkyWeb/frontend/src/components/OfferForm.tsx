@@ -4,11 +4,11 @@ import Swal from "sweetalert2";
 
 interface IFlight {
   flight_code: string;
-  departure_location: string;
-  arrival_location: string;
-  arrival_date: string; // Formato data come stringa (yyyy-mm-dd)
-  departure_date: string; // Formato data come stringa (yyyy-mm-dd)
-  airline_name: string;
+  departureLocation: string;
+  arrivalLocation: string;
+  arrivalDate: string; // Formato data come stringa (yyyy-mm-dd)
+  departureDate: string; // Formato data come stringa (yyyy-mm-dd)
+  airlineName: string;
   price: number; // Prezzo come numero decimale
   valid: boolean;
 }
@@ -20,11 +20,6 @@ const OfferForm = () => {
 
    const handleSSE = async () => {
     const eventSource = new EventSource(`${BASE_URL_SSE}/events`, {withCredentials: true});
-
-    eventSource.addEventListener('flightInfos', event => {
-      const data = JSON.parse(event.data);
-      console.log('Received flight infos:', data);
-    });
 
     eventSource.addEventListener('errors', event => {
       const data = JSON.parse(event.data);
@@ -42,15 +37,22 @@ const OfferForm = () => {
       console.log('Received payment URL:', data);
       Swal.fire({
         title: "Pagamento in corso",
-        text: "Chiudi la finestra quando avrai completato il pagamento",
+        text: "Stai per essere reindirizzato al Payment Provider. Chiudi la finestra quando avrai completato il pagamento",
         icon: "success",
       });
-      window.open(data.payment_url, '_blank');
+      setTimeout(() => {
+        window.open(data.payment_url, '_blank');
+      }, 3500);
     });
 
     eventSource.addEventListener('tickets', event => {
       const data = JSON.parse(event.data);
       console.log('Received tickets:', data);
+      Swal.fire({
+        title: "Acquisto completato con successo!",
+        text: "Riceverai i tuoi biglietti il prima possibile!",
+        icon: "success",
+      });
     });
 
 
@@ -83,7 +85,6 @@ const OfferForm = () => {
         body: JSON.stringify({
           offerCode: codiceOfferta,
           address: domicilio,
-          userId: JSON.parse(localStorage.getItem("user")!)['id']
         }),
       });
 
@@ -177,16 +178,16 @@ const OfferForm = () => {
                       return (
                       <tr className="border-b border-neutral-200 dark:border-white/10">
                         <td className="whitespace-nowrap text-center py-4">
-                          {flight?.departure_location}
+                          {flight?.departureLocation}
                         </td>
                         <td className="whitespace-nowrap text-center px-6 py-4">
-                          {flight?.arrival_location}
+                          {flight?.arrivalLocation}
                         </td>
                         <td className="whitespace-nowrap text-center px-6 py-4">
-                          {String(flight?.arrival_date)}
+                          {String(flight?.arrivalDate)}
                         </td>
                         <td className="whitespace-nowrap text-center px-6 py-4">
-                          {String(flight?.departure_date)}
+                          {String(flight?.departureDate)}
                         </td>
                         <td className="whitespace-nowrap text-center px-6 py-4">
                           {flight?.price}
