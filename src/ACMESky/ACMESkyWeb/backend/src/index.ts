@@ -24,7 +24,7 @@ app.get('/getUser/:userId/interests', getUserInterests);
 app.post('/createUserInterest', createUserInterest);
 app.post('/newFlight', newFlight);
 app.post('/buyOffer', authenticateJWT, buyOffer);
-app.post('/paymentResult', authenticateJWT, paymentResult);
+app.post('/paymentResult', paymentResult);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
