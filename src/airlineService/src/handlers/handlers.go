@@ -1,12 +1,16 @@
 package handlers
 
 import (
+	"log"
+	"math"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kocierik/ACMEsky/airlineService/models"
 	"github.com/kocierik/ACMEsky/airlineService/services"
+	"golang.org/x/exp/rand"
 	"gorm.io/gorm"
 )
 
@@ -58,4 +62,58 @@ func (h handler) CreateFlight(c *gin.Context) {
 	services.FlightNotifier([]models.Flight{flight})
 
 	c.JSON(http.StatusCreated, flight)
+}
+
+func (h handler) CreateRandomFlight() {
+	// Generate random flight data
+	flight := models.Flight{
+		FlightCode:        randomString(5),
+		DepartureLocation: randomAirportCode(),
+		ArrivalLocation:   randomAirportCode(),
+		DepartureDate:     randomDate(),
+		ArrivalDate:       randomDate(),
+		AirlineName:       os.Getenv("AIRLINE_NAME"),
+		Price:             randomPrice(),
+	}
+
+	// Add the flight to the database
+	if err := h.DB.Create(&flight).Error; err != nil {
+		log.Println("Failed to create flight:", err)
+		return
+	}
+
+	// Notify ACMESKY
+	services.FlightNotifier([]models.Flight{flight})
+
+	log.Println("New flight created and notified to ACMESKY:", flight.FlightCode)
+}
+
+func randomString(n int) string {
+	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
+func randomAirportCode() string {
+	airportCodes := []string{
+		"AMS", "FRA", "LHR", "CDG", "TXL", "ROM", "LBA", "BHX", "LTN", "WAW",
+		"BRU", "MUC", "VIE", "DUS", "HAM", "MAD", "BCN", "SXF", "PRG",
+	}
+	return airportCodes[rand.Intn(len(airportCodes))]
+}
+
+func randomDate() time.Time {
+	now := time.Now()
+	// Generate a random date within the next year
+	randomDuration := time.Duration(rand.Int63n(int64(time.Hour) * 24 * 365))
+	return now.Add(randomDuration)
+}
+
+func randomPrice() float64 {
+	// Generate a random price between 50 and 1000 with two decimal places
+	price := 50 + rand.Float64()*(1000-50)
+	return math.Round(price*100) / 100 // Round to two decimal places
 }

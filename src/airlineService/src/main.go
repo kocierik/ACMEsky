@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kocierik/ACMEsky/airlineService/db"
@@ -21,6 +22,22 @@ func main() {
 	router.GET("/airports", h.GetAirports)
 	router.GET("/flights", h.GetFlights)
 	router.POST("/flights", h.CreateFlight)
+
+	// Set up a ticker to generate a new flight every 10 seconds
+	ticker := time.NewTicker(10 * time.Second)
+	quit := make(chan struct{})
+
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				h.CreateRandomFlight()
+			case <-quit:
+				ticker.Stop()
+				return
+			}
+		}
+	}()
 
 	log.Println("AIRLINE SERVICE API is running!")
 	router.Run(":8085")
