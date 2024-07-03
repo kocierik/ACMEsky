@@ -23,7 +23,7 @@ func main() {
 	router.GET("/airports", h.GetAirports)
 	router.GET("/flights", h.GetFlights)
 	router.POST("/flights", h.CreateFlight)
-	// router.POST("/flights/:id/buy", h.BuyFlight)
+	router.POST("/flights/:id/buy", h.BuyFlight)
 	
 
 	// Set up a ticker to generate a new flight every AIRLINE_INTERVAL seconds/minutes

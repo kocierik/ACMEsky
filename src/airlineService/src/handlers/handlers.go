@@ -52,7 +52,7 @@ func (h handler) CreateFlight(c *gin.Context) {
 		return
 	}
 
-	// Aggiungi il volo al database
+// Aggiungi il volo al database
 	if err := h.DB.Create(&flight).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create flight"})
 		return
@@ -62,6 +62,19 @@ func (h handler) CreateFlight(c *gin.Context) {
 	services.FlightNotifier([]models.Flight{flight})
 
 	c.JSON(http.StatusCreated, flight)
+}
+
+func (h handler) BuyFlight(c *gin.Context) {
+	flightID := c.Param("id")
+	if flightID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Flight ID required"})
+		return
+	}
+	
+	if err := h.DB.Unscoped().Where("flight_code = ?", flightID).Delete(&models.Flight{}).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Flight not found"})
+		return
+	}
 }
 
 func (h handler) CreateRandomFlight() {
@@ -91,7 +104,7 @@ func (h handler) CreateRandomFlight() {
 }
 
 func randomCode(n int) string {
-	const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+	const letters = "1234567890"
 	b := make([]byte, n)
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]
