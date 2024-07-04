@@ -218,7 +218,7 @@ const OfferForm = () => {
                     </tbody>
                   </table>
                 </div>
-                <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto mt-8">
+                <div className="bg-white shadow-lg rounded-lg p-6 mt-8">
                   {ticket &&
                     <div className="bg-white shadow-lg rounded-lg p-6 max-w-2xl mx-auto mt-8">
                       <h2 className="text-2xl font-bold text-center mb-6">Riepilogo Biglietto</h2>
@@ -229,24 +229,19 @@ const OfferForm = () => {
                           <p><span className="font-medium">Importo:</span> €{ticket.payment.amount}</p>
                           <p><span className="font-medium">Destinatario:</span> {ticket.payment.payment_receiver}</p>
                           <p><span className="font-medium">Codice Offerta:</span> {ticket.payment.offer_code}</p>
-                          <p><span className="font-medium">ID Utente:</span> {ticket.payment.user_id}</p>
-                          <p><span className="font-medium">Codice Pagamento:</span> {ticket.payment.payment_code}</p>
-                          <p><span className="font-medium">Stato:</span> {ticket.payment.payed === 'true' ? 'Pagato' : 'Non Pagato'}</p>
                         </div>
                       </div>
                       {ticket &&
                         <><div className="mb-6">
                           <h3 className="text-lg font-semibold mb-2">Informazioni di Viaggio</h3>
                           <div className="mb-4 p-4 bg-gray-50 rounded">
-                            <p>{ticket.rent}</p>
+                            <p style={{ whiteSpace: "pre-wrap" }}>{ticket.rent === "" ? "Nessun trasporto previsto" : ticket.rent}</p>
                           </div>
                         </div><div>
                             <h3 className="text-lg font-semibold mb-2">Informazioni Aggiuntive</h3>
                             <p><span className="font-medium">Descrizione:</span> {ticket.payment.description}</p>
-                            <p><span className="font-medium">Voli:</span> {ticket.payment.flights}</p>
-                            <p><span className="font-medium">ID Processo:</span> {ticket.payment.process_instance_id}</p>
                           </div></>
-                    }
+                      }
                     </div>
                   }
                 </div>

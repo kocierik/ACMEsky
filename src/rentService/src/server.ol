@@ -89,6 +89,6 @@ main {
 		/*
 		* Sending the message with information about the booked transfer.
 		*/
-		response.response = "AZIENDA " + request.rent_service + ". Trasporto prenotato da " + request.customer_address + " all'aeroporto " + request.airport_code + ". La navetta passerà in andata il: " + departureTime + " e al ritorno il: " + arrivalTime + "."
+		response.response = "AZIENDA " + request.rent_service + ".\nTrasporto prenotato da " + request.customer_address + " all'aeroporto " + request.airport_code + ".\nLa navetta passerà in andata il: " + departureTime + " e al ritorno il: " + arrivalTime + "."
 	}
 }
