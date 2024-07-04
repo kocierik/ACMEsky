@@ -34,9 +34,8 @@ interface IRent {
 
 interface ITicket {
   payment: Ipayment
-  rent: IRent[]
+  rent: string
 }
-
 
 const OfferForm = () => {
   const [codiceOfferta, setCodiceOfferta] = useState("");
@@ -241,28 +240,18 @@ const OfferForm = () => {
                           <p><span className="font-medium">Stato:</span> {ticket.payment.payed === 'true' ? 'Pagato' : 'Non Pagato'}</p>
                         </div>
                       </div>
-
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold mb-2">Informazioni di Viaggio</h3>
-                        {ticket.rent.map((journey, index) => (
-                          <div key={journey.rentId} className="mb-4 p-4 bg-gray-50 rounded">
-                            <h4 className="font-medium mb-2">{index === 0 ? 'Andata' : 'Ritorno'}</h4>
-                            <div className="grid grid-cols-2 gap-2">
-                              <p><span className="font-medium">Stato:</span> {journey.status}</p>
-                              <p><span className="font-medium">ID Noleggio:</span> {journey.rentId}</p>
-                              <p><span className="font-medium">Partenza:</span> {new Date(journey.departureDateTime).toLocaleString()}</p>
-                              <p><span className="font-medium">Arrivo:</span> {new Date(journey.arrivalDateTime).toLocaleString()}</p>
-                            </div>
+                      {ticket &&
+                        <><div className="mb-6">
+                          <h3 className="text-lg font-semibold mb-2">Informazioni di Viaggio</h3>
+                          <div className="mb-4 p-4 bg-gray-50 rounded">
+                            <p>{ticket.rent}</p>
                           </div>
-                        ))}
-                      </div>
-
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2">Informazioni Aggiuntive</h3>
-                        <p><span className="font-medium">Descrizione:</span> {ticket.payment.description}</p>
-                        <p><span className="font-medium">Voli:</span> {ticket.payment.flights}</p>
-                        <p><span className="font-medium">ID Processo:</span> {ticket.payment.process_instance_id}</p>
-                      </div>
+                        </div><div>
+                            <h3 className="text-lg font-semibold mb-2">Informazioni Aggiuntive</h3>
+                            <p><span className="font-medium">Descrizione:</span> {ticket.payment.description}</p>
+                            <p><span className="font-medium">Voli:</span> {ticket.payment.flights}</p>
+                            <p><span className="font-medium">ID Processo:</span> {ticket.payment.process_instance_id}</p>
+                          </div></>
                     </div>
                   }
                 </div>
