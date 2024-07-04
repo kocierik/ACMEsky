@@ -12,6 +12,7 @@ interface IUserInterest {
   from_date: Date;
   to_date: Date;
   max_price: number;
+  valid: boolean;
 }
 
 function Profile() {
@@ -70,6 +71,7 @@ function Profile() {
                     <td className="whitespace-nowrap text-center px-6 py-4">{String(interest.from_date).slice(0,10)}</td>
                     <td className="whitespace-nowrap text-center px-6 py-4">{String(interest.to_date).slice(0,10)}</td>
                     <td className="whitespace-nowrap text-center px-6 py-4">{interest.max_price}</td>
+                    <td className="whitespace-nowrap text-center px-6 py-4">{interest.valid ? 'Valid' : 'Not valid anymore'}</td>
                   </tr>
                 ))}
               </tbody>

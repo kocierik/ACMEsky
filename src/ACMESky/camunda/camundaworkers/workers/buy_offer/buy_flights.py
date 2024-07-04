@@ -5,7 +5,9 @@ import json
 
 from camundaworkers.model.airline_service import AirlineService
 from camundaworkers.model.flight import Flight
+from camundaworkers.model.offer import Offer
 from camundaworkers.model.payment_info import PaymentInfo
+from camundaworkers.model.user_interest import UserInterest
 from camundaworkers.utils.logger import get_logger
 from camundaworkers.utils.db import create_sql_engine
 
@@ -46,6 +48,9 @@ def buy_flights(task: ExternalTask) -> TaskResult:
     
     # Set valid flag to false for all flights bought
     session.query(Flight).filter(Flight.flight_code.in_([flight.flight_code for flight in flights])).update({Flight.valid: False})
+
+    # Set the user_interest to valid = False
+    session.query(UserInterest).join(Offer, UserInterest.id == Offer.interest_id).filter(Offer.activation_code == payment_info.offer_code).update({UserInterest.valid: False})
 
     tickets = {
         'payment': payment_info.to_dict(),

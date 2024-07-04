@@ -7,4 +7,5 @@ export interface UserInterest {
   from_date: Date;
   to_date: Date;
   max_price: number;
+  valid: boolean;
 }

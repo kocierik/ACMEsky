@@ -20,6 +20,7 @@ class UserInterest(Base):
             from_date=interest_dict.get('from_date'),
             to_date=interest_dict.get('to_date'),
             max_price=interest_dict.get('max_price'),
+            valid=interest_dict.get('valid', True)
         )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -29,10 +30,7 @@ class UserInterest(Base):
     from_date = Column(DateTime, nullable=False)
     to_date = Column(DateTime, nullable=False)
     max_price = Column(Float, nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint('user_id', 'departure_location', 'arrival_location', 'from_date', 'to_date', 'max_price'),
-    )
+    valid = Column(Boolean, nullable=False, default=True)
 
     def __str__(self) -> str:
         return f"""UserInterest(
@@ -43,6 +41,7 @@ class UserInterest(Base):
                 from_date: {self.from_date},
                 to_date: {self.to_date},
                 max_price: {self.max_price}
+                valid: {self.valid}
                 )"""
 
     def to_dict(self):
@@ -54,4 +53,5 @@ class UserInterest(Base):
             'from_date': self.from_date.isoformat(),
             'to_date': self.to_date.isoformat(),
             'max_price': self.max_price,
+            'valid': self.valid
         }

@@ -12,6 +12,7 @@ CREATE TABLE user_interests (
     from_date DATE NOT NULL,
     to_date DATE NOT NULL,
     max_price DECIMAL(10, 2) NOT NULL,
+    valid BOOLEAN NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

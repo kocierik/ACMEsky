@@ -19,7 +19,7 @@ def retrieve_user_interests(task: ExternalTask) -> TaskResult:
 
     users_interests = []
     try:
-        users_interests_list: list[UserInterest] = session.query(UserInterest).all()
+        users_interests_list: list[UserInterest] = session.query(UserInterest).filter(UserInterest.valid == True).all()
 
         users_interests_dict = {}
         for user_interest in users_interests_list:
