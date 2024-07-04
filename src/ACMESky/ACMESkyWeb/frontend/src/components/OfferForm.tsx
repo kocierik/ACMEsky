@@ -25,13 +25,6 @@ interface Ipayment {
   payed: string
 }
 
-interface IRent {
-  status: string
-  departureDateTime: string
-  arrivalDateTime: string
-  rentId: string
-}
-
 interface ITicket {
   payment: Ipayment
   rent: string
@@ -71,14 +64,15 @@ const OfferForm = () => {
     });
 
     eventSource.addEventListener('tickets', event => {
-      const data: ITicket = JSON.parse(event.data);
+      const data = JSON.parse(event.data);
       console.log('Received tickets:', data);
-      setTicket(data)
+      setTicket(JSON.parse(data['tickets']));
       Swal.fire({
         title: "Acquisto completato con successo!",
         text: "Riceverai i tuoi biglietti il prima possibile!",
         icon: "success",
       });
+      eventSource.close();
     });
 
 
@@ -252,6 +246,7 @@ const OfferForm = () => {
                             <p><span className="font-medium">Voli:</span> {ticket.payment.flights}</p>
                             <p><span className="font-medium">ID Processo:</span> {ticket.payment.process_instance_id}</p>
                           </div></>
+                    }
                     </div>
                   }
                 </div>

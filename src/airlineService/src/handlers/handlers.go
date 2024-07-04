@@ -129,6 +129,6 @@ func randomDate() time.Time {
 
 func randomPrice() float64 {
 	// Generate a random price between 50 and 1000 with two decimal places
-	price := 50 + rand.Float64()*(1000-50)
+	price := 100 + rand.Float64()*(1000-100)
 	return math.Round(price*100) / 100 // Round to two decimal places
 }

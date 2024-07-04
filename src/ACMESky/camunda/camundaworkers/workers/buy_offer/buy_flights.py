@@ -51,7 +51,7 @@ def buy_flights(task: ExternalTask) -> TaskResult:
 
     tickets = {
         'payment': payment_info.to_dict(),
-        'rent': {}
+        'rent': ""
     }
 
     session.commit()

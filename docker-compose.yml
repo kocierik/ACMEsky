@@ -146,9 +146,20 @@ services:
                 soft: 65536
                 hard: 65536
         restart: always
+    
+    rent_service_2:
+        build: ./src/rentService
+        environment:
+            - SERVICE_NAME=RentService2
+        ports:
+            - "8031:8030"
+        ulimits:
+            nofile:
+                soft: 65536
+                hard: 65536
+        restart: always
 
-    geodistance:
-        container_name: geodistance_container
+    geodistance_service:
         build: ./src/geodistanceService
         env_file:
             - ./src/geodistanceService/.env

@@ -7,7 +7,7 @@ Implementato in Jolie, utilizza SOAP per esporre i servizi.
 ## Service ports
 | Name | Endpoint (Location) |
 | - | - |
-| RentServicePort | http://localhost:8080 |
+| RentServicePort | http://localhost:8030 |
 
 ## PortType
 | Operation | Input | Output |

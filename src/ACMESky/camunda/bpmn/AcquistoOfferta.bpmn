@@ -72,7 +72,7 @@
         <camunda:executionListener event="take">
           <camunda:script scriptFormat="groovy">execution.setVariable(
     "travel_companies",
-    ["http://travel_company_1:8080;forte bazzera", "http://travel_company_2:8080;via della fornace 2 bologna", "http://travel_company_3:8080;Via Francesco Zanardi, 353, 40131 Bologna BO",]
+    ["http://rent_service_1:8030;forte bazzera;rentService1.wsdl", "http://rent_service_2:8030;via della fornace 2 bologna;rentService2.wsdl"]
 );</camunda:script>
         </camunda:executionListener>
       </bpmn:extensionElements>

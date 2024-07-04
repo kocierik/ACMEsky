@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -60,7 +61,7 @@ func calculateDistance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	distanceText := distanceResp.Rows[0].Elements[0].Distance.Text
+	distanceText := strings.Split(distanceResp.Rows[0].Elements[0].Distance.Text, " ")[0]
 
 	response := map[string]string{"distance": distanceText}
 	w.Header().Set("Content-Type", "application/json")

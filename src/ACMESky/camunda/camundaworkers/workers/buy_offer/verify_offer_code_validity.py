@@ -5,6 +5,7 @@ from camunda.external_task.external_task import ExternalTask, TaskResult
 from camundaworkers.utils.logger import get_logger
 from camundaworkers.utils.db import create_sql_engine
 from camundaworkers.model.offer_purchase_data import OfferPurchaseData
+from camundaworkers.model.user_interest import UserInterest
 from camundaworkers.model.offer import Offer
 
 
