@@ -1,7 +1,7 @@
 import json
 from camunda.external_task.external_task import ExternalTask, TaskResult
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import DatabaseError
+from sqlalchemy.orm.exc import NoResultFound
 
 from camundaworkers.utils.db import create_sql_engine
 from camundaworkers.model.flight import Flight
@@ -23,10 +23,15 @@ def save_flights(task: ExternalTask) -> TaskResult:
     Session = sessionmaker(bind=create_sql_engine())
     session = Session()
 
+    for flight in flights:
+        session.query(Flight).filter(Flight.flight_code == flight.flight_code). \
+            with_for_update(). \
+            one_or_none()
+        session.merge(flight)
+
     try:
-        session.add_all(flights)
         session.commit()
-        logger.info(f"Added {len(flights)} flights to acmesky_db")
+        logger.info(f"Added/updated {len(flights)} flights to acmesky_db")
     except DatabaseError:
         logger.warn(f"Database error while inserting {len(flights)}")
         return task.bpmn_error(error_code='offer_saving_failed',
