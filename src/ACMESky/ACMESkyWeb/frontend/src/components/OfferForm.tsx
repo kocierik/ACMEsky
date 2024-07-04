@@ -13,13 +13,39 @@ interface IFlight {
   valid: boolean;
 }
 
+interface Ipayment {
+  amount: number
+  payment_receiver: string
+  offer_code: string
+  description: string
+  user_id: string
+  flights: string
+  process_instance_id: string
+  payment_code: string
+  payed: string
+}
+
+interface IRent {
+  status: string
+  departureDateTime: string
+  arrivalDateTime: string
+  rentId: string
+}
+
+interface ITicket {
+  payment: Ipayment
+  rent: IRent[]
+}
+
+
 const OfferForm = () => {
   const [codiceOfferta, setCodiceOfferta] = useState("");
   const [domicilio, setDomicilio] = useState("");
   const [flights, setFlights] = useState<IFlight[]>([])
+  const [ticket, setTicket] = useState<ITicket>()
 
-   const handleSSE = async () => {
-    const eventSource = new EventSource(`${BASE_URL_SSE}/events`, {withCredentials: true});
+  const handleSSE = async () => {
+    const eventSource = new EventSource(`${BASE_URL_SSE}/events`, { withCredentials: true });
 
     eventSource.addEventListener('errors', event => {
       const data = JSON.parse(event.data);
@@ -46,8 +72,9 @@ const OfferForm = () => {
     });
 
     eventSource.addEventListener('tickets', event => {
-      const data = JSON.parse(event.data);
+      const data: ITicket = JSON.parse(event.data);
       console.log('Received tickets:', data);
+      setTicket(data)
       Swal.fire({
         title: "Acquisto completato con successo!",
         text: "Riceverai i tuoi biglietti il prima possibile!",
@@ -80,8 +107,8 @@ const OfferForm = () => {
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "http://localhost:3000",
-        }, 
-        credentials: 'include', 
+        },
+        credentials: 'include',
         body: JSON.stringify({
           offerCode: codiceOfferta,
           address: domicilio,
@@ -132,7 +159,7 @@ const OfferForm = () => {
                 value={domicilio}
                 onChange={(e) => setDomicilio(e.target.value)}
                 placeholder="Bologna"
-                />
+              />
             </div>
           </div>
           <div className="md:col-span-5 text-right mt-2">
@@ -147,7 +174,7 @@ const OfferForm = () => {
           </div>
         </div>
       </div>
-        <>
+      <>
         {flights?.length > 0 && (
           <div className="flex flex-col overflow-x-auto flex-wrap">
             <div className="sm:-mx-6 lg:-mx-8 flex flex-1">
@@ -175,34 +202,75 @@ const OfferForm = () => {
                     </thead>
                     <tbody>
                       {flights?.map(flight => {
-                      return (
-                      <tr className="border-b border-neutral-200 dark:border-white/10">
-                        <td className="whitespace-nowrap text-center py-4">
-                          {flight?.departureLocation}
-                        </td>
-                        <td className="whitespace-nowrap text-center px-6 py-4">
-                          {flight?.arrivalLocation}
-                        </td>
-                        <td className="whitespace-nowrap text-center px-6 py-4">
-                          {String(flight?.arrivalDate)}
-                        </td>
-                        <td className="whitespace-nowrap text-center px-6 py-4">
-                          {String(flight?.departureDate)}
-                        </td>
-                        <td className="whitespace-nowrap text-center px-6 py-4">
-                          {flight?.price}
-                        </td>
-                      </tr>
-                      )
+                        return (
+                          <tr className="border-b border-neutral-200 dark:border-white/10">
+                            <td className="whitespace-nowrap text-center py-4">
+                              {flight?.departureLocation}
+                            </td>
+                            <td className="whitespace-nowrap text-center px-6 py-4">
+                              {flight?.arrivalLocation}
+                            </td>
+                            <td className="whitespace-nowrap text-center px-6 py-4">
+                              {String(flight?.arrivalDate)}
+                            </td>
+                            <td className="whitespace-nowrap text-center px-6 py-4">
+                              {String(flight?.departureDate)}
+                            </td>
+                            <td className="whitespace-nowrap text-center px-6 py-4">
+                              {flight?.price}
+                            </td>
+                          </tr>
+                        )
                       })}
                     </tbody>
                   </table>
                 </div>
+                <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto mt-8">
+                  {ticket &&
+                    <div className="bg-white shadow-lg rounded-lg p-6 max-w-2xl mx-auto mt-8">
+                      <h2 className="text-2xl font-bold text-center mb-6">Riepilogo Biglietto</h2>
+
+                      <div className="mb-6">
+                        <h3 className="text-lg font-semibold mb-2">Dettagli Pagamento</h3>
+                        <div className="grid grid-cols-2 gap-2">
+                          <p><span className="font-medium">Importo:</span> €{ticket.payment.amount}</p>
+                          <p><span className="font-medium">Destinatario:</span> {ticket.payment.payment_receiver}</p>
+                          <p><span className="font-medium">Codice Offerta:</span> {ticket.payment.offer_code}</p>
+                          <p><span className="font-medium">ID Utente:</span> {ticket.payment.user_id}</p>
+                          <p><span className="font-medium">Codice Pagamento:</span> {ticket.payment.payment_code}</p>
+                          <p><span className="font-medium">Stato:</span> {ticket.payment.payed === 'true' ? 'Pagato' : 'Non Pagato'}</p>
+                        </div>
+                      </div>
+
+                      <div className="mb-6">
+                        <h3 className="text-lg font-semibold mb-2">Informazioni di Viaggio</h3>
+                        {ticket.rent.map((journey, index) => (
+                          <div key={journey.rentId} className="mb-4 p-4 bg-gray-50 rounded">
+                            <h4 className="font-medium mb-2">{index === 0 ? 'Andata' : 'Ritorno'}</h4>
+                            <div className="grid grid-cols-2 gap-2">
+                              <p><span className="font-medium">Stato:</span> {journey.status}</p>
+                              <p><span className="font-medium">ID Noleggio:</span> {journey.rentId}</p>
+                              <p><span className="font-medium">Partenza:</span> {new Date(journey.departureDateTime).toLocaleString()}</p>
+                              <p><span className="font-medium">Arrivo:</span> {new Date(journey.arrivalDateTime).toLocaleString()}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div>
+                        <h3 className="text-lg font-semibold mb-2">Informazioni Aggiuntive</h3>
+                        <p><span className="font-medium">Descrizione:</span> {ticket.payment.description}</p>
+                        <p><span className="font-medium">Voli:</span> {ticket.payment.flights}</p>
+                        <p><span className="font-medium">ID Processo:</span> {ticket.payment.process_instance_id}</p>
+                      </div>
+                    </div>
+                  }
+                </div>
               </div>
             </div>
           </div>
-       )} 
-        </>
+        )}
+      </>
     </div>
   );
 };
