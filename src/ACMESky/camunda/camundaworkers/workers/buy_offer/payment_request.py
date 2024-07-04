@@ -36,6 +36,7 @@ def payment_request(task: ExternalTask) -> TaskResult:
         session.query(Flight)
         .join(Offer, or_(Flight.flight_code == Offer.dep_flight_id, Flight.flight_code == Offer.arr_flight_id))
         .filter(Offer.activation_code == offer_purchase_data.offer_code)
+        .order_by(Flight.departure_date)
         .all()
     )
     flights_cost = sum(flight.price for flight in flights)

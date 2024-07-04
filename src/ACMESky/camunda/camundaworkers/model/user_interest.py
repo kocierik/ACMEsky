@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, Float, UniqueConstraint, Integer, ForeignKey
+from sqlalchemy import Column, String, DateTime, Float, UniqueConstraint, Integer, ForeignKey, Boolean
 
 from camundaworkers.model.user import User
 from camundaworkers.utils.db import Base

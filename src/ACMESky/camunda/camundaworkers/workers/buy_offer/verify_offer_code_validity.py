@@ -32,5 +32,9 @@ def verify_offer_code_validity(task: ExternalTask) -> TaskResult:
         logger.error("0 matches were found for the given offer code %s", offer_purchase_data.offer_code)
         return task.complete(global_variables={'offer_code_validity': False})
 
+    # Set the user_interest to valid = False
+    interest_id = session.query(Offer.interest_id).filter(Offer.activation_code == offer_purchase_data.offer_code).first()[0]
+    session.query(UserInterest).filter(UserInterest.id == interest_id).update({UserInterest.valid: False})
+
     session.commit()
     return task.complete(global_variables={'offer_code_validity': True})

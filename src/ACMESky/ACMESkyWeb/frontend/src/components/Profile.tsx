@@ -61,6 +61,7 @@ function Profile() {
                   <th scope="col" className="px-6 py-4">From Date</th>
                   <th scope="col" className="px-6 py-4">To Date</th>
                   <th scope="col" className="px-6 py-4">Max Price</th>
+                  <th scope="col" className="px-6 py-4">Valid</th>
                 </tr>
               </thead>
               <tbody>
