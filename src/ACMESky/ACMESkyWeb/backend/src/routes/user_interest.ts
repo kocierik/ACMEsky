@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import pool from "../utils/db"
-import { UserInterest } from '../interfaces';
+import { AuthRequest, UserInterest } from '../interfaces';
 import { send_string_as_correlate_message } from '../utils/camunda_rest_client';
 
 dotenv.config();
@@ -21,8 +21,13 @@ async function getUserInterests(req: Request, res: Response<UserInterest[] | { e
 }
 
 // Funzione per creare un nuovo interesse chiamando il servizio Camunda
-async function createUserInterest(req: Request, res: Response<UserInterest | { error: string }>) {
-  const userInterest: UserInterest = req.body;
+async function createUserInterest(req: AuthRequest, res: Response<UserInterest | { error: string }>) {v
+  const user = req.user;
+  if (!user || !user.userId) {
+    return res.status(403).json({ error: 'Utente non autorizzato' });
+  }
+  
+  const userInterest: UserInterest = {...req.body, user_id: user.userId, valid: true};
 
   // Send message with the interest to Camunda
   const response = await send_string_as_correlate_message("interest", [["interest", JSON.stringify(userInterest)]]);

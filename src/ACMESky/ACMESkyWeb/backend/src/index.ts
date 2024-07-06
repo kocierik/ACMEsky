@@ -21,10 +21,14 @@ app.use(cookieParser());
 app.post('/register', registerUser);
 app.post('/login', loginUser);
 app.get('/getUser/:userId/interests', getUserInterests);
-app.post('/createUserInterest', createUserInterest);
-app.post('/newFlight', newFlight);
+app.post('/createUserInterest', authenticateJWT, createUserInterest);
 app.post('/buyOffer', authenticateJWT, buyOffer);
+
+// Called by bank service
 app.post('/paymentResult', paymentResult);
+
+// Call by flight companies
+app.post('/newFlight', newFlight);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

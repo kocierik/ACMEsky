@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { send_string_as_correlate_message } from '../utils/camunda_rest_client';
 import { AuthRequest } from '../interfaces';
 
@@ -22,7 +22,7 @@ const buyOffer = async (req: AuthRequest, res: Response) => {
   return res.status(200).json({ message: 'Acquisto offerta inoltrato a Camunda' });
 }
 
-const paymentResult = async (req: AuthRequest, res: Response) => {
+const paymentResult = async (req: Request, res: Response) => {
   // Send message with the payment result to Camunda
   const response = await send_string_as_correlate_message("payment_status", [["payment_status", JSON.stringify(req.body)]], req.body.process_instance_id);
 
