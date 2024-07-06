@@ -26,7 +26,7 @@ Essendo un progetto a scopo didattico sono state adottate alcune assunzioni e se
 ## Struttura del sito
 Il seguente sito è strutturato come segue:
 	
-- [Coreografie](coreografie.md): descrizione delle coreografie da noi progettate, la verifica della loro connectedness e le loro proiezioni sui diversi ruoli;
-- [Coreografie BPMN](coreografiebpmn.md): descrizione delle coreografie della precedente sezione mediante coreografie BPMN;
-- [BPMN](bpmn.md): descrizione delle coreografie sotto forma di diagrammi BPMN;
-- [UML](uml.md): descrizione della SOA tramite diagrammi UML con profilo TinySOA;
+- [Coreografie](docs/coreografie.md): descrizione delle coreografie da noi progettate, la verifica della loro connectedness e le loro proiezioni sui diversi ruoli;
+- [Coreografie BPMN](docs/coreografiebpmn.md): descrizione delle coreografie della precedente sezione mediante coreografie BPMN;
+- [BPMN](docs/bpmn.md): descrizione delle coreografie sotto forma di diagrammi BPMN;
+- [UML](docs/uml.md): descrizione della SOA tramite diagrammi UML con profilo TinySOA;
