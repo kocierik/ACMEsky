@@ -5,6 +5,7 @@ from camundaworkers.workers.buy_offer.payment_request import payment_request
 from camundaworkers.workers.buy_offer.send_timeout_request_payment import send_timeout_request_payment
 from camundaworkers.workers.buy_offer.send_wrong_payment_status import send_wrong_payment_status
 from camundaworkers.workers.buy_offer.verify_payment_status import verify_payment_status
+from camundaworkers.workers.buy_offer.notify_offer_delete_prontogram import notify_offer_delete_prontogram
 from camundaworkers.workers.buy_offer.buy_flights import buy_flights
 from camundaworkers.workers.buy_offer.verify_condition_for_travel_booking import verify_condition_for_travel_booking
 from camundaworkers.workers.buy_offer.send_tickets import send_tickets
@@ -21,6 +22,7 @@ TASKS = [
     ("send-timeout-request-payment", send_timeout_request_payment),
     ("verify-payment-status", verify_payment_status),
     ("send-wrong-payment-status", send_wrong_payment_status),
+    ('notify-offer-delete-prontogram', notify_offer_delete_prontogram),
     ("buy-flights", buy_flights),
     ("verify-condition-for-travel-booking", verify_condition_for_travel_booking),
     ("send-tickets", send_tickets),

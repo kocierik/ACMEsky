@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1boc02g" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="4c81344" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0" camunda:diagramRelationId="cb5e5644-35d9-49c1-8982-ff1659262317">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1boc02g" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="8059276" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0" camunda:diagramRelationId="cb5e5644-35d9-49c1-8982-ff1659262317">
   <bpmn:collaboration id="buy-offer">
     <bpmn:participant id="acmesky" name="ACMESky" processRef="buy-offer-for-user" />
     <bpmn:participant id="user" name="Utente" />
@@ -7,6 +7,7 @@
     <bpmn:participant id="flight-company" name="Compagnia Aerea" />
     <bpmn:participant id="geographical-distances" name="Distanze Geografiche" />
     <bpmn:participant id="travel-company" name="Compagnia Trasporto" />
+    <bpmn:participant id="prontogram" name="Prontogram" />
     <bpmn:messageFlow id="Flow_1k3zsk0" sourceRef="user" targetRef="receive-offer-purchase-data" />
     <bpmn:messageFlow id="Flow_1kgy8lc" sourceRef="send-wrong-offer-code" targetRef="user" />
     <bpmn:messageFlow id="Flow_12ttpzh" sourceRef="payment-request" targetRef="payment-provider" />
@@ -27,129 +28,41 @@
     <bpmn:messageFlow id="Flow_0cz80so" sourceRef="send-timeout-request-payment" targetRef="user" />
     <bpmn:messageFlow id="Flow_05n4e08" sourceRef="payment-provider" targetRef="payment-request" />
     <bpmn:messageFlow id="Flow_08bqgyk" name="Invio URL del Provider Pagamenti" sourceRef="payment-request" targetRef="user" />
+    <bpmn:messageFlow id="Flow_1hnox6r" sourceRef="notify-offer-delete-prontogram" targetRef="prontogram" />
+    <bpmn:messageFlow id="Flow_1c3urih" sourceRef="prontogram" targetRef="notify-offer-delete-prontogram" />
   </bpmn:collaboration>
   <bpmn:process id="buy-offer-for-user" name="Acquisto offerta" isExecutable="true" camunda:historyTimeToLive="P365D">
     <bpmn:laneSet id="LaneSet_1wnt39r">
       <bpmn:lane id="Lane_16qfq77" name="Pagamenti">
-        <bpmn:flowNodeRef>buy-flights</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>verify-condition-for-travel-booking</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>can-book-travel-company-gateway</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>verify-condition-for-travel-booking</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>buy-flights</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>notify-offer-delete-prontogram</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_1nk4vhw" name="Portale web">
-        <bpmn:flowNodeRef>buy-offer-completed</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>send-tickets</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>buy-offer-completed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>check-code-verify-payment</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>receive-offer-purchase-data</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>buy-offer-failed</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>check-code-verify-payment</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>payment-sub-process-failed</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_1ld0r5n" name="Prenotazione trasporto">
         <bpmn:flowNodeRef>check-distance-house-airport</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>check-distance-for-transfer-booking</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>book-travel-gateway</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>get-min-distance-house-travel-distance</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>book-travel-gateway</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>book-transfer</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:sequenceFlow id="Flow_1aighra" sourceRef="buy-flights" targetRef="verify-condition-for-travel-booking" />
-    <bpmn:sequenceFlow id="Flow_1l9jm0u" name="Sì" sourceRef="can-book-travel-company-gateway" targetRef="check-distance-house-airport">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${can_book_travel_company}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1fjvvn5" name="No" sourceRef="can-book-travel-company-gateway" targetRef="send-tickets">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not can_book_travel_company}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1nsoyt1" sourceRef="verify-condition-for-travel-booking" targetRef="can-book-travel-company-gateway" />
     <bpmn:sequenceFlow id="Flow_11ljg0f" sourceRef="receive-offer-purchase-data" targetRef="check-code-verify-payment" />
-    <bpmn:sequenceFlow id="Flow_1o60alf" sourceRef="check-code-verify-payment" targetRef="buy-flights" />
-    <bpmn:sequenceFlow id="Flow_1dr0cfk" name="No" sourceRef="book-travel-gateway" targetRef="send-tickets">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not book_travel_company}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1gt4jb1" sourceRef="book-transfer" targetRef="send-tickets" />
-    <bpmn:sequenceFlow id="Flow_1yma81c" sourceRef="send-tickets" targetRef="buy-offer-completed" />
-    <bpmn:sequenceFlow id="Flow_1c3kcyw" sourceRef="get-min-distance-house-travel-distance" targetRef="book-transfer" />
-    <bpmn:sequenceFlow id="Flow_0wqfhvp" name="Si" sourceRef="book-travel-gateway" targetRef="get-min-distance-house-travel-distance">
-      <bpmn:extensionElements>
-        <camunda:executionListener event="take">
-          <camunda:script scriptFormat="groovy">execution.setVariable(
-    "travel_companies",
-    ["http://rent_service_1:8030;forte bazzera;rentService1.wsdl", "http://rent_service_2:8030;via della fornace 2 bologna;rentService2.wsdl"]
-);</camunda:script>
-        </camunda:executionListener>
-      </bpmn:extensionElements>
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${book_travel_company}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0ggafwf" sourceRef="check-distance-for-transfer-booking" targetRef="book-travel-gateway" />
-    <bpmn:sequenceFlow id="Flow_02g11e6" sourceRef="check-distance-house-airport" targetRef="check-distance-for-transfer-booking" />
-    <bpmn:endEvent id="buy-offer-completed" name="Acquisto offerta completato">
-      <bpmn:incoming>Flow_1yma81c</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sendTask id="buy-flights" name="Acquista voli per l&#39;utente" camunda:type="external" camunda:topic="buy-flights">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="total_amount">${total_amount}</camunda:outputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1o60alf</bpmn:incoming>
-      <bpmn:outgoing>Flow_1aighra</bpmn:outgoing>
-    </bpmn:sendTask>
-    <bpmn:serviceTask id="verify-condition-for-travel-booking" name="Verifica condizione prezzo per prenotazione navetta" camunda:type="external" camunda:topic="verify-condition-for-travel-booking">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="can_book_travel_company">${can_book_travel_company}</camunda:outputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1aighra</bpmn:incoming>
-      <bpmn:outgoing>Flow_1nsoyt1</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="can-book-travel-company-gateway" name="La condizione per la prenotazione del trasporto è verificata?">
-      <bpmn:incoming>Flow_1nsoyt1</bpmn:incoming>
-      <bpmn:outgoing>Flow_1fjvvn5</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1l9jm0u</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sendTask id="check-distance-house-airport" name="Calcola distanza domicilio utente da aeroporto" camunda:type="external" camunda:topic="check-distance-house-airport">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="distance">${distance}</camunda:outputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1l9jm0u</bpmn:incoming>
-      <bpmn:outgoing>Flow_02g11e6</bpmn:outgoing>
-    </bpmn:sendTask>
-    <bpmn:serviceTask id="check-distance-for-transfer-booking" name="Verifica condizione distanza per prenotazione trasporto" camunda:type="external" camunda:topic="check-distance-for-transfer-booking">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="book_travel_company">${book_travel_company}</camunda:outputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_02g11e6</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ggafwf</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="book-travel-gateway" name="Il trasporto è da prenotare?">
-      <bpmn:incoming>Flow_0ggafwf</bpmn:incoming>
-      <bpmn:outgoing>Flow_1dr0cfk</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0wqfhvp</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sendTask id="get-min-distance-house-travel-distance" name="Calcola distanza domicilio utente da sede CT" camunda:type="external" camunda:topic="get-min-distance-house-travel-distance">
-      <bpmn:incoming>Flow_0wqfhvp</bpmn:incoming>
-      <bpmn:outgoing>Flow_1c3kcyw</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="#{travel_companies}" camunda:elementVariable="travel_company" />
-    </bpmn:sendTask>
-    <bpmn:sendTask id="book-transfer" name="Prenotazione compagnia di trasporto più vicina" camunda:type="external" camunda:topic="book-transfer">
-      <bpmn:incoming>Flow_1c3kcyw</bpmn:incoming>
-      <bpmn:outgoing>Flow_1gt4jb1</bpmn:outgoing>
-    </bpmn:sendTask>
-    <bpmn:sendTask id="send-tickets" name="Invio biglietti all&#39;utente" camunda:type="external" camunda:topic="send-tickets">
-      <bpmn:incoming>Flow_1fjvvn5</bpmn:incoming>
-      <bpmn:incoming>Flow_1dr0cfk</bpmn:incoming>
-      <bpmn:incoming>Flow_1gt4jb1</bpmn:incoming>
-      <bpmn:outgoing>Flow_1yma81c</bpmn:outgoing>
-    </bpmn:sendTask>
     <bpmn:transaction id="check-code-verify-payment" name="Verifica codice e validità del pagamento">
       <bpmn:incoming>Flow_11ljg0f</bpmn:incoming>
       <bpmn:outgoing>Flow_1o60alf</bpmn:outgoing>
       <bpmn:serviceTask id="verify-offer-code-validity" name="Verifica validità codice offerta" camunda:type="external" camunda:topic="verify-offer-code-validity">
         <bpmn:extensionElements>
           <camunda:inputOutput>
+            <camunda:inputParameter name="offer_purchase_data">${offer_purchase_data}</camunda:inputParameter>
             <camunda:outputParameter name="offer_code_validity">${offer_code_validity}</camunda:outputParameter>
           </camunda:inputOutput>
         </bpmn:extensionElements>
@@ -285,61 +198,119 @@
       <bpmn:outgoing>Flow_1u045ch</bpmn:outgoing>
       <bpmn:cancelEventDefinition id="CancelEventDefinition_0k42nz6" />
     </bpmn:boundaryEvent>
+    <bpmn:sendTask id="check-distance-house-airport" name="Calcola distanza domicilio utente da aeroporto" camunda:type="external" camunda:topic="check-distance-house-airport">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="distance">${distance}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1l9jm0u</bpmn:incoming>
+      <bpmn:outgoing>Flow_02g11e6</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:serviceTask id="check-distance-for-transfer-booking" name="Verifica condizione distanza per prenotazione trasporto" camunda:type="external" camunda:topic="check-distance-for-transfer-booking">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="book_travel_company">${book_travel_company}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_02g11e6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ggafwf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sendTask id="get-min-distance-house-travel-distance" name="Calcola distanza domicilio utente da sede CT" camunda:type="external" camunda:topic="get-min-distance-house-travel-distance">
+      <bpmn:incoming>Flow_0wqfhvp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1c3kcyw</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="#{travel_companies}" camunda:elementVariable="travel_company" />
+    </bpmn:sendTask>
+    <bpmn:exclusiveGateway id="book-travel-gateway" name="Il trasporto è da prenotare?">
+      <bpmn:incoming>Flow_0ggafwf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dr0cfk</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0wqfhvp</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sendTask id="book-transfer" name="Prenotazione compagnia di trasporto più vicina" camunda:type="external" camunda:topic="book-transfer">
+      <bpmn:incoming>Flow_1c3kcyw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gt4jb1</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sendTask id="send-tickets" name="Invio biglietti all&#39;utente" camunda:type="external" camunda:topic="send-tickets">
+      <bpmn:incoming>Flow_1fjvvn5</bpmn:incoming>
+      <bpmn:incoming>Flow_1dr0cfk</bpmn:incoming>
+      <bpmn:incoming>Flow_1gt4jb1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yma81c</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="buy-offer-completed" name="Acquisto offerta completato">
+      <bpmn:incoming>Flow_1yma81c</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1aighra" sourceRef="buy-flights" targetRef="verify-condition-for-travel-booking" />
+    <bpmn:sequenceFlow id="Flow_1nsoyt1" sourceRef="verify-condition-for-travel-booking" targetRef="can-book-travel-company-gateway" />
+    <bpmn:sequenceFlow id="Flow_1l9jm0u" name="Sì" sourceRef="can-book-travel-company-gateway" targetRef="check-distance-house-airport">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${can_book_travel_company}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1fjvvn5" name="No" sourceRef="can-book-travel-company-gateway" targetRef="send-tickets">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not can_book_travel_company}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_02g11e6" sourceRef="check-distance-house-airport" targetRef="check-distance-for-transfer-booking" />
+    <bpmn:sequenceFlow id="Flow_0ggafwf" sourceRef="check-distance-for-transfer-booking" targetRef="book-travel-gateway" />
+    <bpmn:sequenceFlow id="Flow_0wqfhvp" name="Si" sourceRef="book-travel-gateway" targetRef="get-min-distance-house-travel-distance">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="groovy">execution.setVariable(
+    "travel_companies",
+    ["http://rent_service_1:8030;forte bazzera;rentService1.wsdl", "http://rent_service_2:8030;via della fornace 2 bologna;rentService2.wsdl"]
+);</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${book_travel_company}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1c3kcyw" sourceRef="get-min-distance-house-travel-distance" targetRef="book-transfer" />
+    <bpmn:sequenceFlow id="Flow_1dr0cfk" name="No" sourceRef="book-travel-gateway" targetRef="send-tickets">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not book_travel_company}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1gt4jb1" sourceRef="book-transfer" targetRef="send-tickets" />
+    <bpmn:sequenceFlow id="Flow_1yma81c" sourceRef="send-tickets" targetRef="buy-offer-completed" />
+    <bpmn:exclusiveGateway id="can-book-travel-company-gateway" name="La condizione per la prenotazione del trasporto è verificata?">
+      <bpmn:incoming>Flow_1nsoyt1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fjvvn5</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1l9jm0u</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="verify-condition-for-travel-booking" name="Verifica condizione prezzo per prenotazione navetta" camunda:type="external" camunda:topic="verify-condition-for-travel-booking">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="can_book_travel_company">${can_book_travel_company}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1aighra</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nsoyt1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sendTask id="buy-flights" name="Acquista voli per l&#39;utente" camunda:type="external" camunda:topic="buy-flights">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="total_amount">${total_amount}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_18bm92x</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aighra</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_1o60alf" sourceRef="check-code-verify-payment" targetRef="notify-offer-delete-prontogram" />
+    <bpmn:sequenceFlow id="Flow_18bm92x" sourceRef="notify-offer-delete-prontogram" targetRef="buy-flights" />
+    <bpmn:sendTask id="notify-offer-delete-prontogram" name="Invia elimina offerta" camunda:type="external" camunda:topic="notify-offer-delete-prontogram" >
+      <bpmn:incoming>Flow_1o60alf</bpmn:incoming>
+      <bpmn:outgoing>Flow_18bm92x</bpmn:outgoing>
+    </bpmn:sendTask>
   </bpmn:process>
   <bpmn:message id="Message_0t956lt" name="offer_purchase_data" />
   <bpmn:message id="Message_1sjlbpz" name="payment_status" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="buy-offer">
       <bpmndi:BPMNShape id="Participant_1l4082h_di" bpmnElement="acmesky" isHorizontal="true">
-        <dc:Bounds x="160" y="240" width="3100" height="830" />
+        <dc:Bounds x="160" y="240" width="3260" height="830" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1ld0r5n_di" bpmnElement="Lane_1ld0r5n" isHorizontal="true">
-        <dc:Bounds x="190" y="240" width="3070" height="170" />
+        <dc:Bounds x="190" y="240" width="3230" height="170" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1nk4vhw_di" bpmnElement="Lane_1nk4vhw" isHorizontal="true">
-        <dc:Bounds x="190" y="620" width="3070" height="450" />
+        <dc:Bounds x="190" y="620" width="3230" height="450" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_16qfq77_di" bpmnElement="Lane_16qfq77" isHorizontal="true">
-        <dc:Bounds x="190" y="410" width="3070" height="210" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0e8bptr_di" bpmnElement="buy-offer-completed">
-        <dc:Bounds x="3183" y="682" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="3165" y="725" width="77" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1yysxgf_di" bpmnElement="buy-flights">
-        <dc:Bounds x="1750" y="460" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0lzxprl_di" bpmnElement="verify-condition-for-travel-booking">
-        <dc:Bounds x="1890" y="460" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1gr96kq_di" bpmnElement="can-book-travel-company-gateway" isMarkerVisible="true">
-        <dc:Bounds x="2035" y="475" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2096" y="473" width="87" height="53" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_046b45b_di" bpmnElement="check-distance-house-airport">
-        <dc:Bounds x="2140" y="290" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0f3h2nk_di" bpmnElement="check-distance-for-transfer-booking">
-        <dc:Bounds x="2320" y="290" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1bzfyrf_di" bpmnElement="book-travel-gateway" isMarkerVisible="true">
-        <dc:Bounds x="2505" y="305" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2492" y="268" width="77" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0alcy0l_di" bpmnElement="get-min-distance-house-travel-distance">
-        <dc:Bounds x="2620" y="290" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_16yd00m_di" bpmnElement="book-transfer">
-        <dc:Bounds x="2870" y="290" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1bhdnmu_di" bpmnElement="send-tickets">
-        <dc:Bounds x="2990" y="660" width="100" height="80" />
+        <dc:Bounds x="190" y="410" width="3230" height="210" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0zcnc9s_di" bpmnElement="check-code-verify-payment" isExpanded="true">
         <dc:Bounds x="340" y="430" width="1380" height="600" />
@@ -533,83 +504,129 @@
           <dc:Bounds x="1902" y="805" width="76" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_046b45b_di" bpmnElement="check-distance-house-airport">
+        <dc:Bounds x="2145" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f3h2nk_di" bpmnElement="check-distance-for-transfer-booking">
+        <dc:Bounds x="2325" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0alcy0l_di" bpmnElement="get-min-distance-house-travel-distance">
+        <dc:Bounds x="2625" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1bzfyrf_di" bpmnElement="book-travel-gateway" isMarkerVisible="true">
+        <dc:Bounds x="2510" y="305" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2497" y="268" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16yd00m_di" bpmnElement="book-transfer">
+        <dc:Bounds x="2875" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bhdnmu_di" bpmnElement="send-tickets">
+        <dc:Bounds x="2995" y="660" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0e8bptr_di" bpmnElement="buy-offer-completed">
+        <dc:Bounds x="3186" y="682" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3168" y="725" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1gr96kq_di" bpmnElement="can-book-travel-company-gateway" isMarkerVisible="true">
+        <dc:Bounds x="2170" y="475" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2231" y="473" width="88" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lzxprl_di" bpmnElement="verify-condition-for-travel-booking">
+        <dc:Bounds x="2040" y="460" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yysxgf_di" bpmnElement="buy-flights">
+        <dc:Bounds x="1910" y="460" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0vddfrr" bpmnElement="notify-offer-delete-prontogram">
+        <dc:Bounds x="1760" y="460" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1qg7ra4_di" bpmnElement="payment-sub-process-failed">
         <dc:Bounds x="1702" y="762" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1745" y="790" width="69" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1aighra_di" bpmnElement="Flow_1aighra">
-        <di:waypoint x="1850" y="500" />
-        <di:waypoint x="1890" y="500" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1l9jm0u_di" bpmnElement="Flow_1l9jm0u">
-        <di:waypoint x="2060" y="475" />
-        <di:waypoint x="2060" y="330" />
-        <di:waypoint x="2140" y="330" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2071" y="443" width="11" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1fjvvn5_di" bpmnElement="Flow_1fjvvn5">
-        <di:waypoint x="2060" y="525" />
-        <di:waypoint x="2060" y="700" />
-        <di:waypoint x="2990" y="700" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2068" y="542" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1nsoyt1_di" bpmnElement="Flow_1nsoyt1">
-        <di:waypoint x="1990" y="500" />
-        <di:waypoint x="2035" y="500" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_11ljg0f_di" bpmnElement="Flow_11ljg0f">
         <di:waypoint x="308" y="720" />
         <di:waypoint x="340" y="720" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1o60alf_di" bpmnElement="Flow_1o60alf">
-        <di:waypoint x="1720" y="500" />
-        <di:waypoint x="1750" y="500" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1dr0cfk_di" bpmnElement="Flow_1dr0cfk">
-        <di:waypoint x="2530" y="355" />
-        <di:waypoint x="2530" y="700" />
-        <di:waypoint x="2990" y="700" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2542" y="373" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1gt4jb1_di" bpmnElement="Flow_1gt4jb1">
-        <di:waypoint x="2970" y="330" />
-        <di:waypoint x="3040" y="330" />
-        <di:waypoint x="3040" y="660" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1yma81c_di" bpmnElement="Flow_1yma81c">
-        <di:waypoint x="3090" y="700" />
-        <di:waypoint x="3183" y="700" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1c3kcyw_di" bpmnElement="Flow_1c3kcyw">
-        <di:waypoint x="2720" y="330" />
-        <di:waypoint x="2870" y="330" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wqfhvp_di" bpmnElement="Flow_0wqfhvp">
-        <di:waypoint x="2555" y="330" />
-        <di:waypoint x="2620" y="330" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2577" y="312" width="10" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ggafwf_di" bpmnElement="Flow_0ggafwf">
-        <di:waypoint x="2420" y="330" />
-        <di:waypoint x="2505" y="330" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_02g11e6_di" bpmnElement="Flow_02g11e6">
-        <di:waypoint x="2240" y="330" />
-        <di:waypoint x="2320" y="330" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1u045ch_di" bpmnElement="Flow_1u045ch">
         <di:waypoint x="1738" y="780" />
         <di:waypoint x="1922" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aighra_di" bpmnElement="Flow_1aighra">
+        <di:waypoint x="2010" y="500" />
+        <di:waypoint x="2040" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nsoyt1_di" bpmnElement="Flow_1nsoyt1">
+        <di:waypoint x="2140" y="500" />
+        <di:waypoint x="2170" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1l9jm0u_di" bpmnElement="Flow_1l9jm0u">
+        <di:waypoint x="2195" y="475" />
+        <di:waypoint x="2195" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2206" y="450" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fjvvn5_di" bpmnElement="Flow_1fjvvn5">
+        <di:waypoint x="2195" y="525" />
+        <di:waypoint x="2195" y="700" />
+        <di:waypoint x="2995" y="700" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2203" y="542" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02g11e6_di" bpmnElement="Flow_02g11e6">
+        <di:waypoint x="2245" y="330" />
+        <di:waypoint x="2325" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ggafwf_di" bpmnElement="Flow_0ggafwf">
+        <di:waypoint x="2425" y="330" />
+        <di:waypoint x="2510" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wqfhvp_di" bpmnElement="Flow_0wqfhvp">
+        <di:waypoint x="2560" y="330" />
+        <di:waypoint x="2625" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2582" y="312" width="10" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c3kcyw_di" bpmnElement="Flow_1c3kcyw">
+        <di:waypoint x="2725" y="330" />
+        <di:waypoint x="2875" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dr0cfk_di" bpmnElement="Flow_1dr0cfk">
+        <di:waypoint x="2535" y="355" />
+        <di:waypoint x="2535" y="700" />
+        <di:waypoint x="2995" y="700" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2547" y="373" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gt4jb1_di" bpmnElement="Flow_1gt4jb1">
+        <di:waypoint x="2975" y="330" />
+        <di:waypoint x="3045" y="330" />
+        <di:waypoint x="3045" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yma81c_di" bpmnElement="Flow_1yma81c">
+        <di:waypoint x="3095" y="700" />
+        <di:waypoint x="3186" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1o60alf_di" bpmnElement="Flow_1o60alf">
+        <di:waypoint x="1720" y="500" />
+        <di:waypoint x="1760" y="500" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18bm92x_di" bpmnElement="Flow_18bm92x">
+        <di:waypoint x="1860" y="500" />
+        <di:waypoint x="1910" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0tg0lpy_di" bpmnElement="user" isHorizontal="true">
         <dc:Bounds x="280" y="1160" width="2810" height="60" />
@@ -618,13 +635,17 @@
         <dc:Bounds x="860" y="80" width="460" height="60" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_1y4l494_di" bpmnElement="flight-company" isHorizontal="true">
-        <dc:Bounds x="1650" y="80" width="300" height="60" />
+        <dc:Bounds x="1800" y="80" width="300" height="60" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_0f266i3_di" bpmnElement="geographical-distances" isHorizontal="true">
-        <dc:Bounds x="2120" y="80" width="620" height="60" />
+        <dc:Bounds x="2123" y="80" width="620" height="60" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_01nrars_di" bpmnElement="travel-company" isHorizontal="true">
-        <dc:Bounds x="2770" y="80" width="300" height="60" />
+        <dc:Bounds x="2773" y="80" width="300" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0ozd5bg" bpmnElement="prontogram" isHorizontal="true">
+        <dc:Bounds x="1430" y="80" width="300" height="60" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1k3zsk0_di" bpmnElement="Flow_1k3zsk0">
         <di:waypoint x="290" y="1160" />
@@ -660,44 +681,44 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0f80lvz_di" bpmnElement="Flow_0f80lvz">
-        <di:waypoint x="3040" y="740" />
-        <di:waypoint x="3040" y="1160" />
+        <di:waypoint x="3045" y="740" />
+        <di:waypoint x="3045" y="1160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jdgbpv_di" bpmnElement="Flow_0jdgbpv">
-        <di:waypoint x="1770" y="460" />
-        <di:waypoint x="1770" y="140" />
+        <di:waypoint x="1930" y="460" />
+        <di:waypoint x="1930" y="140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ebvvag_di" bpmnElement="Flow_1ebvvag">
-        <di:waypoint x="2160" y="290" />
-        <di:waypoint x="2160" y="140" />
+        <di:waypoint x="2165" y="290" />
+        <di:waypoint x="2165" y="140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0v6xzsh_di" bpmnElement="Flow_0v6xzsh">
-        <di:waypoint x="2640" y="290" />
-        <di:waypoint x="2640" y="140" />
+        <di:waypoint x="2645" y="290" />
+        <di:waypoint x="2645" y="140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1a7wmsd_di" bpmnElement="Flow_1a7wmsd">
-        <di:waypoint x="2890" y="290" />
-        <di:waypoint x="2890" y="140" />
+        <di:waypoint x="2895" y="290" />
+        <di:waypoint x="2895" y="140" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0jl3pv9_di" bpmnElement="Flow_0jl3pv9">
         <di:waypoint x="1510" y="850" />
         <di:waypoint x="1510" y="1160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bh04zj_di" bpmnElement="Flow_1bh04zj">
-        <di:waypoint x="1830" y="140" />
-        <di:waypoint x="1830" y="460" />
+        <di:waypoint x="1990" y="140" />
+        <di:waypoint x="1990" y="460" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0cp932q_di" bpmnElement="Flow_0cp932q">
-        <di:waypoint x="2220" y="140" />
-        <di:waypoint x="2220" y="290" />
+        <di:waypoint x="2225" y="140" />
+        <di:waypoint x="2225" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jkzuv7_di" bpmnElement="Flow_1jkzuv7">
-        <di:waypoint x="2700" y="140" />
-        <di:waypoint x="2700" y="290" />
+        <di:waypoint x="2705" y="140" />
+        <di:waypoint x="2705" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ck2wdq_di" bpmnElement="Flow_1ck2wdq">
-        <di:waypoint x="2940" y="140" />
-        <di:waypoint x="2940" y="290" />
+        <di:waypoint x="2945" y="140" />
+        <di:waypoint x="2945" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qvuwhf_di" bpmnElement="Flow_0qvuwhf">
         <di:waypoint x="860" y="760" />
@@ -717,6 +738,18 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="916" y="700" width="67" height="40" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hnox6r_di" bpmnElement="Flow_1hnox6r">
+        <di:waypoint x="1770" y="460" />
+        <di:waypoint x="1770" y="300" />
+        <di:waypoint x="1450" y="300" />
+        <di:waypoint x="1450" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c3urih_di" bpmnElement="Flow_1c3urih">
+        <di:waypoint x="1580" y="140" />
+        <di:waypoint x="1580" y="260" />
+        <di:waypoint x="1840" y="260" />
+        <di:waypoint x="1840" y="460" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

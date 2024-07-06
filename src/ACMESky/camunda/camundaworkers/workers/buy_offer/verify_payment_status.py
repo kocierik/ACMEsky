@@ -6,7 +6,6 @@ from camunda.external_task.external_task import ExternalTask, TaskResult
 from camundaworkers.utils.logger import get_logger
 
 import json
-import requests
 
 
 def verify_payment_status(task: ExternalTask) -> TaskResult:
@@ -35,17 +34,6 @@ def verify_payment_status(task: ExternalTask) -> TaskResult:
         session.rollback()
         logger.error("0 matches were found for the given offer code %s", payment_info.offer_code)
         return task.complete(global_variables={'payment_status_validity': False})
-
-
-    # Deletes the offer from the inbox on Prontogram
-    prontogram_message = {
-        "user_id": payment_info.user_id,
-        "activation_code": payment_info.offer_code,
-    }
-    r = requests.delete("http://prontogram_backend:8050/api/offer", json=prontogram_message)
-    logger.info(f"Prontogram response: {r.status_code}")
-    if r.status_code >= 300:
-        logger.warn(r.text)
 
     session.commit()
     return task.complete(global_variables={'payment_status_validity': True})
