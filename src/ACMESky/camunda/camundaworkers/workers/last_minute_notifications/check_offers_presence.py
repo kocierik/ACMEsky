@@ -42,24 +42,23 @@ def check_offers_presence(task: ExternalTask) -> TaskResult:
         to_date: datetime = datetime.fromisoformat(interest.get("to_date"))
         max_price: float = interest.get("max_price")
 
-        # Retrieving all the flights which go from the departure location to the arrival location
-        departure_location_flights: list[Flight] = session.query(Flight).filter(Flight.valid == True).filter(Flight.departure_location == departure_location, Flight.arrival_location == arrival_location).all()
+        # Retrieving all the flights which go from the departure location to the arrival location in the range of the user interest
+        departure_location_flights: list[Flight] = session.query(Flight).filter(Flight.valid == True).filter(Flight.departure_location == departure_location, Flight.arrival_location == arrival_location, Flight.departure_date >= from_date, Flight.departure_date <= to_date).all()
 
         for flight in departure_location_flights:
-            # Check if the flight has a departure date in the range of the user interest dates
-            if flight.departure_date >= from_date and flight.departure_date <= to_date:
-                return_flight = session.query(Flight).filter(Flight.valid == True).filter(Flight.departure_location == arrival_location, Flight.arrival_location == departure_location).filter(Flight.departure_date >= flight.arrival_date).order_by(Flight.price.asc()).first()
+            return_flights = session.query(Flight).filter(Flight.valid == True) \
+                .filter(Flight.departure_location == arrival_location, Flight.arrival_location == departure_location) \
+                .filter(Flight.departure_date > flight.arrival_date, Flight.arrival_date <= to_date) \
+                .filter(Flight.price <= max_price - flight.price) \
+                .all()
 
-                if return_flight and flight.arrival_date <= return_flight.departure_date <= to_date:
-                    total_price = flight.price + return_flight.price
-
-                    if total_price <= max_price:
-                        try:
-                            session.query(Offer).filter(Offer.dep_flight_id == flight.flight_code, Offer.arr_flight_id == return_flight.flight_code, Offer.user_id == user_interests.get("user_id"), Offer.interest_id == interest.get("id")).one()
-                        except NoResultFound:
-                            offer = Offer.create(flight.flight_code, return_flight.flight_code, user_interests.get("user_id"), interest.get("id"))
-                            session.add(offer)
-                            offers.append(offer.to_dict())
+            for return_flight in return_flights:
+                try:
+                    session.query(Offer).filter(Offer.dep_flight_id == flight.flight_code, Offer.arr_flight_id == return_flight.flight_code, Offer.user_id == user_interests.get("user_id"), Offer.interest_id == interest.get("id")).one()
+                except NoResultFound:
+                    offer = Offer.create(flight.flight_code, return_flight.flight_code, user_interests.get("user_id"), interest.get("id"))
+                    session.add(offer)
+                    offers.append(offer.to_dict())
 
     session.commit()
     logger.info("Offers: %s", offers)
