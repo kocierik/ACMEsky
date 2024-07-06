@@ -1,6 +1,6 @@
 # ACMESky - Documentazione progetto
 
-Il seguente report descrive i processi che hanno portato alla realizzazione del progetto didattico del corso **Ingegneria del Software Orientata ai Servizi** della LM Informatica dell'Università di Bologna, svolto da Marco Ferrati e Tommaso Azzalin nell'A.A. 2023/2024.
+Il seguente report descrive i processi che hanno portato alla realizzazione del progetto didattico del corso **Ingegneria del Software Orientata ai Servizi** della LM Informatica dell'Università di Bologna, svolto da Erik Koci e Manuel Arto nell'A.A. 2023/2024.
 
 ## Descrizione del progetto
 Realizzare una **Service Oriented Architecture** (**SOA**) che rappresenti la realtà di una compagnia chiamata *ACMESky*.  

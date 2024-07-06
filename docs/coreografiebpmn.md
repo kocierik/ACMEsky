@@ -1,63 +1,35 @@
 
-# Diagramma delle coreografie BPMN
-In questa sezione vengono mostrate le coreografie BPMN che mostrano le interazioni tra i processi relativi ai diversi
-partecipanti.
+## Registrazione interesse di un utente
+![!Processo di registrazione di un interesse da parte di un utente](assets/coreografiebpmn/RegistrazioneInteresseUtente.png){: loading=lazy}
 
-## Diagramma completo
+Il diagramma descrive l'interazione fra un utente e *ACMESky* per l'inserimento nel sistema di un nuovo interesse per un offerta di voli A/R.
 
-![Coreografia completa](coreografie_bpmn/img/diagram_all.png)
+Oltre ai dati sull'interesse inserisce anche il suo nome utente di *ProntoGram*. Sia in caso l'interesse venga aggiunto correttamente che in caso contrario *ACMESky* risponde con l'esito dell'operazione.
 
-Il diagramma è stato suddiviso in parti per poterle spiegare singolarmente.
+## Verifica giornaliera delle offerte
+![!Processo di verifica giornaliera delle offerte delle compagnie aeree](assets/coreografiebpmn/VerificaGiornaliera.png){: loading=lazy}
 
-## Salvataggio degli interessi
+Il diagramma descrive le interazioni che avvengono fra *ACMESky*, le *compagnie aeree*, *ProntoGram* e gli utenti, nel contesto della verifica giornaliera della presenza di nuove offerte da comunicare all'utente.
 
-![Invio interesse](coreografie_bpmn/img/send_interest.png)
+Ogni 24 ore, *ACMESky* contatta le differenti *compagnie aeree* richiedendo la lista delle nuove offerte inserite. Una volta ricevute, *ACMESky* verifica se ci sono utenti da notificare in quanto le offerte ricevute soddisfano i loro interessi: in caso affermativo, *ACMESky* contatta *ProntoGram* inviando il messaggio da far pervenire all'utente (con il codice offerta per il successivo acquisto); in caso negativo, non vi sono altre interazioni. *ProntoGram*, alla ricezione della richiesta di inoltro di un messaggio agli utenti, la soddisfa.
 
-La coreografia descrive come l'utente e *ACMEsky* interagiscono nello scenario dell'invio degli interessi. L'utente manda una User Interest, mentre ACMEsky risponde con un messaggio di corretto inserimento o di errore.
+## Ricezione offerte last minute
+![!Processo di ricezione delle offerte last minute](assets/coreografiebpmn/NotificaVoliLastMinute.png){: loading=lazy}
 
+Il diagramma descrive le interazioni che avvengono fra una *compagnia aerea*, *ACMESky*, *ProntoGram* e gli utenti, nel contesto dell'invio di offerte last minute da parte di una *compagnia aerea*.
 
-## Ricerca dei voli di interesse
+Quando una *compagnia aerea* dispone di offerte last minute, contatta *ACMESky* inviandole. Una volta ricevute tali offerte, *ACMESky* verifica se ci sono utenti da notificare in quanto le offerte ricevute soddisfano i loro interessi: in caso affermativo, *ACMESky* contatta *ProntoGram* inviando il messaggio da far pervenire all'utente (con il codice offerta per il successivo acquisto); in caso negativo, non vi sono altre interazioni. *ProntoGram*, alla ricezione della richiesta di inoltro di un messaggio agli utenti, la soddisfa.
 
-![Ricerca dei voli](coreografie_bpmn/img/search_flights.png)
+## Acquisto offerta da un utente
+![!Processo di acquisto di un'offerta](assets/coreografiebpmn/AcquistoOfferta.png){: loading=lazy}
 
-La coreografia descrive l'interazione tra *ACMEsky* e *Airline Service* al fine di cercare i voli che hanno una corrispondenza con quelli richiesti dagli utenti. Ogni ora e per ciascuna *Airline Service* registrata al servizio, *ACMEsky* recupera i voli di interesse degli utenti  e effettua una richiesta all'*Airline Service* che restituisce la lista dei voli disponibili.
+Il diagramma descrive le interazioni tra i diversi partecipanti che portano al pagamento dell'offerta, il cui codice è stato inviato precedentemente all'utente, e il successivo invio dei biglietti relativi.
 
+Quando un utente invia ad *ACMESky* il codice dell'offerta, il proprio nome e cognome e il proprio indirizzo, viene avviato il processo di acquisto.  
+Come prima cosa, *ACMESky* verifica la validità del codice offerta ricevuto: infatti, se questo risultasse errato, già utilizzato oppure scaduto, l'utente verrebbe avvisato dell'impossibilità di proseguire; nel caso fosse valido, verrebbe dapprima informato e successivamente inoltrata la richiesta di pagamento al *Provider dei Pagamenti*.  
+Il *Provider di Pagamenti* risponde alla richiesta di pagamento con un riferimento, al quale l'utente deve accedere, per poter pagare.  
+*ACMESky*, ricevuto tale riferimento, lo inoltra all'utente il quale ha un tempo massimo di 10 minuti per portare a termine l'operazione di pagamento. Qualsiasi sia l'esito dell'operazione, il *Provider dei Pagamenti* lo comunica ad *ACMESky*. Nel caso in cui l'utente non completi entro il tempo previsto il pagamento oppure l'esito risulti negativo, viene notificato il problema e il processo termina.
 
-## Ricezione dei voli last-minute
-
-![Ricezione voli last-minute](coreografie_bpmn/img/last_minute.png)
-
-La coreografia descrive come *ACMEsky* e *Airline Service* interagiscono nello scenario della ricezione e salvataggio dei voli last-minute. *Airline Service* invia i voli last-minute ad ACMEsky che risponde con un messaggio di corretto inserimento o di errore.
-
-
-## Generazione dell'offerta
-
-![Generazione offerta](coreografie_bpmn/img/make_offer.png)
-
-La coreografia mostra come *ACMEsky*, *Prontogram* e l'utente si relazionano al fine di notificare l'utente della corretta generazione dell'offerta. Ogni ora, se ci sono delle nuove offerte per l'utente, *ACMEsky* manda un messaggio a *Prontogram* che a sua volta risponde con un messaggio di corretto inserimento o di errore. Successivamente *Prontogram* manda una notifica all'utente.
-
-
-## Conferma e acquisto dell'offerta
-
-![Conferma e acquisto](coreografie_bpmn/img/confirm_pay_offer.png)
-
-La coreografia descrive come l'utente, *ACMEsky*, *Bank Service*, *Airline Service*, *GeoDistance Service* e *Rent Service* interagiscono nel contesto della conferma e acquisto dell'offerta di volo da parte dell'utente. Quest'ultimo, conferma la volontà di voler acquistare l'offerta proposta inserendo il token ricevuto tramite l'app di Prontogram nel portale web di *ACMEsky*, il quale risponde con un messaggio di corretto inserimento o di errore. 
-
-*ACMEsky* verifica che l'offerta sia ancora valida, se non lo è il flusso termina. Altrimenti, il processo continua fino alla sotto-coreografia, in cui l'utente passa il token dell'offerta ed il suo indirizzo per richiedere il pagamento, che deve svolgere entro cinque minuti (pena la fine del processo). 
-*ACMEsky* recupera l'offerta corrispondente al token ed effettua una richiesta ad *Airline Service* che gli restituisce i biglietti. Se l'offerta è ancora disponibile per l'acquisto *ACMEsky* procede con il recupero del link del pagamento mandando un messaggio a *Bank Service* fornendo i dettagli dell'offerta. La banca restituirà ad *ACMEsky* il link che successivamente verrà inviato all'utente. 
-Se l'utente non effettua il pagamento tramite il link fornitogli entro cinque minuti il processo termina.
-
-Se il prezzo dell'offerta è superiore a 1000€, *ACMEsky* calcolerà la distanza tra l'indirizzo dell'utente e quello dell'aereoporto di partenza, inviando i rispettivi indirizzi al servizio per il calcolo delle distanze che restituirà la distanza tra i due punti.
-Se questa è superiore ai 30Km, *ACMEsky* si servirà nuovamente di *GeoDistance Service* per trovare la compagnia di noleggio più vicina.
-Infine, viene prenotato il trasporto per l'andata e per il ritono dall'areoporto attraverso la *Rent Service* individuata.
-
-
-## Recupero del biglietto
-
-![Recupero del biglietto](coreografie_bpmn/img/request_ticket.png)
-
-La coreografia descrive come l'utente richiede ad *ACMEsky* il biglietto precedentemente acquistato. L'utente specifica il biglietto al quale è interessato inviando il codice dell'offerta. Successivamente *ACMEsky* recupera il biglietto corrispondente all'offerta in formato PDF.
-
-&nbsp;
-<div class="page-break"></div>
-
+Con il pagamento effettuato correttamente, il processo può proseguire. *ACMESky* contatta la compagnia aerea, i cui voli fan parte dell'offerta inviata all'utente, per poterli acquistare.  
+Nel caso in cui il prezzo dell'offerta superi i 1000 € e l'utente abbia dichiarato un indirizzo entro i 30 Km dall'aeroporto di partenza (distanza calcolata tramite interazione con *Distanze Geografiche*), allora *ACMESky* identifica la *compagnia di trasporto* più vicina a tale indirizzo (contattando nuovamente Distanze Geografiche) e prenotando da questa il trasporto da/verso l'aeroporto.  
+In ogni caso, *ACMESky* invia all'utente i biglietti dei voli e, se è stata prenotata una *compagnia di trasporto*, anche i biglietti per quest'ultima.

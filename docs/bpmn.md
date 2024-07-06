@@ -1,106 +1,85 @@
+In questa sezione vengono rappresentati, sotto forma di diagrammi BPMN, le coreografie discusse nelle [Coreografie, ruoli e proiezioni delle coreografie sui ruoli](coreografie.md) e [BPMN](bpmn.md). Per ogni diagramma descriviamo prima il processo ad alto livello, ovvero a scopo documentativo, nel quale mostriamo principalmente il cosiddetto *happy path*; successivamente lo espandiamo aggiungendo la gestione degli errori, delle eccezioni e degli altri possibili fallimenti che potrebbero avvenire calando nella realtà il processo di business definito.
 
-# Diagramma BPMN
-In questa sezione della documentazione viene descritto il diagramma BPMN che rappresenta il comportamento dei processi
-per ciò che concerne il flusso di controllo.
+<a name="registerInterest"></a>
+## Registrazione interesse di un utente
 
-## Diagramma completo
-![total](bpmn/img/Total.png)
+### Scopo documentativo
+![!Processo di registrazione di un interesse da parte di un utente (scopo documentativo)](assets/bpmn/bpmn-scopo-documentativo/RegistrazioneInteresseUtente.png){: loading=lazy}
 
- Per una migliore specificità e gestione della documentazione il diagramma verrà diviso in parti relative alle varie azioni degli attori, come ad esempio: la registrazione dell'interesse utente, la ricerca dei voli, salvataggio dei voli last-minute, gestione delle offerte, pagamento, ecc.
+Il diagramma descrive il processo di registrazione dell'interesse nel portale web di *ACMESky*, da parte di utente, di un pacchetto di viaggio A/R, con un massimo budget e un range di date entro cui effettuare entrambe le tratte. Il processo inizia con la ricezione da parte di *ACMESky* di questi dati che vengono successivamente memorizzati da *ACMESky* per i successivi controlli. Sia che l'operazione avvenga correttamente, sia che essa fallisca, viene comunicato all'utente l'esito di quest'ultima. Il processo può quindi terminare.
 
-## Ricerca dei voli
+### Scopo implementativo
+Il diagramma con scopo implementativo non ha subito modifiche in quanto il processo non prevede la possibilità di fallimento (dal punto di vista del business process).
 
-![search_flights](bpmn/img/SearchFlights.png)
+<a name="dailyCheck"></a>
+## Verifica giornaliera delle offerte
 
-La ricerca dei voli alle Airline Services viene ripetuta ad un certo intervallo di tempo, per evitare sovraccaricare i sistemi. Per questo, i voli delle offerte di interesse degli utenti vengono salvati sul DB e, in seguito, vengono utilizzati per cercare i voli delle compagnie aeree. L'intervallo di tempo è variabile da 1 ora a pochi minuti poichè si cerca un compromesso tra un sistema efficiente e un sistema che non faccia aspettare troppo l'utente.
+### Scopo documentativo
+![!Processo di verifica giornaliera delle offerte delle compagnie aeree (scopo documentativo)](assets/bpmn/bpmn-scopo-documentativo/VerificaGiornaliera.png){: loading=lazy}
 
-Quindi, ad un certo intervallo e per ciascun __Airline Service__, __ACMEsky__ recupera i voli di interesse degli utenti dal suo database ed effettua una ricerca mirata dei voli compatibili con essi. 
-I voli presenti nella risposta vengono salvati all'interno del database (tabella _available_flights_). 
-Se il timer della richiesta scade, per eventuali errori dovuti ad __Airline Service__, il sottoprocesso termina e si passa ad un'altra compagnia aerea.
+Il diagramma descrive il processo di verifica quotidiana della presenza di offerte che possano soddisfare gli interessi registrati degli utenti di *ACMESky*. Questo processo si avvia sistematicamente ogni 24 ore.
 
+*ACMESky* contatta i servizi delle compagnie aeree, in modo parallelo, che inviano tutte le offerte a disposizione in quella giornata.
 
-## Registrazione delle offerte last-minute
+!!! info
+    Ogni istanza del sotto-processo `Controllo offerte compagnie aeree` si riferisce a una differente compagnia aerea. Nel diagramma questo è modellato come se fosse un'unica compagnia poiché il modellatore *Camunda Modeler* non supporta *collapsed pool multi-instance*.
 
-![registrazione_voli_last-minute](bpmn/img/SaveLast-minute.png)
+Ricevute le offerte del giorno di una compagnia aerea, vengono memorizzate per effettuare i successivi controlli. Quando sono terminate tutte le istanze del sotto-processo `Controllo offerte compagnie aeree`, il processo genitore può continuare nella sua esecuzione.
 
-In questa parte si descrive il processo di ricezione e salvataggio dei voli last-minute. I servizi di __Airline Service__ mandano voli last-minute appena generati ad __ACMEsky__, la quale salva ciascuno di essi nel database, nello specifico nella tabella _available_flights_.
+Per ogni utente che ha registrato uno o più interessi viene avviato, in parallelo, un'istanza del sotto-processo `Notifica presenza offerte agli utenti`, in cui viene verificata la presenza di una corrispondenza con offerte di voli ricevuti dalle compagnie aeree. In caso non venga trovata alcuna corrispondenza, il sotto-processo termina. Se invece viene trovata, *ACMESky* genera un codice offerta da inviare all'utente tramite ProntoGram: *ACMESky* invia il messaggio a *ProntoGram*, il quale si occuperà di inviarlo al client *ProntoGram* dell'utente.
 
+Terminate tutte le istanze parallele di `Notifica presenza offerte agli utenti`, il processo termina.
 
-## Match voli con interesse utente
+### Scopo implementativo
+![!Processo di verifica giornaliera delle offerte delle compagnie aeree (scopo implementativo)](assets/bpmn/bpmn-scopo-implementativo/VerificaGiornaliera.png){: loading=lazy}
 
-![matching tra voli e voli di interesse](bpmn/img/Flights-InterestMatching.png)
+Il processo in esame ha subito diverse modifiche per poterlo rendere robusto agli errori che potrebbero verificarsi durante l'esecuzione. In particolare:
 
-La generazione delle offerte di volo viene fatta ad un certo intervallo di tempo, ciò consente di non sovraccaricare il sistema e di evitare problemi di concorrenza con altri processi che generano le offerte. Per questo motivo, i voli delle offerte di interesse degli utenti vengono salvati sul database finchè non vengono processati per generare le offerte corrispondenti. L'intervallo di tempo è variabile da un'ora a pochi minuti poichè si cerca un compromesso tra un sistema efficiente e un sistema che non faccia aspettare l'utente.
+- sono stati aggiunti dei **Timer Boundary Event** in quei task in cui viene contattato, attraverso la rete, un servizio esterno ad *ACMESky*: serve ad evitare che, in caso i servizi esterni non riescano ad elaborare la richiesta in tempi ragionevoli, il processo non rimanga altrettanto in stallo;
+- dovendo memorizzare dei voli ottenuti da una *compagnia aerea*, il salvataggio potrebbe fallire nel caso il formato dei dati ricevuti sia diverso da quello atteso oppure se vengono ricevuti dati duplicati. In questi casi, l'istanza corrente del sotto-processo `Controllo offerte compagnie aeree` termina senza salvare le offerte di tale *compagnia aerea*;
+- è stato aggiunto il task `Recupero interessi utenti` per poter recuperare dalla base di dati gli interessi degli utenti in modo da poterli memorizzare come variabili di Camunda e quindi poter istanziare i diversi sotto-processi `Notifica presenza offerte agli utenti`.
 
-Ogni ora, per ciascun offerta di interesse, __ACMEsky__ cerca tra i voli disponibili presenti nel database (tabella _available_flights_), se c'è una corrispondenza con i voli di interesse degli utenti (tabella _flights_interest_), allora prepara l'offerta, la salva nel database e la invia all'utente attraverso l'app di messaggistica __Prontogram__. In caso negativo semplicemente il sotto-processo termina passando all'interesse successivo.
+## Ricezione offerte last minute
 
+### Scopo documentativo
+![!Processo di ricezione delle offerte last minute (scopo documentativo)](assets/bpmn/bpmn-scopo-documentativo/NotificaVoliLastMinute.png){: loading=lazy}
 
-## Registrazione dell'interesse dell'utente
+Il diagramma descrive il processo di ricezione da parte di *ACMESky* di un'offerta last minute di una compagnia aerea e la conseguente verifica della presenza di utenti che hanno segnalato il loro interesse verso quel tipo di offerta. Il processo si avvia automaticamente alla ricezione dell'offerta.
 
-![register_user_interest](bpmn/img/RegisterUserInterest.png)
+Quando *ACMESky* recepisce l'offerta, questa viene memorizzata per effettuare i successivi controlli.
 
-Il seguente diagramma descrive il processo di raccolta e registrazione degli interessi degli utenti. L'utente descrive i suoi voli di interesse specificando: città/aereoporto di partenza, città/aereoporto di arrivo, data di partenza, data ritorno e quota massima di spesa.
-__ACMEsky__ salva i voli di interesse nel suo database, in particolare, nella tabella _flights_interest_ e in _users_interests_, quest'ultima contiene i voli di interesse per uno specifico viaggio. 
-Infine, __ACMEsky__ invia la conferma di avvenuta creazione.
+Come nel diagramma del processo di **Verifica giornaliera delle offerte**, per ogni utente che ha registrato uno o più interessi viene avviata, in parallelo, un'istanza del sotto-processo `Notifica presenza offerte agli utenti`, in cui viene verificata la presenza di una corrispondenza con offerte di voli ricevuti dalle compagnie aeree. In caso non venga trovata alcuna corrispondenza, il sotto-processo termina. Se invece viene trovata, *ACMESky* genera un codice offerta da inviare all'utente tramite ProntoGram: *ACMESky* invia il messaggio a ProntoGram, il quale si occuperà di inviarlo al client ProntoGram dell'utente.
 
+Terminate tutte le istanze parallele di `Notifica presenza offerte agli utenti`, il processo termina.
 
-## Conferma di acquisto, applicazione servizi premium e preparazione biglietti
+### Scopo implementativo
+![!Processo di ricezione delle offerte last minute (scopo implementativo)](assets/bpmn/bpmn-scopo-implementativo/NotificaVoliLastMinute.png){: loading=lazy}
 
-![user_purchase_offer](bpmn/img/UserPurchaseOffer.png)
+Essendo molto simile al precedente business process descritto, anche quest'ultimo ha subito simili modifiche, per cui:
 
-In questa parte del diagramma viene illustrata la conferma di acquisto dell'offerta da parte dell'utente, l'acquisto dell'offerta e l'applicazione dei servizi premium se l'offerta rispetta le caratteristiche necessarie. 
-Infine, viene preparato il biglietto che poi l'utente potrà scaricare. 
+- è stato aggiunto un Timer Boundary Event nel task `Invia notifica presenza offerte`, che contatta ProntoGram: nel caso in cui il servizio contattato non fosse in grado di soddisfare la richiesta entro i tempi stabiliti, l'istanza del sotto-processo terminerebbe;
+- dovendo memorizzare i voli ottenuti dalla compagnia aerea che ha contattato *ACMESky* e ha fatto avviare il processo, il salvataggio potrebbe fallire nel caso il formato dei dati ricevuti sia diverso da quello atteso oppure se vengono ricevuti dati duplicati. In questi casi, il processo fallirebbe nel suo intero;
+- è stato aggiunto il task `Recupero interessi utenti` per poter recuperare dalla base di dati gli interessi degli utenti in modo da poterli memorizzare come variabili di Camunda e quindi poter istanziare i diversi sotto-processi `Notifica presenza offerte agli utenti`.
 
-Per una magiore comprensione il diagramma è stato diviso in blocchi più piccoli.
+<a name="buyOffer"></a>
+## Acquisto offerta da un utente
 
-### Conferma dell'offerta da parte dell'utente
+### Scopo documentativo
+![!Processo di acquisto di un'offerta (scopo documentativo)](assets/bpmn/bpmn-scopo-documentativo/AcquistoOfferta.png){: loading=lazy}
 
-![confirm_user_offer](bpmn/img/ConfirmOffer.png)
+Il diagramma descrive il processo di acquisto di un offerta da parte di un utente.
 
-L'app di __Prontogram__ notifica l'utente del fatto che c'è un'offerta disponibile.
+Il processo inizia con la ricezione, attraverso il portale web di *ACMESky*, di un codice offerta e dei dati personali dell'utente (nome, cognome, indirizzo). Viene verificata la validità del codice tramite un **Service Task** e, in caso esso non sia valido, viene avvisato l'utente e il processo termina. Invece, nel caso sia valido, il processo prosegue facendo richiesta al *Provider dei Pagamenti* di richiedere il pagamento all'utente, il quale gli invia i dati per il pagamento. Quest'ultimo, una volta elaborati tali dati, invia l'esito della transazione ad *ACMESky*. In caso l'esito della transazione sia negativo, *ACMESky* comunica all'utente che c'è stato un problema con il pagamento e il processo termina; in caso di esito positivo il processo procede nell'esecuzione.
 
-L'utente riceve l'offerta e può decidere se confermarla o meno attraverso l'invio di un token legato all'offerta stessa. 
+*ACMESky* acquista i biglietti aerei dell'offerta attraverso il servizio della *compagnia aerea*, la quale restituisce ad *ACMESky* i biglietti. In caso il prezzo totale dei viaggi superi i 1000 € e il cliente viva entro 30 Km dall'aeroporto, *ACMESky* identifica la *compagnia di trasporto* con autista più vicina all'abitazione del cliente per prenotare il trasferimento da/verso l'aeroporto. Il calcolo delle distanze viene fatto tramite il servizio *Distanze Geografiche*.
 
-__ACMEsky__ recupera l'offerta corrispondente al token e si occupa di verificarne la validità, ovvero, di controllare che il tempo di accettazione dell'offerta non sia terminato. In caso positivo si verifica se l'offerta non sia scaduta e anche in questo caso se l'esito è positivo si invia all'utente la conferma di accettazione dell'offerta.
-In caso contrario lo si informa dell'esito negativo dovuto alla scadenza dell'offerta o del token non valido ed il processo termina con un errore.
+Infine, *ACMESky* invia all'utente i biglietti aerei e, in caso sia stato prenotato, i biglietti per il trasferimento da/verso l'aeroporto. Il processo può quindi concludersi. 
 
-### Pagamento dell'offerta
+### Scopo implementativo
+![!Processo di acquisto di un'offerta (scopo implementativo)](assets/bpmn/bpmn-scopo-implementativo/AcquistoOfferta.png){: loading=lazy}
 
-![book_payment](bpmn/img/BookPayment.png)
+Il processo appena descritto ha subito numerose modifiche integrative nella sua prima metà, ovvero quella corrispondente agli step che portano dalla ricezione dei dati al pagamento dell'offerta e della sua conferma. Vengono elencati di seguito:
 
-Il sottoprocesso inizia con la richiesta, da parte dell'utente, di pagamento del biglietto relativo all'offerta accettata. __ACMEsky__ a questo punto si prende l'onere di prenotare i biglietti facendone richiesta all'__Airline Service__ che fornisce i voli dell'offerta. Se c'è un errore relativo all'impossibilità di prenotare l'offerta, poichè al servizio di airline risulta che l'offerta sia già stata acquistata o per qualsiasi altro problema, si invia un messaggio di errore all'utente ed il processo termina. 
-
-Se la prenotazione va a buon fine, __ACMEsky__ chiederà il link di pagamento a __Bank Service__, la quale glielo invierà in risposta a meno di errori nel processo di pagamento. Successivamente, il link viene inoltrato all'utente che procederà al pagamento sulla piattaforma di __Bank Service__. Infine, __Bank Service__ comunica l'esito ad __ACMEsky__ che proseguirà nel sottoprocesso dei servizi premium.
-Se il servizio della banca non risponde entro 5 minuti dalla generazione del link si procede, in via preventiva, alla compensazione dei biglietti e del pagamento. In questo caso il processo termina con errore.
-
-### Servizi premium
-
-![premium_service](bpmn/img/PremiumService.png)
-
-In questa fase del processo di conferma, a condizioni rispettate, vengono applicati all'offerta i servizi premium. Inizialmente __ACMEsky__ controlla il prezzo dell'offerta, se questo supera i 1000€ invia una richiesta al servizio di __GeoDistance__ per calcolare la distanza dell'utente dall'areoporto. Nel caso in cui la distanza sia superiore ai 30 km si richiede al __Rent Service__ più vicino se c'è la possibilità di offrire all'utente un trasferimento dal suo domicilio all'aereoporto. Questa operazione viene ripetuta sia all'andata che al ritorno, e in tal caso verranno modificati i biglietti includendo le informazioni dei trasferimenti. Nel caso in cui distanza sia inferiore ai 30Km o il prezzo dell'offerta sia inferiore a 1000€ non verrà applicato nessun servizio.
-
-
-## Preparazione dei biglietti
-
-![prepare_tickets](bpmn/img/PrepareTickets.png)
-
-Arrivati a questo punto viene cambiato lo stato dell'offerta e viene preparato il pdf contenente i biglietti che l'utente potrà scaricare. L'utente può in qualunque momento richiedere i biglietti che ha acquistato.
-
-
-## Rimozione dei voli scaduti
-
-![removing_expired_flights](bpmn/img/RemovingExpiredFlights.png)
-
-Il processo di cancellazione dei voli scaduti presenti nel database avviene ogni 12 ore. I voli scaduti sono quei voli la cui data di scadenza è antecedente a quella in cui si effettua l'operazione di cancellazione. La cancellazione non comporta l'eliminazione effettiva del record che rappresenta quel volo, bensì un cambiamento di stato che porta ACMEsky a non considerare più quel volo come disponibile.
-
-
-## Rimozione delle offerte scadute
-
-![removing_expired_offers](bpmn/img/RemovingExpiredOffers.png)
-
-Il processo di cancellazione delle offerte scadute presenti nel Database avviene ogni 12 ore. Le offerte di volo scadute comprendono i voli di andata e ritorno. Le offerte scadute sono quelle la cui data di scadenza del volo di partenza è antecedente a quella in cui si effettua l'operazione di cancellazione. La cancellazione non comporta l'eliminazione effettiva del record, bensì, un cambiamento di stato che porta ACMEsky a non considerare più i voli dell'offerta (e l'offerta in sè) come disponibili.
-
-
-&nbsp;
-<div class="page-break"></div>
-
+- è stato introdotto il **Transaction Sub-process** `Verifica codice e validità del pagamento` che racchiude tutti i task relativi alla verifica del codice offerta inserito e del pagamento. Nel caso di fallimento del sotto-processo, anche il processo genitore termina, non prima però di aver ripristinato lo stato del sistema riabilitando il codice dell'offerta (che torna utilizzabile) attraverso la **Compensating action** `Riabilita codice offerta`;
+- è stato inserito, come nei precedenti diagrammi, un Timer Boundary Event, per gestire il caso in cui il *Provider dei Pagamenti* non risponda nei tempi previsti;
+- è stato inserito, successivamente all'invio della richiesta di pagamento al *Provider dei Pagamenti* da parte di *ACMESky*, un **Event-based gateway** con lo scopo di ricevere o la ricezione dell'esito del pagamento da parte del gestore dei pagamenti oppure della scadenza di un timeout nel caso in cui l'utente non paghi entro 10 minuti.
