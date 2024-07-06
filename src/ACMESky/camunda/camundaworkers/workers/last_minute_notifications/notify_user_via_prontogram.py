@@ -24,7 +24,7 @@ def notify_user_via_prontogram(task: ExternalTask) -> TaskResult:
     session = Session()
 
     for offer in offers:
-        flights = session.query(Flight).filter(or_(Flight.flight_code == offer.dep_flight_id, Flight.flight_code == offer.arr_flight_id)).all()
+        flights = session.query(Flight).filter(or_(Flight.flight_code == offer.dep_flight_id, Flight.flight_code == offer.arr_flight_id)).order_by(Flight.departure_date).all()
         flights_infos = [f"{flight.airline_name} \n"
                          f"{flight.departure_location} -> {flight.arrival_location} \n"
                          f"{flight.departure_date} -> {flight.arrival_date} \n"
