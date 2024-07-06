@@ -20,7 +20,7 @@ class UserInterest(Base):
             from_date=interest_dict.get('from_date'),
             to_date=interest_dict.get('to_date'),
             max_price=interest_dict.get('max_price'),
-            valid=interest_dict.get('valid', True)
+            valid=interest_dict.get('valid')
         )
 
     id = Column(Integer, primary_key=True, autoincrement=True)

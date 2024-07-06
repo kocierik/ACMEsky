@@ -3,11 +3,7 @@ from camundaworkers.utils.logger import get_logger
 import requests
 from json import dumps
 from datetime import datetime
-from sqlalchemy.orm import sessionmaker
 import pytz
-
-from camundaworkers.utils.db import create_sql_engine
-from camundaworkers.model.flight import Flight
 
 def get_flight_offers(task: ExternalTask) -> TaskResult:
     """
@@ -20,10 +16,6 @@ def get_flight_offers(task: ExternalTask) -> TaskResult:
 
     url = task.get_variable("company")
     logger.info("Contacting: %s", url)
-
-    # Connection and save on PostgreSQL
-    Session = sessionmaker(bind=create_sql_engine())
-    session = Session()
 
     new_flights = requests.get(url + "/flights").json()
 

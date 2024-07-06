@@ -5,9 +5,7 @@ import json
 
 from camundaworkers.model.airline_service import AirlineService
 from camundaworkers.model.flight import Flight
-from camundaworkers.model.offer import Offer
 from camundaworkers.model.payment_info import PaymentInfo
-from camundaworkers.model.user_interest import UserInterest
 from camundaworkers.utils.logger import get_logger
 from camundaworkers.utils.db import create_sql_engine
 
