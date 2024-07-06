@@ -7,8 +7,11 @@ import { send_string_as_correlate_message } from '../utils/camunda_rest_client';
 dotenv.config();
 
 // Funzione per ottenere gli interessi di un utente
-async function getUserInterests(req: Request, res: Response<UserInterest[] | { error: string }>) {
-  const userId = req.params.userId;
+async function getUserInterests(req: AuthRequest, res: Response<UserInterest[] | { error: string }>) {
+  const userId = req.user?.userId;
+  if (!userId) {
+    return res.status(403).json({ error: 'Utente non autorizzato' });
+  }
 
   try {
     const result = await pool.query<UserInterest>('SELECT * FROM user_interests WHERE user_id = $1', [userId]);
@@ -21,7 +24,7 @@ async function getUserInterests(req: Request, res: Response<UserInterest[] | { e
 }
 
 // Funzione per creare un nuovo interesse chiamando il servizio Camunda
-async function createUserInterest(req: AuthRequest, res: Response<UserInterest | { error: string }>) {v
+async function createUserInterest(req: AuthRequest, res: Response<UserInterest | { error: string }>) {
   const user = req.user;
   if (!user || !user.userId) {
     return res.status(403).json({ error: 'Utente non autorizzato' });

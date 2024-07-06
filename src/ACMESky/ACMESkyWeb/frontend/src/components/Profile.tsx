@@ -22,13 +22,12 @@ function Profile() {
   useEffect(() => {
     const fetchUserInterests = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:3000/getUser/${userData?.id}/interests`, {
+        const response = await fetch(`http://localhost:3000/interests`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
+          credentials: 'include',
         });
 
         if (response.ok) {

@@ -20,7 +20,7 @@ app.use(cookieParser());
 
 app.post('/register', registerUser);
 app.post('/login', loginUser);
-app.get('/getUser/:userId/interests', getUserInterests);
+app.get('/interests', authenticateJWT, getUserInterests);
 app.post('/createUserInterest', authenticateJWT, createUserInterest);
 app.post('/buyOffer', authenticateJWT, buyOffer);
 

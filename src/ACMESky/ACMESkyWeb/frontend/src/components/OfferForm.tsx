@@ -204,10 +204,10 @@ const OfferForm = () => {
                               {flight?.arrivalLocation}
                             </td>
                             <td className="whitespace-nowrap text-center px-6 py-4">
-                              {String(flight?.arrivalDate)}
+                              {String(flight?.departureDate)}
                             </td>
                             <td className="whitespace-nowrap text-center px-6 py-4">
-                              {String(flight?.departureDate)}
+                              {String(flight?.arrivalDate)}
                             </td>
                             <td className="whitespace-nowrap text-center px-6 py-4">
                               {flight?.price}
