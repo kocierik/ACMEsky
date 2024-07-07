@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_11uorba" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="b2addad" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0" camunda:diagramRelationId="ee6dd3b0-bc75-430f-985a-030dc60295c0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_11uorba" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="8059276" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0" camunda:diagramRelationId="ee6dd3b0-bc75-430f-985a-030dc60295c0">
   <bpmn:collaboration id="last-minute-notifications">
     <bpmn:participant id="acmesky" name="ACMESky" processRef="notify-last-minute-flights" />
     <bpmn:participant id="flight-company" name="Compagnia aerea" />
@@ -19,9 +19,7 @@
     <bpmn:sequenceFlow id="Flow_091r9gv" sourceRef="notify-offers-to-users" targetRef="receive-last-minute-offers-completed" />
     <bpmn:serviceTask id="save-flights" name="Salvataggio voli last minute" camunda:type="external" camunda:topic="save-flights">
       <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="flights">${flights}</camunda:inputParameter>
-        </camunda:inputOutput>
+        <zeebe:taskDefinition type="save-flights" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ja8jn4</bpmn:incoming>
       <bpmn:outgoing>Flow_0agva7c</bpmn:outgoing>
@@ -34,6 +32,9 @@
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0rs1xvz" sourceRef="retrieve-user-interests" targetRef="notify-offers-to-users" />
     <bpmn:serviceTask id="retrieve-user-interests" name="Recupero interessi utenti" camunda:type="external" camunda:topic="retrieve-user-interests">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="retrieve-user-interests" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0agva7c</bpmn:incoming>
       <bpmn:outgoing>Flow_0rs1xvz</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -44,11 +45,18 @@
     <bpmn:subProcess id="notify-offers-to-users" name="Notifica presenza offerte agli utenti">
       <bpmn:incoming>Flow_0rs1xvz</bpmn:incoming>
       <bpmn:outgoing>Flow_091r9gv</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics camunda:collection="#{users_interests}" camunda:elementVariable="user_interests" />
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="#{users_interests}" camunda:elementVariable="user_interests">
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=users_interests" />
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
       <bpmn:startEvent id="notify-users-for-offers-start-event" name="Verifica offerte per il k-esimo utente">
         <bpmn:outgoing>Flow_1veajlh</bpmn:outgoing>
       </bpmn:startEvent>
       <bpmn:sendTask id="notify-user-via-prontogram" name="Invia notifica presenza offerte" camunda:type="external" camunda:topic="notify-user-via-prontogram">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="notify-user-via-prontogram" />
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_0dt1vhx</bpmn:incoming>
         <bpmn:outgoing>Flow_1lu6og9</bpmn:outgoing>
       </bpmn:sendTask>
@@ -68,9 +76,7 @@
       </bpmn:sequenceFlow>
       <bpmn:serviceTask id="check-offers-presence" name="Controllo presenza offerte last minute" camunda:type="external" camunda:topic="check-offers-presence">
         <bpmn:extensionElements>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="user_interests">${user_interests}</camunda:inputParameter>
-          </camunda:inputOutput>
+          <zeebe:taskDefinition type="check-offers-presence" />
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1veajlh</bpmn:incoming>
         <bpmn:outgoing>Flow_1vuna2x</bpmn:outgoing>
@@ -78,6 +84,7 @@
       <bpmn:exclusiveGateway id="offers-presence-end-gateway">
         <bpmn:incoming>Flow_1lu6og9</bpmn:incoming>
         <bpmn:incoming>Flow_03zklof</bpmn:incoming>
+        <bpmn:incoming>Flow_0u1nazj</bpmn:incoming>
         <bpmn:outgoing>Flow_0ikez8c</bpmn:outgoing>
       </bpmn:exclusiveGateway>
       <bpmn:boundaryEvent id="timeout-notify-prontogram" name="Timeout 1 minuto" attachedToRef="notify-user-via-prontogram">
@@ -86,10 +93,9 @@
           <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
         </bpmn:timerEventDefinition>
       </bpmn:boundaryEvent>
-      <bpmn:sequenceFlow id="Flow_0u1nazj" sourceRef="timeout-notify-prontogram" targetRef="notify-users-for-offers-end-event" />
+      <bpmn:sequenceFlow id="Flow_0u1nazj" sourceRef="timeout-notify-prontogram" targetRef="offers-presence-end-gateway" />
       <bpmn:sequenceFlow id="Flow_0ikez8c" sourceRef="offers-presence-end-gateway" targetRef="notify-users-for-offers-end-event" />
       <bpmn:endEvent id="notify-users-for-offers-end-event" name="Effettuata la verifica per il k-esimo utente">
-        <bpmn:incoming>Flow_0u1nazj</bpmn:incoming>
         <bpmn:incoming>Flow_0ikez8c</bpmn:incoming>
       </bpmn:endEvent>
     </bpmn:subProcess>
@@ -171,7 +177,7 @@
         <di:waypoint x="1075" y="177" />
         <di:waypoint x="1130" y="177" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1098" y="159" width="12" height="14" />
+          <dc:Bounds x="1099" y="159" width="11" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1lu6og9_di" bpmnElement="Flow_1lu6og9">
@@ -189,8 +195,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0u1nazj_di" bpmnElement="Flow_0u1nazj">
         <di:waypoint x="1248" y="217" />
-        <di:waypoint x="1360" y="217" />
-        <di:waypoint x="1360" y="195" />
+        <di:waypoint x="1290" y="217" />
+        <di:waypoint x="1290" y="202" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ikez8c_di" bpmnElement="Flow_0ikez8c">
         <di:waypoint x="1315" y="177" />

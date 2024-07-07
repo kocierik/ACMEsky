@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1bz9q6q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="67a40fb" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0" camunda:diagramRelationId="a873e802-3e51-4e8b-98ac-f8917027831d">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1bz9q6q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="8059276" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0" camunda:diagramRelationId="a873e802-3e51-4e8b-98ac-f8917027831d">
   <bpmn:collaboration id="register-user-interest">
     <bpmn:participant id="acmesky" name="ACMESky" processRef="user-interest-registration" />
     <bpmn:participant id="user" name="Utente" />
@@ -26,9 +26,7 @@
     <bpmn:sequenceFlow id="Flow_1ak8jud" sourceRef="register-interest" targetRef="register-interest-completed" />
     <bpmn:serviceTask id="register-interest" name="Registra interesse dell&#39;utente" camunda:type="external" camunda:topic="register-interest">
       <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="interest">${interest}</camunda:inputParameter>
-        </camunda:inputOutput>
+        <zeebe:taskDefinition type="register-interest" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_12j1hpk</bpmn:incoming>
       <bpmn:outgoing>Flow_1ak8jud</bpmn:outgoing>

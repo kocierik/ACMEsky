@@ -74,7 +74,9 @@ const TripForm = () => {
         icon: "success"
       });
 
-      navigate('/profile');
+      setTimeout(() => {
+        navigate('/profile');
+      }, 1000);        
 
       console.log('Data submitted successfully');
     } catch (error) {

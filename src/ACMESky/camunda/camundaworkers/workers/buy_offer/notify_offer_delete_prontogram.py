@@ -15,7 +15,7 @@ def notify_offer_delete_prontogram(task: ExternalTask) -> TaskResult:
     :return: the task result
     """
     logger = get_logger()
-    logger.info("verify_payment_status")
+    logger.info("notify_offer_delete_prontogram")
 
     payment_info = PaymentInfo.from_dict(json.loads(task.get_variable("payment_status")))
 
