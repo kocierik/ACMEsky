@@ -154,14 +154,13 @@
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="notify-offer-delete-prontogram" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1o60alf</bpmn:incoming>
+      <bpmn:incoming>Flow_0zc4g7p</bpmn:incoming>
       <bpmn:outgoing>Flow_18bm92x</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sequenceFlow id="Flow_1o60alf" sourceRef="check-code-verify-payment" targetRef="notify-offer-delete-prontogram" />
     <bpmn:sequenceFlow id="Flow_1u045ch" sourceRef="payment-sub-process-failed" targetRef="buy-offer-failed" />
     <bpmn:subProcess id="check-code-verify-payment" name="Verifica codice e validità del pagamento">
       <bpmn:incoming>Flow_11ljg0f</bpmn:incoming>
-      <bpmn:outgoing>Flow_1o60alf</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zc4g7p</bpmn:outgoing>
       <bpmn:serviceTask id="verify-offer-code-validity" name="Verifica validità codice offerta" camunda:type="external" camunda:topic="verify-offer-code-validity">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="verify-offer-code-validity" />
@@ -300,10 +299,9 @@
         <bpmn:outgoing>Flow_0s1z8vw</bpmn:outgoing>
         <bpmn:compensateEventDefinition id="CompensateEventDefinition_0bwg1wv" />
       </bpmn:intermediateThrowEvent>
-      <bpmn:endEvent id="invalid-offer-code-event" name="Informato l&#39;utente di un problema nel pagamento">
+      <bpmn:intermediateThrowEvent id="invalid-offer-code-event" name="Informato l&#39;utente di un problema nel pagamento">
         <bpmn:incoming>Flow_0pu9mys</bpmn:incoming>
-        <bpmn:terminateEventDefinition id="TerminateEventDefinition_00sjy16" />
-      </bpmn:endEvent>
+      </bpmn:intermediateThrowEvent>
     </bpmn:subProcess>
     <bpmn:boundaryEvent id="payment-sub-process-failed" name="Fallito il sotto-processo di pagamento" attachedToRef="check-code-verify-payment">
       <bpmn:outgoing>Flow_1u045ch</bpmn:outgoing>
@@ -326,6 +324,7 @@
       <bpmn:incoming>Flow_1c3kcyw</bpmn:incoming>
       <bpmn:outgoing>Flow_1gt4jb1</bpmn:outgoing>
     </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_0zc4g7p" sourceRef="check-code-verify-payment" targetRef="notify-offer-delete-prontogram" />
   </bpmn:process>
   <bpmn:message id="Message_0t956lt" name="offer_purchase_data" />
   <bpmn:message id="Message_1sjlbpz" name="payment_status">
@@ -482,7 +481,7 @@
           <dc:Bounds x="1567" y="742" width="85" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_008uqed_di" bpmnElement="invalid-offer-code-event">
+      <bpmndi:BPMNShape id="Event_1wp1d8a_di" bpmnElement="invalid-offer-code-event">
         <dc:Bounds x="1662" y="922" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1649" y="965" width="64" height="53" />
@@ -670,10 +669,6 @@
         <di:waypoint x="1860" y="500" />
         <di:waypoint x="1910" y="500" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1o60alf_di" bpmnElement="Flow_1o60alf">
-        <di:waypoint x="1720" y="500" />
-        <di:waypoint x="1760" y="500" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1u045ch_di" bpmnElement="Flow_1u045ch">
         <di:waypoint x="1738" y="780" />
         <di:waypoint x="1922" y="780" />
@@ -689,6 +684,10 @@
       <bpmndi:BPMNEdge id="Flow_1kl3lej_di" bpmnElement="Flow_1kl3lej">
         <di:waypoint x="2935" y="700" />
         <di:waypoint x="2995" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zc4g7p_di" bpmnElement="Flow_0zc4g7p">
+        <di:waypoint x="1720" y="500" />
+        <di:waypoint x="1760" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_0tg0lpy_di" bpmnElement="user" isHorizontal="true">
         <dc:Bounds x="280" y="1160" width="2810" height="60" />
