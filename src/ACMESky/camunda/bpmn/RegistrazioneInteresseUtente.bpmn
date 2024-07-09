@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1bz9q6q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="8059276" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0" camunda:diagramRelationId="a873e802-3e51-4e8b-98ac-f8917027831d">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1bz9q6q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.25.0">
   <bpmn:collaboration id="register-user-interest">
     <bpmn:participant id="acmesky" name="ACMESky" processRef="user-interest-registration" />
     <bpmn:participant id="user" name="Utente" />
@@ -18,19 +18,21 @@
     <bpmn:endEvent id="register-interest-completed" name="Registrazione interesse completata">
       <bpmn:incoming>Flow_1ak8jud</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:startEvent id="receive-interest-event" name="Ricezione di un interesse">
-      <bpmn:outgoing>Flow_12j1hpk</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0gz2849" messageRef="Message_1t0shz2" />
-    </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_12j1hpk" sourceRef="receive-interest-event" targetRef="register-interest" />
     <bpmn:sequenceFlow id="Flow_1ak8jud" sourceRef="register-interest" targetRef="register-interest-completed" />
     <bpmn:serviceTask id="register-interest" name="Registra interesse dell&#39;utente" camunda:type="external" camunda:topic="register-interest">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="register-interest" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="interest">${interest}</camunda:inputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_12j1hpk</bpmn:incoming>
       <bpmn:outgoing>Flow_1ak8jud</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:startEvent id="receive-interest-event" name="Ricezione di un interesse">
+      <bpmn:outgoing>Flow_12j1hpk</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0gz2849" messageRef="Message_1t0shz2" />
+    </bpmn:startEvent>
   </bpmn:process>
   <bpmn:message id="Message_1t0shz2" name="interest" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -50,18 +52,18 @@
           <dc:Bounds x="596" y="255" width="68" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0b3ry7i_di" bpmnElement="receive-interest-event">
-        <dc:Bounds x="252" y="222" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="166" y="226" width="76" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_191vikn_di" bpmnElement="register-interest">
         <dc:Bounds x="370" y="70" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0b3ry7i_di" bpmnElement="receive-interest-event">
+        <dc:Bounds x="271" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="185" y="226" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_12j1hpk_di" bpmnElement="Flow_12j1hpk">
-        <di:waypoint x="270" y="222" />
-        <di:waypoint x="270" y="110" />
+        <di:waypoint x="289" y="222" />
+        <di:waypoint x="289" y="110" />
         <di:waypoint x="370" y="110" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ak8jud_di" bpmnElement="Flow_1ak8jud">
@@ -73,8 +75,8 @@
         <dc:Bounds x="129" y="400" width="600" height="60" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1k3gnru_di" bpmnElement="Flow_1k3gnru">
-        <di:waypoint x="270" y="400" />
-        <di:waypoint x="270" y="258" />
+        <di:waypoint x="289" y="400" />
+        <di:waypoint x="289" y="258" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

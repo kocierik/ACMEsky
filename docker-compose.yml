@@ -41,14 +41,11 @@ services:
 
     camunda:
         image: camunda/camunda-bpm-platform:latest
-        container_name: camunda
         ports: 
             - 10000:8080
-            - 9990:9990
         
     camunda_workers:
         build: ./src/ACMESky/camunda
-        container_name: camunda_workers
         env_file: ./src/ACMESky/camunda/.env
         depends_on:
             - acmesky_db
