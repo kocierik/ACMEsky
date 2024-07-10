@@ -34,7 +34,7 @@ def main():
     """
     Creation and execution of different threads, one per worker/topic
     """
-    executor = ThreadPoolExecutor(max_workers=len(TOPICS), thread_name_prefix="ACMESky-Backend")
+    executor = ThreadPoolExecutor(max_workers=len(TOPICS), thread_name_prefix="ACMESky-Camunda-Worker")
     for index, topic_handler in enumerate(TOPICS):
         topic = topic_handler[0]
         handler_func = topic_handler[1]
