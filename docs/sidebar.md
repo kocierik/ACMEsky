@@ -3,6 +3,7 @@
 * [Bpmn](docs/bpmn)
 * [Coreografie BPMN](docs/coreografiebpmn)
 * [Uml](docs/uml)
+* [Istruzioni](docs/executeinstruction)
 
 * Servizi
     * ACMEsky
