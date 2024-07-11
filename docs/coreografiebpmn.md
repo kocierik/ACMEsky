@@ -1,27 +1,27 @@
 
 ## Registrazione interesse di un utente
-![!Processo di registrazione di un interesse da parte di un utente](assets/coreografiebpmn/RegistrazioneInteresseUtente.png){: loading=lazy}
+![!Processo di registrazione di un interesse da parte di un utente](assets/coreografiebpmn/RegistrazioneInteresseUtente.png)
 
 Il diagramma descrive l'interazione fra un utente e *ACMESky* per l'inserimento nel sistema di un nuovo interesse per un offerta di voli A/R.
 
 Oltre ai dati sull'interesse inserisce anche il suo nome utente di *ProntoGram*. Sia in caso l'interesse venga aggiunto correttamente che in caso contrario *ACMESky* risponde con l'esito dell'operazione.
 
 ## Verifica giornaliera delle offerte
-![!Processo di verifica giornaliera delle offerte delle compagnie aeree](assets/coreografiebpmn/VerificaGiornaliera.png){: loading=lazy}
+![!Processo di verifica giornaliera delle offerte delle compagnie aeree](assets/coreografiebpmn/VerificaGiornaliera.png)
 
 Il diagramma descrive le interazioni che avvengono fra *ACMESky*, le *compagnie aeree*, *ProntoGram* e gli utenti, nel contesto della verifica giornaliera della presenza di nuove offerte da comunicare all'utente.
 
 Ogni 24 ore, *ACMESky* contatta le differenti *compagnie aeree* richiedendo la lista delle nuove offerte inserite. Una volta ricevute, *ACMESky* verifica se ci sono utenti da notificare in quanto le offerte ricevute soddisfano i loro interessi: in caso affermativo, *ACMESky* contatta *ProntoGram* inviando il messaggio da far pervenire all'utente (con il codice offerta per il successivo acquisto); in caso negativo, non vi sono altre interazioni. *ProntoGram*, alla ricezione della richiesta di inoltro di un messaggio agli utenti, la soddisfa.
 
 ## Ricezione offerte last minute
-![!Processo di ricezione delle offerte last minute](assets/coreografiebpmn/NotificaVoliLastMinute.png){: loading=lazy}
+![!Processo di ricezione delle offerte last minute](assets/coreografiebpmn/NotificaVoliLastMinute.png)
 
 Il diagramma descrive le interazioni che avvengono fra una *compagnia aerea*, *ACMESky*, *ProntoGram* e gli utenti, nel contesto dell'invio di offerte last minute da parte di una *compagnia aerea*.
 
 Quando una *compagnia aerea* dispone di offerte last minute, contatta *ACMESky* inviandole. Una volta ricevute tali offerte, *ACMESky* verifica se ci sono utenti da notificare in quanto le offerte ricevute soddisfano i loro interessi: in caso affermativo, *ACMESky* contatta *ProntoGram* inviando il messaggio da far pervenire all'utente (con il codice offerta per il successivo acquisto); in caso negativo, non vi sono altre interazioni. *ProntoGram*, alla ricezione della richiesta di inoltro di un messaggio agli utenti, la soddisfa.
 
 ## Acquisto offerta da un utente
-![!Processo di acquisto di un'offerta](assets/coreografiebpmn/AcquistoOfferta.png){: loading=lazy}
+![!Processo di acquisto di un'offerta](assets/coreografiebpmn/AcquistoOfferta.png)
 
 Il diagramma descrive le interazioni tra i diversi partecipanti che portano al pagamento dell'offerta, il cui codice è stato inviato precedentemente all'utente, e il successivo invio dei biglietti relativi.
 
