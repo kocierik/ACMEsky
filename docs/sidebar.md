@@ -1,13 +1,14 @@
 * [Home](/)
 * [Coreografie](docs/coreografie)
-* [Bpmn](docs/bpmn)
 * [Coreografie BPMN](docs/coreografiebpmn)
-* [Uml](docs/uml)
+* [BPMN](docs/bpmn)
+* [UML](docs/uml)
+* [Implementazione](docs/implementazione)
 * [Istruzioni](docs/executeinstruction)
 
 * Servizi
     * ACMEsky
-        <!-- * [Service](src/ACMEskyService/) -->
+        <!-- * [Backend](src/ACMESky/ACMESkyWeb/backend/) -->
         * [Database](src/ACMESky/ACMESkyDB/)
         * [Web](src/ACMESky/ACMESkyWeb/frontend/)
     * [Airline Service](src/airlineService/)

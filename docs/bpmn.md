@@ -3,7 +3,7 @@ In questa sezione vengono rappresentati, sotto forma di diagrammi BPMN, le coreo
 <a name="registerInterest"></a>
 ## Registrazione interesse di un utente
 
-![!Processo di registrazione di un interesse da parte di un utente](assets/bpmn/bpmn-scopo-implementativo/RegistrazioneInteresseUtente.png)
+![!Processo di registrazione di un interesse da parte di un utente](assets/bpmn/RegistrazioneInteresseUtente.png)
 
 Il diagramma descrive il processo di registrazione dell'interesse nel portale web di *ACMESky*, da parte di utente, di un pacchetto di viaggio A/R, con un massimo budget e un range di date entro cui effettuare entrambe le tratte. Il processo inizia con la ricezione da parte di *ACMESky* di questi dati che vengono successivamente memorizzati da *ACMESky* per i successivi controlli. Sia che l'operazione avvenga correttamente, sia che essa fallisca, viene comunicato all'utente l'esito di quest'ultima. Il processo può quindi terminare.
 
@@ -11,7 +11,7 @@ Il diagramma descrive il processo di registrazione dell'interesse nel portale we
 <a name="dailyCheck"></a>
 ## Verifica giornaliera delle offerte
 
-![!Processo di verifica giornaliera delle offerte delle compagnie aeree](assets/bpmn/bpmn-scopo-implementativo/VerificaGiornaliera.png)
+![!Processo di verifica giornaliera delle offerte delle compagnie aeree](assets/bpmn/VerificaGiornaliera.png)
 Il diagramma descrive il processo di verifica quotidiana della presenza di offerte che possano soddisfare gli interessi registrati degli utenti di *ACMESky*. Questo processo si avvia sistematicamente ogni 24 ore.
 
 *ACMESky* contatta i servizi delle compagnie aeree, in modo parallelo, che inviano tutte le offerte a disposizione in quella giornata.
@@ -34,7 +34,7 @@ Per rendere il processo robusto agli errori che potrebbero verificarsi durante l
 
 ## Ricezione offerte last minute
 
-![!Processo di ricezione delle offerte last minute (scopo implementativo)](assets/bpmn/bpmn-scopo-implementativo/NotificaVoliLastMinute.png)
+![!Processo di ricezione delle offerte last minute (scopo implementativo)](assets/bpmn/NotificaVoliLastMinute.png)
 
 Il diagramma descrive il processo di ricezione da parte di *ACMESky* di un'offerta last minute di una compagnia aerea e la conseguente verifica della presenza di utenti che hanno segnalato il loro interesse verso quel tipo di offerta. Il processo si avvia automaticamente alla ricezione dell'offerta.
 
@@ -54,7 +54,7 @@ Anche in questo caso sono stati inseriti i seguenti controlli:
 <a name="buyOffer"></a>
 ## Acquisto offerta da un utente
 
-![!Processo di acquisto di un'offerta (scopo implementativo)](assets/bpmn/bpmn-scopo-implementativo/AcquistoOfferta.png)
+![!Processo di acquisto di un'offerta (scopo implementativo)](assets/bpmn/AcquistoOfferta.png)
 
 Il diagramma descrive il processo di acquisto di un offerta da parte di un utente.
 
