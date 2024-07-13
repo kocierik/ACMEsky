@@ -1,4 +1,4 @@
-In questa sezione vengono rappresentati, sotto forma di diagrammi BPMN, le coreografie discusse nelle [Coreografie, ruoli e proiezioni delle coreografie sui ruoli](coreografie.md) e [BPMN](bpmn.md). Per ogni diagramma descriviamo prima il processo ad alto livello, ovvero a scopo documentativo, nel quale mostriamo principalmente il cosiddetto *happy path*; successivamente lo espandiamo aggiungendo la gestione degli errori, delle eccezioni e degli altri possibili fallimenti che potrebbero avvenire calando nella realtà il processo di business definito.
+In questa sezione vengono rappresentati, sotto forma di diagrammi BPMN, le coreografie discusse nella sezioni [Coreografie](docs/coreografie) e [Coreografie BPMN](docs/coreografiebpmn).
 
 <a name="registerInterest"></a>
 ## Registrazione interesse di un utente
@@ -14,12 +14,12 @@ Il diagramma descrive il processo di registrazione dell'interesse nel portale we
 ![!Processo di verifica giornaliera delle offerte delle compagnie aeree](assets/bpmn/VerificaGiornaliera.png)
 Il diagramma descrive il processo di verifica quotidiana della presenza di offerte che possano soddisfare gli interessi registrati degli utenti di *ACMESky*. Questo processo si avvia sistematicamente ogni 24 ore.
 
-*ACMESky* contatta i servizi delle compagnie aeree, in modo parallelo, che inviano tutte le offerte a disposizione in quella giornata.
+*ACMESky* contatta i servizi delle compagnie aeree, in modo parallelo, che inviano tutte le offerte a disposizione.
 
-!!! info
+!!! 
     Ogni istanza del sotto-processo `Controllo offerte compagnie aeree` si riferisce a una differente compagnia aerea. Nel diagramma questo è modellato come se fosse un'unica compagnia poiché il modellatore *Camunda Modeler* non supporta *collapsed pool multi-instance*.
 
-Ricevute le offerte del giorno di una compagnia aerea, vengono memorizzate per effettuare i successivi controlli. Quando sono terminate tutte le istanze del sotto-processo `Controllo offerte compagnie aeree`, il processo genitore può continuare nella sua esecuzione.
+Ricevute le offerte di una compagnia aerea, vengono memorizzate tutte le nuove offerte non presenti nel database per effettuare i successivi controlli. Quando sono terminate tutte le istanze del sotto-processo `Controllo offerte compagnie aeree`, il processo genitore può continuare nella sua esecuzione.
 
 Per ogni utente che ha registrato uno o più interessi viene avviato, in parallelo, un'istanza del sotto-processo `Notifica presenza offerte agli utenti`, in cui viene verificata la presenza di una corrispondenza con offerte di voli ricevuti dalle compagnie aeree. In caso non venga trovata alcuna corrispondenza, il sotto-processo termina. Se invece viene trovata, *ACMESky* genera un codice offerta da inviare all'utente tramite ProntoGram: *ACMESky* invia il messaggio a *ProntoGram*, il quale si occuperà di inviarlo al client *ProntoGram* dell'utente.
 Terminate tutte le istanze parallele di `Notifica presenza offerte agli utenti`, il processo termina.
@@ -38,7 +38,7 @@ Per rendere il processo robusto agli errori che potrebbero verificarsi durante l
 
 Il diagramma descrive il processo di ricezione da parte di *ACMESky* di un'offerta last minute di una compagnia aerea e la conseguente verifica della presenza di utenti che hanno segnalato il loro interesse verso quel tipo di offerta. Il processo si avvia automaticamente alla ricezione dell'offerta.
 
-Quando *ACMESky* recepisce l'offerta, questa viene memorizzata per effettuare i successivi controlli.
+Quando *ACMESky* recepisce l'offerta, questa viene memorizzata/aggiornata per effettuare i successivi controlli.
 
 Come nel diagramma del processo di **Verifica giornaliera delle offerte**, per ogni utente che ha registrato uno o più interessi viene avviata, in parallelo, un'istanza del sotto-processo `Notifica presenza offerte agli utenti`, in cui viene verificata la presenza di una corrispondenza con offerte di voli ricevuti dalle compagnie aeree. In caso non venga trovata alcuna corrispondenza, il sotto-processo termina. Se invece viene trovata, *ACMESky* genera un codice offerta da inviare all'utente tramite ProntoGram: *ACMESky* invia il messaggio a ProntoGram, il quale si occuperà di inviarlo al client ProntoGram dell'utente.
 Terminate tutte le istanze parallele di `Notifica presenza offerte agli utenti`, il processo termina.
@@ -58,9 +58,9 @@ Anche in questo caso sono stati inseriti i seguenti controlli:
 
 Il diagramma descrive il processo di acquisto di un offerta da parte di un utente.
 
-Il processo inizia con la ricezione, attraverso il portale web di *ACMESky*, di un codice offerta e dei dati personali dell'utente (nome, cognome, indirizzo). Viene verificata la validità del codice tramite un **Service Task** e, in caso esso non sia valido, viene avvisato l'utente e il processo termina. Invece, nel caso sia valido, il processo prosegue facendo richiesta al *Provider dei Pagamenti* di richiedere il pagamento all'utente, il quale gli invia i dati per il pagamento. Quest'ultimo, una volta elaborati tali dati, invia l'esito della transazione ad *ACMESky*. In caso l'esito della transazione sia negativo, *ACMESky* comunica all'utente che c'è stato un problema con il pagamento e il processo termina; in caso di esito positivo il processo procede nell'esecuzione.
+Il processo inizia con la ricezione, attraverso il portale web di *ACMESky*, di un codice offerta e del domicilio dell'utente. Viene verificata la validità del codice tramite un **Service Task** e, in caso esso non sia valido, viene avvisato l'utente e il processo termina. Invece, nel caso sia valido, il processo prosegue facendo richiesta al *Provider dei Pagamenti* di richiedere il pagamento all'utente, il quale gli invia i dati per il pagamento. Quest'ultimo, una volta elaborati tali dati, invia l'esito della transazione ad *ACMESky*. In caso l'esito della transazione sia negativo, *ACMESky* comunica all'utente che c'è stato un problema con il pagamento e il processo termina; in caso di esito positivo il processo procede nell'esecuzione.
 
-*ACMESky* acquista i biglietti aerei dell'offerta attraverso il servizio della *compagnia aerea*, la quale restituisce ad *ACMESky* i biglietti. In caso il prezzo totale dei viaggi superi i 1000 € e il cliente viva entro 30 Km dall'aeroporto, *ACMESky* identifica la *compagnia di trasporto* con autista più vicina all'abitazione del cliente per prenotare il trasferimento da/verso l'aeroporto. Il calcolo delle distanze viene fatto tramite il servizio *Distanze Geografiche*.
+*ACMESky* contatta inanzitutto prontogram per eliminare l'offerta acquistata e tutte le offerte con gli stessi voli. Successivamente *ACMESky* acquista i biglietti aerei dell'offerta attraverso il servizio della *compagnia aerea*, la quale restituisce ad *ACMESky* i biglietti. In caso il prezzo totale dei viaggi superi i 1000 € e il cliente viva entro 30 Km dall'aeroporto, *ACMESky* identifica la *compagnia di trasporto* con autista più vicina all'abitazione del cliente per prenotare il trasferimento da/verso l'aeroporto. Il calcolo delle distanze viene fatto tramite il servizio *Distanze Geografiche*.
 
 Infine, *ACMESky* invia all'utente i biglietti aerei e, in caso sia stato prenotato, i biglietti per il trasferimento da/verso l'aeroporto. Il processo può quindi concludersi. 
 
@@ -68,6 +68,6 @@ Infine, *ACMESky* invia all'utente i biglietti aerei e, in caso sia stato prenot
 
 Per rendere robusto il sistema, sono stati inseriti anche i seguenti controlli:
 
-- è stato introdotto il **Transaction Sub-process** `Verifica codice e validità del pagamento` che racchiude tutti i task relativi alla verifica del codice offerta inserito e del pagamento. Nel caso di fallimento del sotto-processo, anche il processo genitore termina, non prima però di aver ripristinato lo stato del sistema riabilitando il codice dell'offerta (che torna utilizzabile) attraverso la **Compensating action** `Riabilita codice offerta`;
+- è stato introdotto il **Transaction Sub-process** `Verifica codice e validità del pagamento` che racchiude tutti i task relativi alla verifica del codice offerta inserito e del pagamento. Nel caso di fallimento del sotto-processo, anche il processo genitore termina.
 - è stato inserito, come nei precedenti diagrammi, un Timer Boundary Event, per gestire il caso in cui il *Provider dei Pagamenti* non risponda nei tempi previsti;
 - è stato inserito, successivamente all'invio della richiesta di pagamento al *Provider dei Pagamenti* da parte di *ACMESky*, un **Event-based gateway** con lo scopo di ricevere o la ricezione dell'esito del pagamento da parte del gestore dei pagamenti oppure della scadenza di un timeout nel caso in cui l'utente non paghi entro 10 minuti.
