@@ -11,7 +11,7 @@ Oltre ai dati sull'interesse inserisce anche il suo nome utente di *ProntoGram*.
 
 Il diagramma descrive le interazioni che avvengono fra *ACMESky*, le *compagnie aeree*, *ProntoGram* e gli utenti, nel contesto della verifica giornaliera della presenza di nuove offerte da comunicare all'utente.
 
-Ogni 24 ore, *ACMESky* contatta le differenti *compagnie aeree* richiedendo la lista delle nuove offerte inserite. Una volta ricevute, *ACMESky* verifica se ci sono utenti da notificare in quanto le offerte ricevute soddisfano i loro interessi: in caso affermativo, *ACMESky* contatta *ProntoGram* inviando il messaggio da far pervenire all'utente (con il codice offerta per il successivo acquisto); in caso negativo, non vi sono altre interazioni. *ProntoGram*, alla ricezione della richiesta di inoltro di un messaggio agli utenti, la soddisfa.
+Ogni 24 ore, *ACMESky* contatta le differenti *compagnie aeree* richiedendo la lista di tutti i voli presenti partendo dalla data odierna. Una volta ricevute, *ACMESky* scarta le offerte già presenti e successivamente verifica se ci sono utenti da notificare in quanto verifica un match tra le offerte ricevute e i loro interessi: in caso affermativo, *ACMESky* contatta *ProntoGram* inviando il messaggio da far pervenire all'utente (con il codice offerta per il successivo acquisto); in caso negativo, non vi sono altre interazioni. *ProntoGram*, alla ricezione della richiesta di inoltro di un messaggio agli utenti, la soddisfa.
 
 ## Ricezione offerte last minute
 ![!Processo di ricezione delle offerte last minute](assets/coreografiebpmn/NotificaVoliLastMinute.png)
@@ -25,7 +25,7 @@ Quando una *compagnia aerea* dispone di offerte last minute, contatta *ACMESky* 
 
 Il diagramma descrive le interazioni tra i diversi partecipanti che portano al pagamento dell'offerta, il cui codice è stato inviato precedentemente all'utente, e il successivo invio dei biglietti relativi.
 
-Quando un utente invia ad *ACMESky* il codice dell'offerta, il proprio nome e cognome e il proprio indirizzo, viene avviato il processo di acquisto.  
+Quando un utente invia ad *ACMESky* il codice dell'offerta, il proprio token jwt e il proprio indirizzo, viene avviato il processo di acquisto.  
 Come prima cosa, *ACMESky* verifica la validità del codice offerta ricevuto: infatti, se questo risultasse errato, già utilizzato oppure scaduto, l'utente verrebbe avvisato dell'impossibilità di proseguire; nel caso fosse valido, verrebbe dapprima informato e successivamente inoltrata la richiesta di pagamento al *Provider dei Pagamenti*.  
 Il *Provider di Pagamenti* risponde alla richiesta di pagamento con un riferimento, al quale l'utente deve accedere, per poter pagare.  
 *ACMESky*, ricevuto tale riferimento, lo inoltra all'utente il quale ha un tempo massimo di 10 minuti per portare a termine l'operazione di pagamento. Qualsiasi sia l'esito dell'operazione, il *Provider dei Pagamenti* lo comunica ad *ACMESky*. Nel caso in cui l'utente non completi entro il tempo previsto il pagamento oppure l'esito risulti negativo, viene notificato il problema e il processo termina.
