@@ -103,6 +103,13 @@ Le interazioni hanno il seguente significato:
     <li>( <strong>req_pay</strong>: AS -> PP ; <strong>req_pay_res</strong>: PP -> AS ;  <strong>send_payment_ref</strong>: AS -> UT<sub><em>k</em></sub> ; <strong>pay_offer</strong>: UT<sub><em>k</em></sub> -> PP ; ( <strong>pay_offer_res</strong> PP -> UT<sub><em>k</em></sub> | <strong>send_payment_status</strong>: PP -> AS ) ) ;</li>
     <li>( </li>
     <li><ul>
+        (  
+        <ul>
+            <li> ( ( <strong>delete_offer</strong>: AS -> PG ; <strong>message</strong>: PG -> UT<sub><em>1</em></sub> ) + 1 ) |</li>
+            <li> ... |</li>
+            <li> ( ( <strong>delete_offer</strong>: AS -> PG ; <strong>message</strong>: PG -> UT<sub><em>N</em></sub> ) + 1 ) </li>
+        </ul>
+        );
     	<li>( <strong>buy_flights</strong>: AS -> CA<sub><em>i</em></sub> ; <strong>buy_flights_res</strong>: CA<sub><em>i</em></sub> -> AS ) ;</li>  
     	<li>(</li>
         <li><ul>
@@ -143,6 +150,8 @@ Le interazioni hanno il seguente significato:
 - **pay_offer**: l'utente invia i dati per il pagamento al *Provider dei Pagamenti*;
 - **pay_offer_res**: risposta all'interazione **pay_offer** (invio esito del pagamento all'utente);
 - **send_payment_status**: il *Provider dei Pagamenti* comunica ad *ACMESky* l'esito del pagamento;
+- **delete_offer**: *ACMESky* elimina l'offerta collegata a uno o entrambi i voli che si stanno acquistando;
+- **message**: *ProntoGram* riferisce il messaggio all'utente (essendo un servizio esterno questa è una semplificazione).
 - **buy_flights**: *ACMESky* compra per conto dell'utente il biglietto per i voli scelti presso la *compagnia aerea* CA<sub>*i*</sub> che fornisce entrambi i voli che soddisfano il bisogno;
 - **buy_flights_res**: risposta all'interazione **buy_flights** (CA<sub>*i*</sub> conferma ad *ACMESky* la disponibilità del volo e inoltra il biglietto);
 - **calc_dist**: *ACMESky* richiede il calcolo della distanza al servizio esterno per il calcolo delle *distanze geografiche*;
@@ -177,6 +186,7 @@ Come nell'interazione fra AS e le varie CA<sub>*i*</sub>, le interazioni paralle
 - il ricevente di **send_payment_ref** è il mittente di **pay_offer**;
 - il ricevente di **pay_offer** è sia il mittente di **pay_offer_res** che di **send_payment_status** e i due riceventi sono diversi (UT<sub><em>k</em></sub> in un caso, AS nell'altro);
 - il ricevente di **send_payment_status** è il mittente di **buy_flights** e di **payment_failure** (quest'ultimo termina la coreografia);
+- le interazioni parallele ( ( **delete_offer** ; **message** ) + 1 ) non hanno condizioni per verificare la connectedness e quindi non viene verificata.
 - il ricevente di **buy_flights** è il mittente di **buy_flights_res**;
 - il ricevente di **buy_flights_res** è il mittente di **calc_dist** e di **send_tickets** (quest'ultimo termina la coreografia);
 - il ricevente di **calc_dist** è il mittente di **calc_dist_res** (nella sua prima invocazione);
@@ -235,6 +245,13 @@ proj(<strong>AcquistoOfferta</strong>, AS) =<br />
 <li>( <span style="text-decoration: overline"><strong>req_pay</strong></span>@PP ; <strong>req_pay_res</strong>@PP ; <span style="text-decoration: overline"><strong>send_payment_ref</strong></span>@UT<sub><em>k</em></sub> ; 1 ; ( 1 | <strong>send_payment_status</strong>@PP ) ;</li>
 <li>( </li>
 <li><ul>
+        (  
+        <ul>
+            <li> ( ( <span style="text-decoration: overline"><strong>delete_offer</strong></span>@PG ; 1 ) + 1 ) |</li>
+            <li> ... |</li>
+            <li> ( ( <span style="text-decoration: overline"><strong>delete_offer</strong></span>@PG ; 1 ) + 1 ) </li>
+        </ul>
+        );
 	<li>( <span style="text-decoration: overline"><strong>buy_flights</strong></span>@CA<sub><em>i</em></sub> ; <strong>buy_flights_res</strong>@CA<sub><em>i</em></sub> ) ;</li>
 	<li>(</li>
 <li>	<ul>
@@ -314,6 +331,15 @@ proj(<strong>AcquistoOfferta</strong>, UT<sub><em>k</em></sub>) =<br />
 <li>( 1 ; 1 ; <strong>send_payment_ref</strong>@AS ; <span style="text-decoration: overline"><strong>pay_offer</strong></span>@PP ; ( <strong>pay_offer_res</strong>@PP | 1 ) ) ;</li>  
 <li>(</li>
 <li><ul>
+        (  
+        <ul>
+            <li> ( ( 1 ; 1 ) + 1 ) |</li>
+            <li>... |</li>
+            <li> ( ( 1 ; <strong>message</strong>@PG )* ) |</li>
+            <li>... |</li>
+            <li> ( ( 1 ; 1 ) + 1 )</li>
+        </ul>
+        );
 	<li> ( 1 ; 1 ) ;</li>  
 	<li>(</li>
 <li><ul>
@@ -339,9 +365,10 @@ proj(<strong>AcquistoOfferta</strong>, UT<sub><em>k</em></sub>) =<br />
 </ul>
 )<br/>
 + <strong>ins_code_failure</strong>@AS<br />
-= (  <span style="text-decoration: overline"><strong>ins_code</strong></span>@AS ; <strong>ins_code_res</strong>@AS ) ; ( <strong>send_payment_ref</strong>@AS ; <span style="text-decoration: overline"><strong>pay_offer</strong></span>@PP ; <strong>pay_offer_res</strong>@PP ) ;
+= (  <span style="text-decoration: overline"><strong>ins_code</strong></span>@AS ; <strong>ins_code_res</strong>@AS ) ; ( <strong>send_payment_ref</strong>@AS ; <span style="text-decoration: overline"><strong>pay_offer</strong></span>@PP ; <strong>pay_offer_res</strong>@PP ) ; ( <strong>message</strong>@PG )* ;
 </p>
 </div>
+
 ### DG (Distanze Geografiche)
 <div class="projections">
 <p>
@@ -390,6 +417,13 @@ proj(<strong>AcquistoOfferta</strong>, DG) =<br />
 <li>( 1 ; 1 ; 1 ; 1 ; ( 1 | 1 ) ) ;</li>  
 <li>(</li>
 <li><ul>
+    (
+    <ul>
+        <li>( ( 1 ; 1 ) + 1 ) |</li>
+        <li>... |</li>
+        <li>( ( 1 ; 1 ) + 1 )</li>
+    </ul>
+    );
 	<li>( 1 ; 1 ) ;</li>  
 	<li>(</li>
 <li><ul>
@@ -468,6 +502,13 @@ proj(<strong>AcquistoOfferta</strong>, PP) =<br />
 <li>( <strong>req_pay</strong>@AS ; <span style="text-decoration: overline"><strong>req_pay_res</strong></span>@AS ; 1 ; <strong>pay_offer</strong>@UT<sub><em>k</em></sub> ; ( <span style="text-decoration: overline"><strong>pay_offer_res</strong></span>@UT<sub><em>k</em></sub> | <span style="text-decoration: overline"><strong>send_payment_status</strong></span>@AS ) ) ;</li>  
 <li>(</li>
 <li><ul>
+    (
+    <ul>
+        <li>( ( 1 ; 1 ) + 1 ) |</li>
+        <li>... |</li>
+        <li>( ( 1 ; 1 ) + 1 )</li>
+    </ul>
+    );
 	<li>( 1 ; 1 ) ;</li>  
 	<li>(</li>
 <li><ul>
@@ -546,6 +587,13 @@ proj(<strong>AcquistoOfferta</strong>, PG) =<br />
     <li>( 1 ; 1 ; 1 ; 1 ; ( 1 | 1 ) ) ;</li>
     <li>(</li>
     <li><ul>
+        (
+            <ul>
+                <li>( ( <strong>delete_offer</strong>@AS ; <span style="text-decoration: overline"><strong>message</strong></span>@UT<sub><em>1</em></sub> ) + 1 ) |</li>
+                <li>... |</li>
+                <li>( ( <strong>delete_offer</strong>@AS ; <span style="text-decoration: overline"><strong>message</strong></span>@UT<sub><em>N</em></sub> ) + 1 )</li>
+            </ul>
+        );
         <li>( 1 ; 1 ) ;</li>
         <li>(</li>
         <li><ul>
@@ -571,7 +619,7 @@ proj(<strong>AcquistoOfferta</strong>, PG) =<br />
 </ul>
 )<br /> 
 + 1<br />
-= 1
+= ( ( <strong>delete_offer</strong>@AS ; <span style="text-decoration: overline"><strong>message</strong></span>@UT<sub><em>1</em></sub> ) + 1 ) | ... | ( <strong>delete_offer</strong>@AS ; <span style="text-decoration: overline"><strong>message</strong></span>@UT<sub><em>k</em></sub> ) | ... | ( ( <strong>delete_offer</strong>@AS ; <span style="text-decoration: overline"><strong>message</strong></span>@UT<sub><em>N</em></sub> ) + 1 ) 
 </p>
 </div>
 
@@ -620,9 +668,16 @@ proj(<strong>AcquistoOfferta</strong>, CT<sub><em>j</em></sub>) =<br />
 ( 1 ; 1 ) ;<br /> 
 (
 <ul>
-    <li>( 1 ; 1 ; 1 ; 1 ; ( 1 | 1 ) ;</li>
+    <li>( 1 ; 1 ; 1 ; 1 ; ( 1 | 1 ) ) ;</li>
     <li>(</li>
     <li><ul>
+        (
+            <ul>
+                <li>( ( 1 ; 1 ) + 1 ) |</li>
+                <li>... |</li>
+                <li>( ( 1 ; 1 ) + 1 )</li>
+            </ul>
+        );
 		<li>( 1 ; 1 ) ;</li>
         <li>(</li>
         <li><ul>
@@ -703,6 +758,13 @@ proj(<strong>AcquistoOfferta</strong>, CA<sub><em>i</em></sub>) =<br />
     <li>( 1 ; 1 ; 1 ; 1 ; ( 1 | 1  )) ;</li>
     <li>(</li>
     <li><ul>
+        (
+            <ul>
+                <li>( ( 1 ; 1 ) + 1 ) |</li>
+                <li>... |</li>
+                <li>( ( 1 ; 1 ) + 1 )</li>
+            </ul>
+        );
         <li>( <strong>buy_flights</strong>@AS ; <span style="text-decoration: overline"><strong>buy_flights_res</strong></span>@CA ) ;</li>
         <li>(</li>
         <li><ul>

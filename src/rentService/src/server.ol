@@ -60,16 +60,6 @@ main {
 		}
 
 		/*
-		* Checking if the airport code is valid. If it is not, then a Fault400 is thrown.
-		*/
-		matchRequest = request.airport_code
-		matchRequest.regex = "[A-Z]{3,3}"
-		match@StringUtils(matchRequest)(airportCodeOK)
-		if (airportCodeOK == 0) {
-			throw(Fault400, {description = "airport_code is not valid"})
-		}
-
-		/*
 		* Changing date format from ISO 8601 to Italian date format in both departure_transfer_datetime and arrival_transfer_datetime.
 		*/
 		dateTime = request.departure_transfer_datetime;

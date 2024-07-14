@@ -16,6 +16,7 @@ Inoltre, dal diagramma BPMN è emersa anche un'altra capability, questa volta re
 
 ## Verifica giornaliera delle offerte
 ![!Diagramma UML che descrive come vengono implementati i task del processo di verifica giornaliera delle offerte delle compagnie aree e notifica degli utenti](assets/uml/VerificaGiornaliera.png)
+
 Nel diagramma sovrastante sono evidenziate le capability emerse dall'analisi del diagramma BPMN "Verifica giornaliere delle offerte" e le interfacce che le espongono.
 
 Le capability emerse, per il ruolo di *ACMESky* sono: `DailyOffersCheck` e `Offer`. Queste due capability sono esposte mediante tre interfacce e la capability `DailyOffersCheck` dipende dalle interfacce `OfferSaving` e `OfferFinding` che espongono la capability `Offer`. Queste due capability permettono al sistema di memorizzare le offerte delle compagnie aeree e successivamente verificare se esse sono coerenti con gli interessi dichiarati dai suoi utenti.
@@ -34,6 +35,7 @@ Le capability `Offer`, `Message`, `MessagePublishing` e relative interfacce sono
 
 ## Acquisto offerta da un utente
 ![!Diagramma UML che descrive come vengono implementati i task del processo di acquisto di un'offerta](assets/uml/AcquistoOfferta.png)
+
 Nel diagramma sovrastante sono evidenziate le capability emerse dall'analisi del diagramma BPMN "Acquisto offerta da un utente" e le interfacce che le espongono. 
 
 Le capability emerse per il ruolo di *ACMESky* sono: `OfferCodeInsertion`, `PaymentHandler`, `Payment`, `Offer` e `Distance`; ognuna di queste capability è esposta da una specifica interfaccia. Queste capability permettono al sistema di: ricevere la richiesta di acquisto di un'offerta da parte di un utente, ricevere l'esito di un'operazione di pagamento, verificare l'esito di un pagamento, verificare il codice dell'offerta inserito da un utente e controllare la distanza geografica tra due coordinate. La capability `OfferCodeInsertion` dipende dalle interfacce che espongono la capability `Offer` per poter verificare la validità del codice inserito e `Distance` per controllare la distanza tra la casa dell'utente e l'aeroporto. La capability `PaymentHandler` dipende dall'interfaccia che espone la capability `Payment` per verificare l'esito del pagamento. 
