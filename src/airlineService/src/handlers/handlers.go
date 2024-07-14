@@ -114,8 +114,7 @@ func randomCode(n int) string {
 
 func randomAirportCode() string {
 	airportCodes := []string{
-		"AMS", "FRA", "LHR", "CDG", "TXL", "ROM", "LBA", "BHX", "LTN", "WAW",
-		"BRU", "MUC", "VIE", "DUS", "HAM", "MAD", "BCN", "SXF", "PRG",
+		"CRV", "BRI", "FOG", "TAR", "LCC", "PSR", "BDS", "SUF", "CTA", "LMP", "PNL", "PMO", "REG", "TPS", "NSY", "AHO", "DCI", "CAG", "OLB", "TTB", "MXP", "BGY", "TRN", "ALL", "GOA", "LIN", "PMF", "CUF", "AVB", "BZO", "BLQ", "TSF", "FRL", "VBS", "TRS", "RMI", "VIC", "QPA", "VRN", "VCE", "SAY", "CIA", "FCO", "EBA", "QLT", "NAP", "PSA", "FLR", "GRS", "PEG", "AOI", "AOT", "QSR", "FNU", "CIY", "QLP", "YYZ", "FRA", "LHR", "AMS", "BCN", "MAD", "CDG", "DXB", "HND", "SIN", "PEK", "SFO", "LAX", "SEA", "DFW", "ATL", "DEN", "JFK", "ORD", "BKK",
 	}
 	return airportCodes[rand.Intn(len(airportCodes))]
 }
