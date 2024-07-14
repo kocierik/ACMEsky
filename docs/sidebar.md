@@ -10,6 +10,7 @@
     * ACMEsky
         <!-- * [Backend](src/ACMESky/ACMESkyWeb/backend/) -->
         * [Database](src/ACMESky/ACMESkyDB/)
+        * [SSE](src/ACMESky/ACMESkySSE/)
         * [Web](src/ACMESky/ACMESkyWeb/frontend/)
     * [Airline Service](src/airlineService/)
     * [Bank Service](src/bankService/)
