@@ -6,8 +6,6 @@
 
 	div.choreographies ul, div.projections ul {
 		margin: 0px;
-        background: lightblue;
-        padding: inherit;
 	}
 </style>
 # Coreografie, ruoli e proiezioni delle coreografie sui ruoli

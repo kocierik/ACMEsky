@@ -26,9 +26,9 @@ Infine, per contattare l'utente, la capability `Message` di *ProntoGram* dipende
 
 ## Ricezione offerte last minute
 ![!Diagramma UML che descrive come vengono implementati i task del processo di ricezione di offerte dalle compagnie aree e notifica degli utenti](assets/uml/NotificaVoliLastMinute.png)
-Nel diagramma sovrastante sono evidenziate le capability emerse dall'analisi del diagramma BPMN "Acquisto offerta da un utente" e le interfacce che le espongono.
+Nel diagramma sovrastante sono evidenziate le capability emerse dall'analisi del diagramma BPMN "Ricezione offerte last minute" e le interfacce che le espongono.
 
-Le capability emerse, per il ruolo di *ACMESky* sono: `LastMinuteOffersPublishing` e `Offer`. Queste due capability sono esposte mediante tre interfacce e la capability `LastMinuteOffersPublishing` dipende dalle interfacce `OfferSaving` e `OfferFinding` che espongono la capability `Offer`. Queste due capability permettono al sistema di memorizzare le offerte last-minute ricevute direttamente dalle compagnie aeree e successivamente verificare se esse sono coerenti con gli interessi dichiarati dai suoi utenti.
+Le capability emerse, per il ruolo di *ACMESky* sono: `LastMinuteOffersPublishing` e `Offer`. Queste due capability sono esposte mediante tre interfacce. La capability `LastMinuteOffersPublishing` dipende dalle interfacce `OfferSaving` e `OfferFinding` che espongono la capability `Offer`. Queste due capability permettono al sistema di memorizzare le offerte last-minute ricevute direttamente dalle compagnie aeree e successivamente verificare se esse sono coerenti con gli interessi dichiarati dai suoi utenti.
 
 Le capability `Offer`, `Message`, `MessagePublishing` e relative interfacce sono le stesse che sono illustrate nella precedente sezione.
 
