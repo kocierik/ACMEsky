@@ -18,9 +18,9 @@ Realizzare una **Service Oriented Architecture** (**SOA**) che rappresenti la re
 
 Essendo un progetto a scopo didattico sono state adottate alcune assunzioni e semplificazioni sul funzionamento dei vari servizi, che vengono elencati di seguito:
 
-- Attualmente non sono presenti controlli di sicurezza riguardo alla possibilità di eseguire determinati api che dovrebbero essere private, come ad esempio la creazione di un determinato volo, sarebbe necessario implementare un meccanismo che utilizzi un proxy per limitare le richieste agli utenti autorizzati
-- gli aspetti relativi alla sicurezza delle comunicazioni e dei dati sono stati ignorati mentre, ad esempio, sarebbe stato corretto utilizzare il protocollo HTTPS per le comunicazioni;
-- i voli offerti dalle *compagnie aeree* sono tutti diretti e quando vengono assegnati ad un offerta *ACMESky* chiede di riservare un posto alle *compagnie aeree* in modo da evitare, al momento dell'acquisto, un errore dovuto alla mancanza di disponibilità di posti a sedere;
+- Attualmente non sono presenti controlli di sicurezza riguardo alla possibilità di eseguire determinati api che dovrebbero essere private, come ad esempio la creazione di un determinato volo o la cancellazione di un offerta, sarebbe necessario implementare un meccanismo che utilizzi un proxy per limitare le richieste ai servizi autorizzati
+- I voli offerti dalle *compagnie aeree* sono tutti diretti e monoposto e quando vengono assegnati ad un offerta, *ACMESky* chiede di riservare un posto alle *compagnie aeree* in modo da evitare, al momento dell'acquisto, un errore dovuto alla mancanza di disponibilità di posti a sedere;
+- Per la ricezione di voli last-minute da parte delle *compagnie aeree* è stato scelto di implementazione una generazione periodica di voli randomici che consente di simulare il comportamento delle compagnie aeree.
 
 ## Struttura del sito
 Il seguente sito è strutturato come segue:
@@ -29,5 +29,5 @@ Il seguente sito è strutturato come segue:
 - [Coreografie BPMN](docs/coreografiebpmn.md): descrizione delle coreografie della precedente sezione mediante coreografie BPMN;
 - [BPMN](docs/bpmn.md): descrizione delle coreografie sotto forma di diagrammi BPMN;
 - [UML](docs/uml.md): descrizione della SOA tramite diagrammi UML con profilo TinySOA;
-- [Implementazione](docs/implementazione.md): descrizione dell'implementazione del progetto;
+- [Implementazione](docs/implementazione.md): descrizione dell'implementazione architetturale del progetto;
 - [Istruzioni per l'avvio](docs/executeinstruction.md): Istruzioni per avviare l'infrastruttura;
