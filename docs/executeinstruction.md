@@ -24,9 +24,9 @@ Per rimuovere tutti i servizi:
 docker-compose down
 ```
 
-## 4. Caricamento dei dati di esempio
-Per poter testare il sistema è necessario caricare dei dati di esempio dei voli delle compagnie aeree.  
-Il container del database delle compagnie aeree (`flight_companies_db`) ha già dei dataset precaricati, è sufficiente importarli all'interno delle tabelle dei database. Questo è possibile farlo mediante i seguenti tre (perché tre sono le compagnie aeree di esempio) comandi:
+## 4. Dati precaricati
+Per poter testare il sistema è necessario caricare dei dati di esempio degli aeroporti e dei voli delle compagnie aeree.  
+Il sistema ha già configurato una serie di dati di esempio visualizzabili nel file [init_sql.sh](https://github.com/kocierik/ACMEsky/tree/main/src/airlineService/data/init_sql.sh).
 
 ## 5. Accesso ai servizi
 Se i punti precedenti sono stati seguiti correttamente e tutti i servizi sono attivi, è possibile accedere:

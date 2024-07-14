@@ -1,6 +1,6 @@
 # SSE Server
 
-Questo repository contiene un server Node.js per la gestione di eventi lato server (SSE - Server-Sent Events) utilizzando Express. Il server consente ai client di ricevere eventi in tempo reale autenticandosi con JWT (JSON Web Token).
+Questo repository contiene un server Node.js per la gestione di eventi lato server (SSE - Server-Sent Events) utilizzando Express. Il server consente ai client di ricevere aggiornamenti in tempo reale durante la procedura di acquisto offerta autenticandosi con JWT (JSON Web Token).
 
 ## Endpoints
 
