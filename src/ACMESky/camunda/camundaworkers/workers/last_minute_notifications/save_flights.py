@@ -1,7 +1,7 @@
 import json
 from camunda.external_task.external_task import ExternalTask, TaskResult
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import DatabaseError
 
 from camundaworkers.utils.db import create_sql_engine
 from camundaworkers.model.flight import Flight
@@ -17,7 +17,17 @@ def save_flights(task: ExternalTask) -> TaskResult:
     logger = get_logger()
     logger.info("save_flights")
 
-    flights = [Flight.from_dict(f) for f in json.loads(task.get_variable("flights"))]
+    flights = ""
+    if task.get_variable("flight_packets") is None:
+        flights = str(task.get_variable("flights"))
+    else:
+        # Workaround: Camunda string global variables can hold maximum 4000 chars per string.
+        # Therefore we must concatenate the dumped strings.
+        flight_packets = int(task.get_variable("flight_packets"))
+        for packet in range(flight_packets):
+            flights += str(task.get_variable(f"flight_{packet}"))
+
+    flights = [Flight.from_dict(f) for f in json.loads(flights)]
 
     # Connects to PostgreSQL
     Session = sessionmaker(bind=create_sql_engine())
