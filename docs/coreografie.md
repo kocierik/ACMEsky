@@ -105,6 +105,7 @@ Le interazioni hanno il seguente significato:
     <li><ul>
         (  
         <ul>
+            ( <strong>delete_offer</strong>: AS -> PG ; <strong>message</strong>: PG -> UT<sub><em>k</em></sub> ) ;
             <li> ( ( <strong>delete_offer</strong>: AS -> PG ; <strong>message</strong>: PG -> UT<sub><em>1</em></sub> ) + 1 ) |</li>
             <li> ... |</li>
             <li> ( ( <strong>delete_offer</strong>: AS -> PG ; <strong>message</strong>: PG -> UT<sub><em>N</em></sub> ) + 1 ) </li>
@@ -247,6 +248,7 @@ proj(<strong>AcquistoOfferta</strong>, AS) =<br />
 <li><ul>
         (  
         <ul>
+            <li> ( <span style="text-decoration: overline"><strong>delete_offer</strong></span>@PG ) ;</li>
             <li> ( ( <span style="text-decoration: overline"><strong>delete_offer</strong></span>@PG ; 1 ) + 1 ) |</li>
             <li> ... |</li>
             <li> ( ( <span style="text-decoration: overline"><strong>delete_offer</strong></span>@PG ; 1 ) + 1 ) </li>
@@ -333,6 +335,7 @@ proj(<strong>AcquistoOfferta</strong>, UT<sub><em>k</em></sub>) =<br />
 <li><ul>
         (  
         <ul>
+            <li> ( 1 ; <strong>message</strong>@PG ) ;</li>
             <li> ( ( 1 ; 1 ) + 1 ) |</li>
             <li>... |</li>
             <li> ( ( 1 ; <strong>message</strong>@PG )* ) |</li>
@@ -419,6 +422,7 @@ proj(<strong>AcquistoOfferta</strong>, DG) =<br />
 <li><ul>
     (
     <ul>
+        <li>( 1 ; 1 ) ;</li>
         <li>( ( 1 ; 1 ) + 1 ) |</li>
         <li>... |</li>
         <li>( ( 1 ; 1 ) + 1 )</li>
@@ -504,6 +508,7 @@ proj(<strong>AcquistoOfferta</strong>, PP) =<br />
 <li><ul>
     (
     <ul>
+        <li>( 1 ; 1 ) ;</li>
         <li>( ( 1 ; 1 ) + 1 ) |</li>
         <li>... |</li>
         <li>( ( 1 ; 1 ) + 1 )</li>
@@ -589,6 +594,7 @@ proj(<strong>AcquistoOfferta</strong>, PG) =<br />
     <li><ul>
         (
             <ul>
+                <li>( <strong>delete_offer</strong>@AS ; <span style="text-decoration: overline"><strong>message</strong></span>@UT<sub><em>k</em></sub>);</li>
                 <li>( ( <strong>delete_offer</strong>@AS ; <span style="text-decoration: overline"><strong>message</strong></span>@UT<sub><em>1</em></sub> ) + 1 ) |</li>
                 <li>... |</li>
                 <li>( ( <strong>delete_offer</strong>@AS ; <span style="text-decoration: overline"><strong>message</strong></span>@UT<sub><em>N</em></sub> ) + 1 )</li>
@@ -673,6 +679,7 @@ proj(<strong>AcquistoOfferta</strong>, CT<sub><em>j</em></sub>) =<br />
     <li><ul>
         (
             <ul>
+                <li>( 1 ; 1 ) ;</li>
                 <li>( ( 1 ; 1 ) + 1 ) |</li>
                 <li>... |</li>
                 <li>( ( 1 ; 1 ) + 1 )</li>
@@ -760,6 +767,7 @@ proj(<strong>AcquistoOfferta</strong>, CA<sub><em>i</em></sub>) =<br />
     <li><ul>
         (
             <ul>
+                <li>( 1 ; 1 ) ;</li>
                 <li>( ( 1 ; 1 ) + 1 ) |</li>
                 <li>... |</li>
                 <li>( ( 1 ; 1 ) + 1 )</li>
