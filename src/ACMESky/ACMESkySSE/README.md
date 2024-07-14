@@ -60,7 +60,7 @@ Il server è configurato per consentire le richieste CORS solo dall'origine `htt
 
 ### Gestione degli Eventi
 
-- `sendEvent(eventName: string, data: any)`: Invia un evento SSE al client specificato da `userId` presente nei dati dell'evento.
+- `sendEvent(eventName: string, data: any)`: Invia un evento SSE al client specificato da `userId` presente nei dati dell'evento. Utile per l'invio delle offerte
 
 ### Gestione delle Connessioni
 
