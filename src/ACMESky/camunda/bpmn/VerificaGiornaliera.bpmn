@@ -24,8 +24,8 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_1i460k5</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0hmn7pr">
-      <!-- date viene sostituita con la data attuale + 5 min durante la build dell'immagine -->
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/{{date}}/PT24H</bpmn:timeCycle>
+        <!-- <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/PT24H</bpmn:timeCycle> -->
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/PT120S</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1i460k5" sourceRef="trigger-daily-check-event" targetRef="check-flight-companies-offers" />
